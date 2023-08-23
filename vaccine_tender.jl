@@ -34,9 +34,19 @@ end
 P = ["p1","p2","p3"]
 P_v = Dict("v1" => ["p1"],"v2" => ["p1","p2"], "v3" => ["p1","p3"], "v4" => ["p2", "p3"], "v5" => ["p1","p2","p3"])
 
+V_p = Dict()
+for p in P
+    vector_p = []
+    for v in keys(P_v)
+        if p in P_v[v]
+            push!(vector_p, v)
+        end
+    end
+    V_p[p] = vector_p
+end
+
 tmax = 3
 T = [t for t in 0:tmax]
-println(T)
 
 ################################################### PARAMETERS ####################################################
 #=
@@ -56,37 +66,88 @@ beta: risk parameter for demand
 =#
 
 Random.seed!(1230) # -> always generate the same demand
-d = rand(10*(0:3),length(A),length(T))
-#println(demand_random[4,3]) # -> returns the demand of antigen a4 at t=3
+d_rand = rand(10*(0:3),length(A),length(T))
+d = Dict()
+for a in 1:length(A)
+    for t in 1:length(T)
+        d[A[a],T[t]] = d_rand[a,t]
+    end
+end
+#println(d_rand[4,3]) # -> returns the demand of antigen a4 at t=2 (since set T starts from 0) -> which corresponds to d["a4",2]
 
 Random.seed!(1233) # -> always generate the same production capacity
-s = rand(10*(1:10),length(P),length(T))
-#println(s[1,:]) # -> returns the production capacity of producer p1 for all periods
+s_rand = rand(10*(5:10),length(P),length(T))
+s = Dict()
+for p in 1:length(P)
+    for t in 1:length(T)
+        s[P[p],T[t]] = s_rand[p,t]
+    end
+end
 
 Random.seed!(1233)
-k = rand(10*(1:6),length(V),length(T))
+k_rand = rand(10*(5:10),length(V),length(T))
+k = Dict()
+for v in 1:length(V)
+    for t in 1:length(T)
+        k[V[v],T[t]] = k_rand[v,t]
+    end
+end
 
 Random.seed!(1233)
-r = rand((1:3),length(V),length(P),length(T))
-#println(r[1,2,3]) # -> returns the reservation price of vaccine v1 produced by p2 for period t=3
-#println(r)
-Random.seed!(1233)
-r_avg = rand((1:3),length(V),length(T))
-#println(r_avg)
+r_rand = rand(10*(1:3),length(V),length(P),length(T))
+r = Dict()
+for v in 1:length(V)
+    for p in 1:length(P)
+        for t in 1:length(T)
+            r[V[v],P[p],T[t]] = r_rand[v,p,t]
+        end
+    end
+end
 
 Random.seed!(1233)
-l = rand(100*(3:5),length(V),length(P))
+r_avg_rand = rand(10*(1:3),length(V),length(T))
+r_avg = Dict()
+for v in 1:length(V)
+    for t in 1:length(T)
+        r_avg[V[v],T[t]] = r_avg_rand[v,t]
+    end
+end
+
+Random.seed!(1233)
+l_rand = rand(100*(2:4),length(V),length(P))
+l = Dict()
+for v in 1:length(V)
+    for p in 1:length(P)
+        l[V[v],P[p]] = l_rand[v,p]
+    end
+end
 
 gamma = 0.1
 
 Random.seed!(1233)
-g = rand(100*(1:3),length(T))
+g_rand = rand(100*(1:3),length(T))
+g = Dict()
+for t in 1:length(T)
+    g[T[t]] = g_rand[t]
+end
 
 Random.seed!(1233)
-f = rand(100*(1:2),length(V),length(P),length(T))
+f_rand = rand(100*(1:2),length(V),length(P),length(T))
+f = Dict()
+for v in 1:length(V)
+    for p in 1:length(P)
+        for t in 1:length(T)
+            f[V[v],P[p],T[t]] = f_rand[v,p,t]
+        end
+    end
+end
 
 Random.seed!(1233)
-h = rand((1:3)/10,length(V))
+h_rand = rand((1:3)/10,length(V))
+h = Dict()
+for v in 1:length(V)
+    h[V[v]] = h_rand[v]
+end
 
 pi = 1
 beta = 0.1
@@ -94,22 +155,124 @@ beta = 0.1
 ################################################### DECISION VARIABLES ####################################################
 #=
 Variable Definitions:
-F: a binary variable if a tender covers demand in period t to tau for antigen a
-Q:
-X:
-Y:
-I:
-Vc:
-S:
+F: a binary variable takes the value 1 if a tender covers demand at time t to tau for antigen a
+Q: procurement commitment of producer p for vaccine v at time t
+X: number of doses of vaccines v delivered by p at time t
+Y: a binary variable takes the value 1 if a tender is granted to producer p for vaccine v at time t
+I: stock level for vaccine v at time t
+Vc: number of children vaccinated with vaccine v at time t
+S: number of children that were not vaccinated with antigen a due to vaccine shortage at time t
 =#
 
-
-model=Model()
+model=Model(with_optimizer(gurobi_solver))
 
 @variable(model, F[a in A, t in T, tau in t:tmax], Bin)
-@variable(model, Q[v in V, p in P, t in T])
-@variable(model, X[v in V, p in P, t in T])
+@variable(model, Q[v in V, p in P, t in T] >= 0)
+@variable(model, X[v in V, p in P, t in T] >= 0)
 @variable(model, Y[v in V, p in P, t in T], Bin)
-@variable(model, I[v in V, t in T])
-@variable(model, Vc[v in V, t in T])
-@variable(model, S[a in A, t in T])
+@variable(model, I[v in V, t in T] >= 0)
+@variable(model, Vc[v in V, t in T] >= 0)
+@variable(model, S[a in A, t in T] >=0)
+
+################################################### OBJECTIVE FUNCTION AND CONSTRAINTS ####################################################
+
+@objective(model, Min, sum(g[t]*F[a,t,tau] for t in T, tau in t:tmax, a in A)
+                        + sum(r[v,p,t]*X[v,p,t] for v in V, p in P, t in T)
+                            + sum(pi*r_avg[v,t]*S[a,t] for v in V, a in A, t in T)
+                                + sum(h[v]*r_avg[v,t]*I[v,t] for v in V, t in T)
+                                                                                    )
+
+# Constraint (1)
+for v in V
+    for p in P_v[v]
+        for t in T
+            for tau in T
+                if tau >= t
+                    @constraint(model, sum((tau-t+1)*F[a,t,tau] for a in A_v[v]) <= sum(Y[v,p,l] for l in t:tau))
+                end
+            end
+        end
+    end
+end
+
+# Constraint (2)
+for a in A
+    for t in T
+        for tau in T
+            if tau >= t
+                @constraint(model, sum(F[a,l,tau] for l in t:tau) <= 1)
+            end
+        end
+    end
+end
+
+# Constraint (3)
+for p in P
+    for t in T
+        @constraint(model, sum(Q[v,p,t] for v in V) <= sum(k[v,l]*Y[v,p,l] for l in t:tmax, v in V))
+    end
+end
+
+# Constraint (4)
+for v in V
+    for p in P
+        for t in T
+            @constraint(model, Q[v,p,t] >= sum(X[v,p,l] for l in t:tmax))
+        end
+    end
+end
+
+# Constraint (5)
+for v in V
+    for p in P
+        @constraint(model, sum(Q[v,p,t] for t in 1:tmax) >= sum(X[v,p,l] for l in 1:tmax))
+    end
+end
+
+# Constraint (6)
+for p in P
+    for t in T
+        @constraint(model, sum(X[v,p,t] for v in V) <= s[p,t]*sum(Y[v,p,t] for v in V))
+    end
+end
+
+# Constraint (7)
+for v in V
+    for t in T
+        if t >= 1
+            @constraint(model, I[v,t-1] + sum(X[v,p,t] for p in P_v[v]) == Vc[v,t] + I[v,t])
+        end
+    end
+end
+
+# Constraint (8)
+for a in A
+    for t in T
+        if t >= 1
+            @constraint(model, d[a,t] - sum(Vc[v,t] for v in V_a[a]) + S[a,t-1] == S[a,t])
+        end
+    end
+end
+
+# Constraint (9)
+for p in P
+    for t in T
+        @constraint(model, sum(r[v,p,t]*X[v,p,t] for v in V_p[p]) >= sum(l[v,p] for v in V_p[p]) - sum(f[v,p,t] for v in V_p[p]))
+    end
+end
+
+optimize!(model)
+println("!!!!!!!!!!!!!!!!!!!!!!!!!  F !!!!!!!!!!!!!!!!!!!!!!!!!!")
+println(JuMP.value.(model[:F]))
+println("!!!!!!!!!!!!!!!!!!!!!!!!!  Q !!!!!!!!!!!!!!!!!!!!!!!!!!")
+println(JuMP.value.(model[:Q]))
+println("!!!!!!!!!!!!!!!!!!!!!!!!!  X !!!!!!!!!!!!!!!!!!!!!!!!!!")
+println(JuMP.value.(model[:X]))
+println("!!!!!!!!!!!!!!!!!!!!!!!!!  Y !!!!!!!!!!!!!!!!!!!!!!!!!!")
+println(JuMP.value.(model[:Y]))
+println("!!!!!!!!!!!!!!!!!!!!!!!!!  I !!!!!!!!!!!!!!!!!!!!!!!!!!")
+println(JuMP.value.(model[:I]))
+println("!!!!!!!!!!!!!!!!!!!!!!!!!  Vc !!!!!!!!!!!!!!!!!!!!!!!!!!")
+println(JuMP.value.(model[:Vc]))
+println("!!!!!!!!!!!!!!!!!!!!!!!!!  S !!!!!!!!!!!!!!!!!!!!!!!!!!")
+println(JuMP.value.(model[:S]))
