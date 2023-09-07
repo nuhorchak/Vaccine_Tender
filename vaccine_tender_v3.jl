@@ -16,9 +16,9 @@ P_v: Subset of producers of vaccine v
 T: Set of time periods
 =#
 A = ["a1","a2"]
-V = ["v1","v2"]
+V = ["v1","v2","v3"]
 
-A_v = Dict("v1" => ["a1"],"v2" => ["a2"])
+A_v = Dict("v1" => ["a1"], "v2" => ["a2"], "v3" => ["a1","a2"])
 
 V_a = Dict()
 for a in A
@@ -32,7 +32,7 @@ for a in A
 end
 
 P = ["p1","p2"]
-P_v = Dict("v1" => ["p1"],"v2" => ["p2"])
+P_v = Dict("v1" => ["p1"],"v2" => ["p2"], "v3" => ["p1","p2"])
 
 V_p = Dict()
 for p in P
@@ -78,7 +78,7 @@ for a in 1:length(A)
 end
 
 Random.seed!(1233)
-k_rand = [20 20 20 20 20; 30 30 30 40 40]
+k_rand = [20 20 20 20 20; 30 30 30 40 40 ; 10 10 10 10 10]
 k = Dict()
 for v in 1:length(V)
     for t in 1:length(T)
@@ -87,7 +87,7 @@ for v in 1:length(V)
 end
 
 Random.seed!(1233)
-r_rand = [5 2; 5 2;;; 5 2; 5 2;;; 10 4; 10 4;;; 10 4; 10 4;;; 20 8; 20 8]
+r_rand = [5 2; 5 2; 10 10;;; 5 2; 5 2; 10 10;;; 10 4; 10 4; 20 20;;; 10 4; 10 4; 20 20;;; 20 8; 20 8; 40 40]
 r = Dict()
 for v in 1:length(V)
     for p in 1:length(P)
@@ -98,7 +98,7 @@ for v in 1:length(V)
 end
 
 Random.seed!(1233)
-r_avg_rand = [5 5 10 10 20; 2 2 4 4 8]
+r_avg_rand = [5 5 10 10 20; 2 2 4 4 8; 10 10 20 20 40]
 r_avg = Dict()
 for v in 1:length(V)
     for t in 1:length(T)
@@ -107,7 +107,7 @@ for v in 1:length(V)
 end
 
 Random.seed!(1233)
-l_rand = [50 50; 20 20]
+l_rand = [0.1 0.1; 0.1 0.1; 0.1 0.1]
 l = Dict()
 for v in 1:length(V)
     for p in 1:length(P)
@@ -149,7 +149,7 @@ for v in 1:length(V)
     h[V[v]] = h_rand[v]
 end
 
-pi = 1
+pi = 10
 beta = 0.1
 
 ################################################### DECISION VARIABLES ####################################################
@@ -167,18 +167,18 @@ S: number of children that were not vaccinated with antigen a due to vaccine sho
 model=Model(with_optimizer(gurobi_solver))
 
 @variable(model, F[a in A, t in T, tau in t:tmax], Bin)
-@variable(model, Q[v in V, p in P, t in T] >= 0)
-@variable(model, X[v in V, p in P, t in T] >= 0)
-@variable(model, Y[v in V, p in P, t in T], Bin)
-@variable(model, I[v in V, t in T_initial] >= 0)
+@variable(model, Q[v in V, p in P_v[v], t in T] >= 0)
+@variable(model, X[v in V, p in P_v[v], t in T] >= 0)
+@variable(model, Y[v in V, p in P_v[v], t in T], Bin)
+@variable(model, I[v in V, t in T_initial] >= 0, Int)
 @variable(model, Vc[v in V, t in T] >= 0)
 @variable(model, S[a in A, t in T_initial] >=0)
 
 ################################################### OBJECTIVE FUNCTION AND CONSTRAINTS ####################################################
 
 @objective(model, Min, sum(g[t]*F[a,t,tau] for t in T, tau in t:tmax, a in A)
-                        + sum(gy[t]*Y[v, p, t] for v in V, p in P, t in T)
-                            + sum(r[v,p,t]*X[v,p,t] for v in V, p in P, t in T)
+                        + sum(gy[t]*Y[v, p, t] for v in V, p in P_v[v], t in T)
+                            + sum(r[v,p,t]*X[v,p,t] for v in V, p in P_v[v], t in T)
                                 + sum(pi*r_avg[v,t]*S[a,t] for v in V, a in A, t in T)
                                     + sum(h[v]*r_avg[v,t]*I[v,t] for v in V, t in T)
                                                                                     )
@@ -207,7 +207,7 @@ for a in A
     end
 end
 
-# Constraint (3)
+# Constraint (2-b)
 for a in A
     for t in T
         for tau in T
@@ -218,40 +218,115 @@ for a in A
     end
 end
 
-# Constraint (4)
+# Constraint (2) - New
 for a in A
-    @constraint(model, sum((k-l+1)*F[a,l,k] for l in 1:tmax, k in l:tmax) >= tmax)
-end
-
-# Constraint (5)
-for a in A
-    @constraint(model, sum(F[a,1,k] for k in 1:tmax) == 1)
-end
-
-# Constraint (6)
-for p in P
     for t in T
-        @constraint(model, sum(Q[v,p,t] for v in V) <= sum(k[v,l]*Y[v,p,l] for l in t:tmax, v in V))
+        for tau in T
+            if tau >= t
+                for t_prime in T
+                    for tau_prime in T
+                        if tau_prime >= t_prime
+                            if (t_prime < t) && (tau_prime >= t) && (tau_prime < tau)
+                                @constraint(model, F[a,t,tau] + F[a,t_prime,tau_prime] <= 1)
+                            end
+                            if (t_prime > t) && (t_prime <= tau) && (tau_prime > tau)
+                                @constraint(model, F[a,t,tau] + F[a,t_prime,tau_prime] <= 1)
+                            end
+                            if (t_prime > t) && (t_prime < tau) && (tau_prime > t) && (tau_prime < tau)
+                                @constraint(model, F[a,t,tau] + F[a,t_prime,tau_prime] <= 1)
+                            end
+                            if (t_prime < t) && (tau_prime > tau)
+                                @constraint(model, F[a,t,tau] + F[a,t_prime,tau_prime] <= 1)
+                            end
+                        end
+                    end
+                end
+            end
+        end
     end
 end
 
-# Constraint (7)
+#=
+# Overlap test
+for a in A
+    @constraint(model, F[a,1,2] + F[a,3,3] == 2)
+end
+=#
+#=
+# Overlap test 2
+for a in A
+    @constraint(model, F[a,1,2] + F[a,3,4] == 2)
+end
+=#
+#=
+# Overlap test 2
+for a in A
+    @constraint(model, F[a,1,2] == 1)
+end
+=#
+#=
+# Q commitment test
+@constraint(model, Q["v3","p1",1] == 0)
+@constraint(model, Q["v3","p1",2] == 0)
+@constraint(model, Q["v3","p1",5] == 0)
+@constraint(model, Q["v3","p2",1] == 0)
+@constraint(model, Q["v3","p2",5] == 0)
+=#
+# Constraint (3)
+for a in A
+    @constraint(model, sum((k-l+1)*F[a,l,k] for l in 1:tmax, k in l:tmax) >= tmax)
+end
+#=
+# Constraint (4)
+for a in A
+    @constraint(model, sum(F[a,1,k] for k in 1:tmax) == 1)
+end
+=#
+#=
+# Constraint (5)
+for p in P
+    for t in T
+        @constraint(model, sum(Q[v,p,t] for v in V_p[p]) <= sum(k[v,l]*Y[v,p,l] for l in t:tmax, v in V_p[p]))
+    end
+end
+=#
+
+# Constraint (5)
 for v in V
-    for p in P
+    for p in P_v[v]
+        for t in T
+            @constraint(model, Q[v,p,t] <= k[v,t]*Y[v,p,t])
+        end
+    end
+end
+
+#=
+# Constraint (6)
+for v in V
+    for p in P_v[v]
         for t in T
             @constraint(model, Q[v,p,t] >= sum(X[v,p,l] for l in t:tmax))
         end
     end
 end
-
-# Constraint (8)
+=#
+# Constraint (6) - new
 for v in V
-    for p in P
+    for p in P_v[v]
+        for t in T
+            @constraint(model, Q[v,p,t] >= X[v,p,t])
+        end
+    end
+end
+#=
+# Constraint (7)
+for v in V
+    for p in P_v[v]
         @constraint(model, sum(Q[v,p,t] for t in tmin:tmax) >= sum(X[v,p,l] for l in 1:tmax))
     end
 end
-
-# Constraint (9)
+=#
+# Constraint (8)
 for v in V
     for t in T
         if t >= tmin
@@ -260,7 +335,7 @@ for v in V
     end
 end
 
-# Constraint (10)
+# Constraint (9)
 for a in A
     for t in T
         if t >= tmin
@@ -269,31 +344,27 @@ for a in A
     end
 end
 
-# Constraint (11)
+# Constraint (10)
 for p in P
     for t in T
-        @constraint(model, sum(r[v,p,t]*X[v,p,t] for v in V_p[p]) >= sum(l[v,p] for v in V_p[p]) - sum(f[v,p,t] for v in V_p[p]))
+        @constraint(model, sum(r[v,p,t]*X[v,p,t] for v in V_p[p]) >= sum((1+l[v,p])*f[v,p,t]*Y[v,p,t] for v in V_p[p]))
     end
 end
-#=
-# Constraint (12)
+
+# Constraint (11)
 for v in V
     @constraint(model, I[v,0] == 0)
 end
-=#
+
 optimize!(model)
 
-println(model)
-#=
-println("!!!!!!!!!! demand !!!!!!!!!!!")
-println(d_rand)
-println("!!!!!!!!!! max annual production batch size !!!!!!!!!!!")
-println(k_rand)
-println("!!!!!!!!!! reservation price !!!!!!!!!!!")
-println(r_rand)
-println("!!!!!!!!!! f  !!!!!!!!!!!")
-println(f_rand)
-=#
+if primal_status(model) == MOI.NO_SOLUTION
+    compute_conflict!(model)
+    iis_model, _ = copy_conflict(model)
+    print(iis_model)
+end
+#println(model)
+
 
 println("!!!!!!!!!!!!!!!!!!!!!!!!!  F !!!!!!!!!!!!!!!!!!!!!!!!!!")
 println(JuMP.value.(model[:F]))
