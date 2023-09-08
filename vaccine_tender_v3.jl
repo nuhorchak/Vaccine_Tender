@@ -282,25 +282,19 @@ for a in A
     @constraint(model, sum(F[a,1,k] for k in 1:tmax) == 1)
 end
 =#
-#=
+
 # Constraint (5)
 for p in P
     for t in T
         @constraint(model, sum(Q[v,p,t] for v in V_p[p]) <= sum(k[v,l]*Y[v,p,l] for l in t:tmax, v in V_p[p]))
     end
 end
-=#
 
-# Constraint (5)
-for v in V
-    for p in P_v[v]
-        for t in T
-            @constraint(model, Q[v,p,t] <= k[v,t]*Y[v,p,t])
-        end
-    end
+# Constraint (5) - new
+for p in P
+    @constraint(model, sum(X[v,p,t] for t in tmin:tmax, v in V_p[p]) <= sum(k[v,l]*Y[v,p,l] for l in tmin:tmax, v in V_p[p]))
 end
 
-#=
 # Constraint (6)
 for v in V
     for p in P_v[v]
@@ -309,23 +303,14 @@ for v in V
         end
     end
 end
-=#
-# Constraint (6) - new
-for v in V
-    for p in P_v[v]
-        for t in T
-            @constraint(model, Q[v,p,t] >= X[v,p,t])
-        end
-    end
-end
-#=
+
 # Constraint (7)
 for v in V
     for p in P_v[v]
         @constraint(model, sum(Q[v,p,t] for t in tmin:tmax) >= sum(X[v,p,l] for l in 1:tmax))
     end
 end
-=#
+
 # Constraint (8)
 for v in V
     for t in T
