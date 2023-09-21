@@ -1,8 +1,8 @@
 using JuMP
-using Gurobi
+using CPLEX
 using Random
 
-gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol"=>1e-6)
+#gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol"=>1e-6)
 
 ################################################### INDICES ####################################################
 #=
@@ -15,10 +15,10 @@ P: Set of producers
 P_v: Subset of producers of vaccine v
 T: Set of time periods
 =#
-A = ["a1","a2"]
-V = ["v1","v2","v3"]
+A = ["Measles","Mumps","Rubella"]
+V = ["M","MR","MMR"]
 
-A_v = Dict("v1" => ["a1"], "v2" => ["a2"], "v3" => ["a1","a2"])
+A_v = Dict("M" => ["Measles"], "MR" => ["Measles","Rubella"], "MMR" => ["Measles","Mumps", "Rubella"])
 
 V_a = Dict()
 for a in A
@@ -31,8 +31,8 @@ for a in A
     V_a[a] = vector_a
 end
 
-P = ["p1","p2"]
-P_v = Dict("v1" => ["p1"],"v2" => ["p2"], "v3" => ["p1","p2"])
+P = ["Serum Institute of India","PT Bio Farma", "GlaxoSmithKline", "Merck Sharp & Dohme", "Biological E. Limited"]
+P_v = Dict("M" => ["Serum Institute of India", "PT Bio Farma"],"MR" => ["Serum Institute of India", "Biological E. Limited"], "MMR" => ["Serum Institute of India","GlaxoSmithKline", "Merck Sharp & Dohme"])
 
 V_p = Dict()
 for p in P
@@ -68,17 +68,20 @@ beta: risk parameter for demand
 =#
 
 Random.seed!(1230) # -> always generate the same demand
-d_rand = [10 10 20 20 30; 20 20 40 40 60]
+#d_rand = [10 10 20 20 30; 20 20 40 40 60]
+
+d_real = [11006234.91 5751303.32 829582.94 854456.60 882693.02; 1846729.12 1948070.23 2019683.90 2086697.63 2148068.09; 154337077.7 69304118.4 122627458.4 77770557.69 84871745.66]
+
 
 d = Dict()
 for a in 1:length(A)
     for t in 1:length(T)
-        d[A[a],T[t]] = d_rand[a,t]
+        d[A[a],T[t]] = d_real[a,t]
     end
 end
 
 Random.seed!(1233)
-k_rand = [20 20 20 20 20; 30 30 30 40 40 ; 10 10 10 10 10]
+k_rand = [2110062340  57513030 18467290 18467290 1543537077; 11006234 57513030 18467290 1543737077 1543370779; 11006234 57513030 18467290 1543370779 1594337077]
 k = Dict()
 for v in 1:length(V)
     for t in 1:length(T)
@@ -87,19 +90,21 @@ for v in 1:length(V)
 end
 
 Random.seed!(1233)
-r_rand = [5 2; 5 2; 8 8;;; 5 2; 5 2; 8 8;;; 10 4; 10 4; 15 15;;; 10 4; 10 4; 15 15;;; 20 8; 20 8; 30 30]
+r_rand = [0.53745 0.5776 0.53745 9999 9999; 0.5679 .82 0.53745 9999 9999; 0.59835 8 0.53745 0.024 9999;;; 0.5679 .52 0.53745 9999 9999; 0.6288 0.2864 0.53745 9999 9999; 0.2864 0.024 0.53745 9999 9999;;; 0.59835 .456 0.53745 9999 9999; 0.2864 .44 0.53745 .756 0.756; 0.32405 0.2864 0.53745 0.75 0.56;;; 0.6288 4 0.53745 0.56 9999; 10 4 0.53745 9999 9999; 15 15 0.53745 9999 9999;;; 0.32405 0.024 0.53745 9999 9999; 0.024 8 0.53745 9999 9999; 30 30 0.53745 9999 9999]
 #r_rand = [5 2; 5 2; 6 6;;; 5 2; 5 2; 6 6;;; 10 4; 10 4; 12 12;;; 10 4; 10 4; 12 12;;; 20 8; 20 8; 24 24]
 r = Dict()
 for v in 1:length(V)
     for p in 1:length(P)
         for t in 1:length(T)
+            println("Vaccine $v, Producer $p, Time $t")
+            println(r_rand[v,p,t])
             r[V[v],P[p],T[t]] = r_rand[v,p,t]
         end
     end
 end
 
 Random.seed!(1233)
-r_avg_rand = [5 5 10 10 20; 2 2 4 4 8; 10 10 20 20 40]
+r_avg_rand = [0.411925 0.4316 0.451275 0.47095 0.174025; 0.760225 0.7799 0.799575 0.81925 0.522325; 0.763625 0.7833 0.802975 0.82265 0.525725]
 r_avg = Dict()
 for v in 1:length(V)
     for t in 1:length(T)
@@ -108,7 +113,7 @@ for v in 1:length(V)
 end
 
 Random.seed!(1233)
-l_rand = [0.1 0.1; 0.1 0.1; 0.1 0.1]
+l_rand = [0.1 0.1 0.1 0.1 0.1; 0.1 0.1 0.1 0.1 0.1; 0.1 0.1 0.1 0.1 0.1]
 l = Dict()
 for v in 1:length(V)
     for p in 1:length(P)
@@ -165,7 +170,8 @@ Vc: number of children vaccinated with vaccine v at time t
 S: number of children that were not vaccinated with antigen a due to vaccine shortage at time t
 =#
 
-model=Model(with_optimizer(gurobi_solver))
+#model=Model(with_optimizer(gurobi_solver))
+model = Model(CPLEX.Optimizer)
 
 @variable(model, F[a in A, t in T, tau in t:tmax], Bin)
 @variable(model, Q[v in V, p in P_v[v], t in T, tau in t:tmax] >= 0)
