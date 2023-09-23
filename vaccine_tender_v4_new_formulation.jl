@@ -70,7 +70,10 @@ beta: risk parameter for demand
 Random.seed!(1230) # -> always generate the same demand
 #d_rand = [10 10 20 20 30; 20 20 40 40 60]
 
-d_real = [11006234.91 5751303.32 829582.94 854456.60 882693.02; 1846729.12 1948070.23 2019683.90 2086697.63 2148068.09; 154337077.7 69304118.4 122627458.4 77770557.69 84871745.66]
+
+d_real = [11006235 5751303 829583 854457 882693; 1846729 1948070 2019684 2086698 2148068; 154337078 69304118 122627458 77770558 84871746]
+=======
+#d_real = [11006234.91 5751303.32 829582.94 854456.60 882693.02; 1846729.12 1948070.23 2019683.90 2086697.63 2148068.09; 154337077.7 69304118.4 122627458.4 77770557.69 84871745.66]
 
 
 d = Dict()
@@ -96,8 +99,8 @@ r = Dict()
 for v in 1:length(V)
     for p in 1:length(P)
         for t in 1:length(T)
-            println("Vaccine $v, Producer $p, Time $t")
-            println(r_rand[v,p,t])
+            #println("Vaccine $v, Producer $p, Time $t")
+            #println(r_rand[v,p,t])
             r[V[v],P[p],T[t]] = r_rand[v,p,t]
         end
     end
@@ -191,7 +194,7 @@ model = Model(CPLEX.Optimizer)
                                     + sum(h[v]*r_avg[v,t]*I[v,t] for v in V, t in T)
                                                                                     )
 
-# Constraint (1)
+# Constraint (20)
 for v in V
     for p in P_v[v]
         for t in T
@@ -200,7 +203,33 @@ for v in V
     end
 end
 
-# Constraint (2)
+# Constraint (21) - auxilary variable constraint a
+for v in V
+    for p in P_v[v]
+        for t in T
+            for tau in T
+                if tau >= t
+                    @constraint(model, sum(F[a,t,tau] for a in A_v[v]) >= δ[v,p,t,tau])
+                end
+            end
+        end
+    end
+end
+
+# Constraint (22) - auxilary variable constraint b
+for v in V
+    for p in P_v[v]
+        for t in T
+            for tau in T
+                if tau >= t
+                    @constraint(model, sum(F[a,t,tau] for a in A_v[v]) <= length(A_v) * δ[v,p,t,tau])
+                end
+            end
+        end
+    end
+end
+
+# Constraint (23)
 for a in A
     for t in T
         for tau in T
@@ -211,7 +240,7 @@ for a in A
     end
 end
 
-# Constraint (2-b)
+# Constraint (24)
 for a in A
     for t in T
         for tau in T
@@ -222,7 +251,7 @@ for a in A
     end
 end
 
-# Constraint (2-c)
+# Constraint (25)
 for a in A
     for t in T
         for tau in T
@@ -269,25 +298,25 @@ for a in A
 end
 =#
 
-# Constraint (3)
+# Constraint (26)
 for a in A
     @constraint(model, sum((k-l+1)*F[a,l,k] for l in 1:tmax, k in l:tmax) >= tmax)
 end
 
-# Constraint (4)
+# Constraint (27)
 for v in V
     for p in P_v[v]
         for t in T
             for tau in T
                 if tau >= t
-                    @constraint(model, Q[v,p,t,tau] <= 1000 * sum(F[a,t,tau] for a in A_v[v]))
+                    @constraint(model, Q[v,p,t,tau] <= 4000000000 * sum(F[a,t,tau] for a in A_v[v]))
                 end
             end
         end
     end
 end
 
-# Constraint (5)
+# Constraint (28)
 for v in V
     for p in P_v[v]
         for t in T
@@ -300,47 +329,21 @@ for v in V
     end
 end
 
-# Constraint (6) - auxilary variable constraint a
+# Constraint (29)
 for v in V
     for p in P_v[v]
         for t in T
             for tau in T
                 if tau >= t
-                    @constraint(model, sum(F[a,t,tau] for a in A_v[v]) >= δ[v,p,t,tau])
+                    @constraint(model, Q[v,p,t,tau] >= δ[v,p,t,tau] * sum(X[v,p,l] for l in t:tau))
+                    #@constraint(model, Q[v,p,t,tau] + 1000*(1-δ[v,p,t,tau]) >= sum(X[v,p,l] for l in t:tau))
                 end
             end
         end
     end
 end
-
-# Constraint (6) - auxilary variable constraint b
-for v in V
-    for p in P_v[v]
-        for t in T
-            for tau in T
-                if tau >= t
-                    @constraint(model, sum(F[a,t,tau] for a in A_v[v]) <= length(A_v) * δ[v,p,t,tau])
-                end
-            end
-        end
-    end
-end
-
-# Constraint (7)
-for v in V
-    for p in P_v[v]
-        for t in T
-            for tau in T
-                if tau >= t
-                    #@constraint(model, Q[v,p,t,tau] >= δ[v,p,t,tau] * sum(X[v,p,l] for l in t:tau))
-                    @constraint(model, Q[v,p,t,tau] + 1000*(1-δ[v,p,t,tau]) >= sum(X[v,p,l] for l in t:tau))
-                end
-            end
-        end
-    end
-end
-
-# Constraint (8)
+#=
+# Constraint (30)
 for v in V
     for p in P_v[v]
         for t in T
@@ -348,8 +351,18 @@ for v in V
         end
     end
 end
+=#
 
-# Constraint (9)
+# Constraint (30) - new
+for v in V
+    for p in P_v[v]
+        for t in T
+            @constraint(model, X[v,p,t] <= k[v,t]*Y[v,p,t])
+        end
+    end
+end
+
+# Constraint (31)
 for v in V
     for t in T
         if t >= tmin
@@ -358,7 +371,8 @@ for v in V
     end
 end
 
-# Constraint (10)
+#=
+# Constraint (32)
 for a in A
     for t in T
         if t >= tmin
@@ -366,19 +380,44 @@ for a in A
         end
     end
 end
+=#
 
-# Constraint (11)
+# Constraint (32) - new
+for a in A
+    for t in T
+        if t >= tmin
+            @constraint(model, d[a,t] - sum(Vc[v,t] for v in V_a[a]) + S[a,t-1] <= S[a,t])
+        end
+    end
+end
+
+# Constraint (33)
 for p in P
     for t in T
         @constraint(model, sum(r[v,p,t]*X[v,p,t] for v in V_p[p]) >= sum((1+l[v,p])*f[v,p,t]*Y[v,p,t] for v in V_p[p]))
     end
 end
 
-# Constraint (12)
+# Constraint (initial inventory)
 for v in V
     @constraint(model, I[v,0] == 0)
 end
 
+# Constraint (initial children number not vaccinated)
+for a in A
+    @constraint(model, S[a,0] == 0)
+end
+#=
+# Constraint (final children number not vaccinated)
+for a in A
+    @constraint(model, S[a,t] == 0)
+end
+=#
+#=
+@constraint(model, X["MMR","Serum Institute of India",3] == 18467290)
+@constraint(model, X["MMR","Serum Institute of India",4] == 1543370779)
+@constraint(model, Vc["MMR",4] == 1543370779)
+=#
 optimize!(model)
 #print(model)
 
@@ -402,5 +441,5 @@ println("!!!!!!!!!!!!!!!!!!!!!!!!!  Vc !!!!!!!!!!!!!!!!!!!!!!!!!!")
 println(JuMP.value.(model[:Vc]))
 println("!!!!!!!!!!!!!!!!!!!!!!!!!  S !!!!!!!!!!!!!!!!!!!!!!!!!!")
 println(JuMP.value.(model[:S]))
-println("!!!!!!!!!!!!!!!!!!!!!!!!!  Delta !!!!!!!!!!!!!!!!!!!!!!!!!!")
-println(JuMP.value.(model[:δ]))
+#println("!!!!!!!!!!!!!!!!!!!!!!!!!  Delta !!!!!!!!!!!!!!!!!!!!!!!!!!")
+#println(JuMP.value.(model[:δ]))
