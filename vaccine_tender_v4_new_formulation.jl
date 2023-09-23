@@ -1,8 +1,9 @@
 using JuMP
-using CPLEX
+#using CPLEX
 using Random
+using Gurobi
 
-#gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol"=>1e-6)
+gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol"=>1e-6)
 
 ################################################### INDICES ####################################################
 #=
@@ -173,8 +174,8 @@ Vc: number of children vaccinated with vaccine v at time t
 S: number of children that were not vaccinated with antigen a due to vaccine shortage at time t
 =#
 
-#model=Model(with_optimizer(gurobi_solver))
-model = Model(CPLEX.Optimizer)
+model=Model(with_optimizer(gurobi_solver))
+#model = Model(CPLEX.Optimizer)
 
 @variable(model, F[a in A, t in T, tau in t:tmax], Bin)
 @variable(model, Q[v in V, p in P_v[v], t in T, tau in t:tmax] >= 0)
