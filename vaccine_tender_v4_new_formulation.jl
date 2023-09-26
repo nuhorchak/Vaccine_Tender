@@ -1,7 +1,6 @@
 using JuMP
-#using CPLEX
-using Random
 using Gurobi
+using Random
 
 gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol"=>1e-6)
 
@@ -71,11 +70,7 @@ beta: risk parameter for demand
 Random.seed!(1230) # -> always generate the same demand
 #d_rand = [10 10 20 20 30; 20 20 40 40 60]
 
-
 d_real = [11006235 5751303 829583 854457 882693; 1846729 1948070 2019684 2086698 2148068; 154337078 69304118 122627458 77770558 84871746]
-
-#d_real = [11006234.91 5751303.32 829582.94 854456.60 882693.02; 1846729.12 1948070.23 2019683.90 2086697.63 2148068.09; 154337077.7 69304118.4 122627458.4 77770557.69 84871745.66]
-
 
 d = Dict()
 for a in 1:length(A)
@@ -174,8 +169,7 @@ Vc: number of children vaccinated with vaccine v at time t
 S: number of children that were not vaccinated with antigen a due to vaccine shortage at time t
 =#
 
-model=Model(gurobi_solver)
-#model = Model(CPLEX.Optimizer)
+model=Model(with_optimizer(gurobi_solver))
 
 @variable(model, F[a in A, t in T, tau in t:tmax], Bin)
 @variable(model, Q[v in V, p in P_v[v], t in T, tau in t:tmax] >= 0)
