@@ -4,7 +4,7 @@ using Random
 import XLSX
 import JSON
 
-gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol"=>1e-6, "TIME_LIMIT" => 20.0) #"TIME_LIMIT" => 20.0
+gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol"=>1e-6) #"TIME_LIMIT" => 20.0
 
 # Design of Experiment
 demand_status = "D2" # "D1" => "D_low" or "D2" => "D_med" or "D3" => "D_high"
@@ -237,7 +237,7 @@ for p in P
 end
 
 # Unvaccinated children penalty
-pi = 0.1
+pi = 100
 
 # Tender cost
 g = Dict()
@@ -327,7 +327,7 @@ model=Model(Gurobi.Optimizer)
 
 @objective(model, Min, sum(g[t]*F[a,(t,tau)] for (t,tau) in F_time_set, a in A)
                         + sum(p_ω[ω]*r[v,p,t]*X[ω,v,p,t] for v in V, p in P_v[v], t in T, ω in Ω)
-                            + sum(p_ω[ω]*pi*r_avg[v,t]*S[ω,a,t] for v in V, a in A, t in T, ω in Ω)
+                            + sum(p_ω[ω]*pi*S[ω,a,t] for a in A, t in T, ω in Ω)
                                 + sum(p_ω[ω]*h[v]*r_avg[v,t]*I[ω,v,t] for v in V, t in T, ω in Ω)
                                                                                     )
 
