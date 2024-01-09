@@ -474,7 +474,7 @@ function second_stage(pi, g, h, l, F_results, Q_results, Y_results, W_results, d
         end
     end
 
-    model = Model(with_optimizer(gurobi_solver))
+    model = Model(Gurobi.Optimizer)
 
     F = Dict()
     for a in A

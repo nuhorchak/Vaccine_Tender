@@ -141,8 +141,22 @@ pi: penalty for shortage of amount committed
 beta: risk parameter for demand
 =#
 
-source_1 = string("C:/Users/fthcn/Desktop/Vaccine_Tender_Scheduling_Problem/Demand_Scenarios_updated.xlsx")
-demand_file = XLSX.readxlsx(source_1)
+# source_1 = string("C:/Users/fthcn/Desktop/Vaccine_Tender_Scheduling_Problem/Demand_Scenarios_updated.xlsx")
+# demand_file = XLSX.readxlsx(source_1)
+
+# Get the absolute path of the current file's directory
+current_directory = @__DIR__
+
+# Define the file name
+filename = "Demand_Scenarios_updated.xlsx"
+
+# Construct the relative path using joinpath
+relative_path = joinpath(current_directory, filename)
+
+# Print the resulting path
+println("Relative Path: ", relative_path)
+
+demand_file = XLSX.readxlsx(relative_path)
 
 d_real_raw = demand_file["Medium_Demand"]
 d_pandemic_raw = demand_file["Pandemic_Effect"]
@@ -173,8 +187,16 @@ for row in 2:total_demand_row
     end
 end
 
-source_2 = string("C:/Users/fthcn/Desktop/Vaccine_Tender_Scheduling_Problem/production_capacity_updated.xlsx")
-capacity_file = XLSX.readxlsx(source_2)
+# source_2 = string("C:/Users/fthcn/Desktop/Vaccine_Tender_Scheduling_Problem/production_capacity_updated.xlsx")
+# capacity_file = XLSX.readxlsx(source_2)
+
+# Define the file name
+filename2 = "production_capacity_updated.xlsx"
+
+# Construct the relative path using joinpath
+relative_path2 = joinpath(current_directory, filename2)
+
+capacity_file = XLSX.readxlsx(relative_path2)
 
 s_real_raw = capacity_file["Medium_Capacity"]
 
