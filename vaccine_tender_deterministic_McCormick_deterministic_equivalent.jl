@@ -310,7 +310,7 @@ Vc: number of children vaccinated with vaccine v at time t
 S: number of children that were not vaccinated with antigen a due to vaccine shortage at time t
 =#
 
-model=Model(with_optimizer(gurobi_solver))
+model=Model(Gurobi.Optimizer)
 
 @variable(model, F[a in A, (t,tau) in F_time_set], Bin)
 @variable(model, Q[v in V, p in P_v[v], (t,tau) in F_time_set] >= 0)
