@@ -306,7 +306,7 @@ model=Model(Gurobi.Optimizer)
 
 @objective(model, Min, sum(g[t]*F[a,(t,tau)] for (t,tau) in F_time_set, a in A)
                             + sum(r[v,p,t]*X[v,p,t] for v in V, p in P_v[v], t in T)
-                                + sum(pi*S[a,t] for v in V, a in A, t in T)
+                                + sum(pi*S[a,t] for a in A, t in T)
                                     + sum(h[v]*r_avg[v,t]*I[v,t] for v in V, t in T)
                                                                                     )
 
