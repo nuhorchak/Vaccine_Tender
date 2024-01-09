@@ -217,12 +217,12 @@ for p in P
 end
 
 # Unvaccinated children penalty
-pi = 0.1
+pi = 100
 
 # Tender cost
 g = Dict()
 for t in T
-    g[t] = 1e4
+    g[t] = 1e6
 end
 
 # Inventory holding cost
@@ -306,7 +306,7 @@ model=Model(Gurobi.Optimizer)
 
 @objective(model, Min, sum(g[t]*F[a,(t,tau)] for (t,tau) in F_time_set, a in A)
                             + sum(r[v,p,t]*X[v,p,t] for v in V, p in P_v[v], t in T)
-                                + sum(pi*r_avg[v,t]*S[a,t] for v in V, a in A, t in T)
+                                + sum(pi*S[a,t] for v in V, a in A, t in T)
                                     + sum(h[v]*r_avg[v,t]*I[v,t] for v in V, t in T)
                                                                                     )
 
