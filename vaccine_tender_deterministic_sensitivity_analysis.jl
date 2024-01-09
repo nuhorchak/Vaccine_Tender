@@ -143,8 +143,22 @@ pi: penalty for shortage of amount committed
 beta: risk parameter for demand
 =#
 
-source_1 = string("C:/Users/fthcn/Desktop/Vaccine_Tender_Scheduling_Problem/Demand_Scenarios_updated.xlsx")
-demand_file = XLSX.readxlsx(source_1)
+# source_1 = string("C:/Users/fthcn/Desktop/Vaccine_Tender_Scheduling_Problem/Demand_Scenarios_updated.xlsx")
+# demand_file = XLSX.readxlsx(source_1)
+
+# Get the absolute path of the current file's directory
+current_directory = @__DIR__
+
+# Define the file name
+filename = "Demand_Scenarios_updated.xlsx"
+
+# Construct the relative path using joinpath
+relative_path = joinpath(current_directory, filename)
+
+# Print the resulting path
+println("Relative Path: ", relative_path)
+
+demand_file = XLSX.readxlsx(relative_path)
 
 d_real_raw = demand_file["Medium_Demand"]
 d_pandemic_raw = demand_file["Pandemic_Effect"]
@@ -153,8 +167,16 @@ d_vaccine_replacement_raw = demand_file["Vaccine_Replacement_Effect"]
 total_demand_row = length(A) + 1
 total_demand_col = length(T) + 1
 
-source_2 = string("C:/Users/fthcn/Desktop/Vaccine_Tender_Scheduling_Problem/production_capacity_updated.xlsx")
-capacity_file = XLSX.readxlsx(source_2)
+# source_2 = string("C:/Users/fthcn/Desktop/Vaccine_Tender_Scheduling_Problem/production_capacity_updated.xlsx")
+# capacity_file = XLSX.readxlsx(source_2)
+
+# Define the file name
+filename2 = "production_capacity_updated.xlsx"
+
+# Construct the relative path using joinpath
+relative_path2 = joinpath(current_directory, filename2)
+
+capacity_file = XLSX.readxlsx(relative_path2)
 
 s_real_raw = capacity_file["Medium_Capacity"]
 
@@ -251,7 +273,7 @@ function first_stage(pi, g, h, l, d_real, s_real)
         end
     end
 
-    model = Model(with_optimizer(gurobi_solver))
+    model = Model(Gurobi.Optimizer)
 
     @variable(model, F[a in A, (t, tau) in F_time_set], Bin)
     @variable(model, Q[v in V, p in P_v[v], (t, tau) in F_time_set] >= 0)
