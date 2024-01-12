@@ -219,12 +219,12 @@ for p in P
 end
 
 # Unvaccinated children penalty
-pi = 0.1
+pi = 100
 
 # Tender cost
 g = Dict()
 for t in T
-    g[t] = 1e4
+    g[t] = 1e6
 end
 
 # Inventory holding cost
