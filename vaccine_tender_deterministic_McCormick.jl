@@ -557,9 +557,20 @@ end
 println("Objective Value: $(JuMP.objective_value(model))")
 println("Run Time: $(JuMP.solve_time(model))")
 
-results = JuMP.value.(model)
+# Get the list of all variables in the model
+variables_list = JuMP.all_variables(model)
 
-source = string("deterministic_results_starting_point.json")
-f = open(source, "w")
-JSON.print(f, results)
-close(f)
+# Extract variable values dynamically
+variable_values = Dict()
+for variable in variables_list
+    # println(variable)
+    variable_name = string(JuMP.name(variable))
+    variable_values[variable_name] = JuMP.value(variable)
+end
+
+# println(variable_values)
+json_results = JSON.json(variable_values)
+# Save the results into a JSON document
+open("Deterministic_results_with_start.json","w") do f 
+    write(f, json_results) 
+end
