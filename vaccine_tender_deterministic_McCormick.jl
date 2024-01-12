@@ -544,12 +544,12 @@ if primal_status(model) == MOI.NO_SOLUTION
     print(iis_model)
 end
 
-println("!!!!!!!!!!!!!!!!!!!!!!!!!  F !!!!!!!!!!!!!!!!!!!!!!!!!!")
-println(JuMP.value.(model[:F]))
+# println("!!!!!!!!!!!!!!!!!!!!!!!!!  F !!!!!!!!!!!!!!!!!!!!!!!!!!")
+# println(JuMP.value.(model[:F]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!!  Y !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:Y]))
-println("!!!!!!!!!!!!!!!!!!!!!!!!!  Q !!!!!!!!!!!!!!!!!!!!!!!!!!")
-println(JuMP.value.(model[:Q]))
+# println("!!!!!!!!!!!!!!!!!!!!!!!!!  Q !!!!!!!!!!!!!!!!!!!!!!!!!!")
+# println(JuMP.value.(model[:Q]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!!  X !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:X]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!!  I !!!!!!!!!!!!!!!!!!!!!!!!!!")
