@@ -556,3 +556,10 @@ end
 
 println("Objective Value: $(JuMP.objective_value(model))")
 println("Run Time: $(JuMP.solve_time(model))")
+
+results = JuMP.value.(model)
+
+source = string("deterministic_results_starting_point.json")
+f = open(source, "w")
+JSON.print(f, results)
+close(f)
