@@ -535,8 +535,8 @@ if primal_status(model) == MOI.NO_SOLUTION
     print(iis_model)
 end
 
-# println("!!!!!!!!!!!!!!!!!!!!!!!!!  F !!!!!!!!!!!!!!!!!!!!!!!!!!")
-# println(JuMP.value.(model[:F]))
+println("!!!!!!!!!!!!!!!!!!!!!!!!!  F !!!!!!!!!!!!!!!!!!!!!!!!!!")
+println(JuMP.value.(model[:F]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!!  Y !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:Y]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!!  Q !!!!!!!!!!!!!!!!!!!!!!!!!!")
@@ -557,20 +557,21 @@ end
 println("Objective Value: $(JuMP.objective_value(model))")
 println("Run Time: $(JuMP.solve_time(model))")
 
-# Get the list of all variables in the model
-variables_list = JuMP.all_variables(model)
+# println(JuMP.all_variables(model))
+# Get the list of specific variable names
+# variable_names = [:F, :Q, :X]  # Add your specific variable names
 
-# Extract variable values dynamically
-variable_values = Dict()
-for variable in variables_list
-    # println(variable)
-    variable_name = string(JuMP.name(variable))
-    variable_values[variable_name] = JuMP.value(variable)
-end
+# variable_values = Dict()
+# for variable in variable_names
+#     # println(variable)
+#     variable_values[variable] = JuMP.value.(model[variable])
+# end
+
+# variable_values[F] = JuMP.value.(model[:F])
 
 # println(variable_values)
-json_results = JSON.json(variable_values)
-# Save the results into a JSON document
-open("Deterministic_results_with_start.json","w") do f 
-    write(f, json_results) 
-end
+# json_results = JSON.json(variable_values)
+# # Save the results into a JSON document
+# open("Deterministic_results_with_start.json","w") do f 
+#     write(f, json_results) 
+# end
