@@ -96,7 +96,7 @@ tmax = 10
 T = [t for t in tmin:tmax]
 T_initial = [t for t in tmin-1:tmax]
 
-Δ = [1,3,5]
+Δ = [1,2,3,4,5]
 
 ################################################### PARAMETERS ####################################################
 #=
@@ -156,7 +156,7 @@ end
 # capacity_file = XLSX.readxlsx(source_2)
 
 # Define the file name
-filename2 = "production_capacity_updated.xlsx"
+filename2 = "production_capacity_updated.xlsx"  
 
 # Construct the relative path using joinpath
 relative_path2 = joinpath(current_directory, filename2)
@@ -514,6 +514,7 @@ println("F11")
 # # #Td 
 @constraint(model, Q["Td", "Serum_Institute", (1, 1)]== 180177056.4) 
 @constraint(model, Q["Td", "BB_NCIPD", (1, 1)]== 63305452.23)
+# @constraint(model, Q["Td", "BB_NCIPD", (1, 1)]== 29000000)
 # # #Penta
 @constraint(model, Q["Penta", "Panacea_Biotec", (1, 1)]== 8948035.869)
 @constraint(model, Q["Penta", "Panacea_Biotec", (2, 2)]== 9776403.551)
@@ -525,11 +526,26 @@ println("F11")
 @constraint(model, Q["Penta", "PT_Bio", (2, 2)]== 34217412.43)
 @constraint(model, Q["Penta", "Biological_E", (1, 1)]== 53688215.21)
 @constraint(model, Q["Penta", "Biological_E", (2, 2)]== 58658421.31) 
-###---------------------------------------------------------------------------###
+###---------------------------------------------------------------------------###6
 
 optimize!(model)
 
-if primal_status(model) == MOI.NO_SOLUTION
+ # Check feasibility status
+ if termination_status(model) == MOI.OPTIMAL
+    println("The model is feasible.")
+    println("Objective Value: $(JuMP.objective_value(model))")
+    println("Run Time: $(JuMP.solve_time(model))")
+    # Collect variable names and values
+    variable_names = JuMP.all_variables(model)
+    variable_values = Dict()
+    for variable in variable_names
+        variable_values[variable] = value(variable)
+    end
+    # Convert to JSON
+    json_results = JSON.json(variable_values)
+else
+    println("The model is infeasible.")
+    println(termination_status(model))
     compute_conflict!(model)
     iis_model, _ = copy_conflict(model)
     print(iis_model)
@@ -554,27 +570,13 @@ end
 # println("!!!!!!!!!!!!!!!!!!!!!!!!! K !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:K]))
 
-println("Objective Value: $(JuMP.objective_value(model))")
-println("Run Time: $(JuMP.solve_time(model))")
-
-# Collect variable names and values
-variable_names = JuMP.all_variables(model)
-variable_values = Dict()
-
-for variable in variable_names
-    variable_values[variable] = value(variable)
-end
-
-# Convert to JSON
-json_results = JSON.json(variable_values)
-
 # COMMENT/UN-COMMENT WHATEVER RESULT YOU ARE LOOKING FOR #
 # # Save the results into a JSON document
 # open("Deterministic_results.json", "w") do f
 #     write(f, json_results)
 # end
 
-# Save the results into a JSON document
+# # Save the results into a JSON document
 open("Deterministic_results_with_start.json", "w") do f
     write(f, json_results)
 end
