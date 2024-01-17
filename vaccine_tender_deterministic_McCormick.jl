@@ -7,8 +7,8 @@ import JSON
 gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol"=>1e-6)
 
 # Design of Experiment
-demand_status = "D3" # "D1" => "D_low" or "D2" => "D_med" or "D3" => "D_high"
-supply_status = "S3" # "S1" => "S_low" or "S2" => "S_med" or "S3" => "S_high"
+demand_status = "D2" # "D1" => "D_low" or "D2" => "D_med" or "D3" => "D_high"
+supply_status = "S2" # "S1" => "S_low" or "S2" => "S_med" or "S3" => "S_high"
 price_status = "P1" # "P1" => "P_no_discount"
 
 ################################################### INDICES ####################################################
@@ -96,7 +96,7 @@ tmax = 10
 T = [t for t in tmin:tmax]
 T_initial = [t for t in tmin-1:tmax]
 
-Δ = [1,2,3,4,5]
+Δ = [1,3,5]
 
 ################################################### PARAMETERS ####################################################
 #=
@@ -291,7 +291,10 @@ Vc: number of children vaccinated with vaccine v at time t
 S: number of children that were not vaccinated with antigen a due to vaccine shortage at time t
 =#
 
-model=Model(Gurobi.Optimizer)
+# model=Model(Gurobi.Optimizer)
+
+#no pre solve 
+model = Model(optimizer_with_attributes(Gurobi.Optimizer, "Presolve" => 0))
 
 @variable(model, F[a in A, (t,tau) in F_time_set], Bin)
 @variable(model, Q[v in V, p in P_v[v], (t,tau) in F_time_set] >= 0)
@@ -460,73 +463,73 @@ end
 for v in V
     @constraint(model, I[v,0] == 0)
 end
-# ###----------------------------------------------------------###
-# # Tender starting point form historic contract data
-# #ensure tender is assigned, by antigen, by time period
-# @constraint(model, F["Measles", (1,3)] == 1)
-# # print("F1")
-# @constraint(model, F["Mumps", (1,3)] == 1)
-# # print("F2")
-# @constraint(model, F["Rubella", (1,3)] == 1)
-# print("F3")
-# @constraint(model, F["Diphtheria", (1,1)] == 1)
-# @constraint(model, F["Diphtheria", (2,2)] == 1)
-# print("F4")
-# @constraint(model, F["Tetanus", (1,1)] == 1)
-# @constraint(model, F["Tetanus", (2,2)] == 1)
-# println("F5")
-# @constraint(model, F["Polio", (1,1)] == 1)
-# @constraint(model, F["Polio", (2,2)] == 1)
-# println("F6")
-# @constraint(model, F["HPV", (1,5)] == 1)
-# #print("F7")
-# #@constraint(model, F["Polio", (1,1)] == 1)
-# #@constraint(model, F["Polio", (2,2)] == 1)
-# println("F8")
-# @constraint(model, F["Pertussis", (1,1)] == 1)
-# @constraint(model, F["Pertussis", (2,2)] == 1)
-# println("F9")
-# @constraint(model, F["Hib", (1,1)] == 1)
-# @constraint(model, F["Hib", (2,2)] == 1)
-# println("F10")
-# @constraint(model, F["Rotavirus", (1,1)] == 1)
-# println("F11")
-# # #ensure commitment (Q) is assigned
-# # #measles, mumps, rubella 
-# @constraint(model, Q["M", "PT_Bio", (1, 3)]== 13299464.01)
-# @constraint(model, Q["MMR", "GSK", (1, 1)]== 12505034.87+6626398.68+25785425)
-# @constraint(model, Q["MMR", "Serum_Institute", (1, 3)]== 13547121.11)
-# @constraint(model, Q["MR", "Biological_E", (1, 3)]== 90279149)
-# # # #HPV
-# @constraint(model, Q["HPV", "Merck_Sharp", (1, 5)]== (3625021.856+3585241.201+5242359.172))
-# @constraint(model, Q["HPV", "GSK", (1, 5)]== 13464366.89+13316610.18+19471619.78+51656909.24+65711883.69)
-# @constraint(model, Q["HPV", "Xiamen_Innovax", (1, 5)]== 13907629.41+17691660.99)	
-# # # #IPV			
-# @constraint(model, Q["IPV", "Sanofi_Pasteur", (1, 1)]== 43565104.36)
-# @constraint(model, Q["IPV", "LG_Chem", (1, 1)]== 40213942.49)
-# @constraint(model, Q["IPV", "LG_Chem", (2, 2)]== 111910967.2)
-# # # #OPV
-# @constraint(model, Q["OPV", "GSK", (1, 1)]== 219201481)
-# @constraint(model, Q["OPV", "Sanofi_Pasteur", (1, 1)]== 131520888.6)
-# @constraint(model, Q["OPV", "PT_Bio", (1, 1)]== 87680592.41)
-# # # #Rota
-# @constraint(model, Q["Rotavirus", "GSK", (1, 1)]== 142479003)
-# # # #Td 
-# @constraint(model, Q["Td", "Serum_Institute", (1, 1)]== 180177056.4) 
-# @constraint(model, Q["Td", "BB_NCIPD", (1, 1)]== 63305452.23)
-# # @constraint(model, Q["Td", "BB_NCIPD", (1, 1)]== 29000000)
-# # # #Penta
-# @constraint(model, Q["Penta", "Panacea_Biotec", (1, 1)]== 8948035.869)
-# @constraint(model, Q["Penta", "Panacea_Biotec", (2, 2)]== 9776403.551)
-# @constraint(model, Q["Penta", "Serum_Institute", (1, 1)]== 140931564.9) 
-# @constraint(model, Q["Penta", "Serum_Institute", (2, 2)]== 153978355.9) 
-# @constraint(model, Q["Penta", "LG_Chem", (1, 1)]== 17896071.74)
-# @constraint(model, Q["Penta", "LG_Chem", (2, 2)]== 19552807.1)
-# @constraint(model, Q["Penta", "PT_Bio", (1, 1)]== 31318125.54)
-# @constraint(model, Q["Penta", "PT_Bio", (2, 2)]== 34217412.43)
-# @constraint(model, Q["Penta", "Biological_E", (1, 1)]== 53688215.21)
-# @constraint(model, Q["Penta", "Biological_E", (2, 2)]== 58658421.31) 
-# ###---------------------------------------------------------------------------###
+###----------------------------------------------------------###
+# Tender starting point form historic contract data
+#ensure tender is assigned, by antigen, by time period
+@constraint(model, F["Measles", (1,3)] == 1)
+# print("F1")
+@constraint(model, F["Mumps", (1,3)] == 1)
+# print("F2")
+@constraint(model, F["Rubella", (1,3)] == 1)
+print("F3")
+@constraint(model, F["Diphtheria", (1,1)] == 1)
+@constraint(model, F["Diphtheria", (2,2)] == 1)
+print("F4")
+@constraint(model, F["Tetanus", (1,1)] == 1)
+@constraint(model, F["Tetanus", (2,2)] == 1)
+println("F5")
+@constraint(model, F["Polio", (1,1)] == 1)
+@constraint(model, F["Polio", (2,2)] == 1)
+println("F6")
+@constraint(model, F["HPV", (1,5)] == 1)
+#print("F7")
+#@constraint(model, F["Polio", (1,1)] == 1)
+#@constraint(model, F["Polio", (2,2)] == 1)
+println("F8")
+@constraint(model, F["Pertussis", (1,1)] == 1)
+@constraint(model, F["Pertussis", (2,2)] == 1)
+println("F9")
+@constraint(model, F["Hib", (1,1)] == 1)
+@constraint(model, F["Hib", (2,2)] == 1)
+println("F10")
+@constraint(model, F["Rotavirus", (1,1)] == 1)
+println("F11")
+# #ensure commitment (Q) is assigned
+# #measles, mumps, rubella 
+@constraint(model, Q["M", "PT_Bio", (1, 3)]== 13299464.01)
+@constraint(model, Q["MMR", "GSK", (1, 1)]== 12505034.87+6626398.68+25785425)
+@constraint(model, Q["MMR", "Serum_Institute", (1, 3)]== 13547121.11)
+@constraint(model, Q["MR", "Biological_E", (1, 3)]== 90279149)
+# # #HPV
+@constraint(model, Q["HPV", "Merck_Sharp", (1, 5)]== (3625021.856+3585241.201+5242359.172))
+@constraint(model, Q["HPV", "GSK", (1, 5)]== 13464366.89+13316610.18+19471619.78+51656909.24+65711883.69)
+@constraint(model, Q["HPV", "Xiamen_Innovax", (1, 5)]== 13907629.41+17691660.99)	
+# # #IPV			
+@constraint(model, Q["IPV", "Sanofi_Pasteur", (1, 1)]== 43565104.36)
+@constraint(model, Q["IPV", "LG_Chem", (1, 1)]== 40213942.49)
+@constraint(model, Q["IPV", "LG_Chem", (2, 2)]== 111910967.2)
+# # #OPV
+@constraint(model, Q["OPV", "GSK", (1, 1)]== 219201481)
+@constraint(model, Q["OPV", "Sanofi_Pasteur", (1, 1)]== 131520888.6)
+@constraint(model, Q["OPV", "PT_Bio", (1, 1)]== 87680592.41)
+# # #Rota
+@constraint(model, Q["Rotavirus", "GSK", (1, 1)]== 142479003)
+# # #Td 
+@constraint(model, Q["Td", "Serum_Institute", (1, 1)]== 180177056.4) 
+@constraint(model, Q["Td", "BB_NCIPD", (1, 1)]== 63305452.23)
+# @constraint(model, Q["Td", "BB_NCIPD", (1, 1)]== 29000000)
+# # #Penta
+@constraint(model, Q["Penta", "Panacea_Biotec", (1, 1)]== 8948035.869)
+@constraint(model, Q["Penta", "Panacea_Biotec", (2, 2)]== 9776403.551)
+@constraint(model, Q["Penta", "Serum_Institute", (1, 1)]== 140931564.9) 
+@constraint(model, Q["Penta", "Serum_Institute", (2, 2)]== 153978355.9) 
+@constraint(model, Q["Penta", "LG_Chem", (1, 1)]== 17896071.74)
+@constraint(model, Q["Penta", "LG_Chem", (2, 2)]== 19552807.1)
+@constraint(model, Q["Penta", "PT_Bio", (1, 1)]== 31318125.54)
+@constraint(model, Q["Penta", "PT_Bio", (2, 2)]== 34217412.43)
+@constraint(model, Q["Penta", "Biological_E", (1, 1)]== 53688215.21)
+@constraint(model, Q["Penta", "Biological_E", (2, 2)]== 58658421.31) 
+###---------------------------------------------------------------------------###
 
 optimize!(model)
 
@@ -572,11 +575,11 @@ end
 
 # COMMENT/UN-COMMENT WHATEVER RESULT YOU ARE LOOKING FOR #
 # Save the results into a JSON document
-open("Deterministic_results.json", "w") do f
-    write(f, json_results)
-end
-
-# # # Save the results into a JSON document
-# open("Deterministic_results_with_start.json", "w") do f
+# open("Deterministic_results_without_presolve.json", "w") do f
 #     write(f, json_results)
 # end
+
+# Save the results into a JSON document
+open("Deterministic_results_with_start.json", "w") do f
+    write(f, json_results)
+end
