@@ -469,89 +469,53 @@ end
 ###----------------------------------------------------------###
 # # Tender starting point form historic contract data
 # #ensure tender is assigned, by antigen, by time period
-# @constraint(model, F["Measles", (1,3)] == 1)
-# # print("F1")
-# @constraint(model, F["Mumps", (1,3)] == 1)
-# # print("F2")
-# @constraint(model, F["Rubella", (1,3)] == 1)
-# print("F3")
-# @constraint(model, F["Diphtheria", (1,1)] == 1)
-# @constraint(model, F["Diphtheria", (2,2)] == 1)
-# print("F4")
-# @constraint(model, F["Tetanus", (1,1)] == 1)
-# @constraint(model, F["Tetanus", (2,2)] == 1)
-# println("F5")
-# @constraint(model, F["Polio", (1,1)] == 1)
-# @constraint(model, F["Polio", (2,2)] == 1)
-# println("F6")
-# @constraint(model, F["HPV", (1,5)] == 1)
-# #print("F7")
-# #@constraint(model, F["Polio", (1,1)] == 1)
-# #@constraint(model, F["Polio", (2,2)] == 1)
-# println("F8")
-# @constraint(model, F["Pertussis", (1,1)] == 1)
-# @constraint(model, F["Pertussis", (2,2)] == 1)
-# println("F9")
-# @constraint(model, F["Hib", (1,1)] == 1)
-# @constraint(model, F["Hib", (2,2)] == 1)
-# println("F10")
-# @constraint(model, F["Rotavirus", (1,1)] == 1)
-# println("F11")
+
+@constraint(model, F["Measles", (1,3)] == 1)
+@constraint(model, F["Mumps", (1,3)] == 1)
+@constraint(model, F["Rubella", (1,3)] == 1)
+@constraint(model, F["Diphtheria", (1,1)] == 1)
+@constraint(model, F["Tetanus", (1,1)] == 1)
+@constraint(model, F["Pertussis", (1,1)] == 1)
+@constraint(model, F["Hib", (1,1)] == 1)
+@constraint(model, F["Hepatitis_B", (1,1)] == 1)
+@constraint(model, F["Polio", (1,1)] == 1)
+@constraint(model, F["HPV", (1,5)] == 1)
+@constraint(model, F["Rotavirus", (1,1)] == 1)
+@constraint(model, F["PCV", (1,3)] == 1)
+
+
 # # #ensure commitment (Q) is assigned
-# # #measles, mumps, rubella 
-# @constraint(model, Q["M", "PT_Bio", (1, 3)]== 13299464.01)
-# @constraint(model, Q["MMR", "GSK", (1, 1)]== 12505034.87+6626398.68+25785425)
-# @constraint(model, Q["MMR", "Serum_Institute", (1, 3)]== 13547121.11)
-# @constraint(model, Q["MR", "Biological_E", (1, 3)]== 90279149)
-# # # #HPV
-# @constraint(model, Q["HPV", "Merck_Sharp", (1, 5)]== (3625021.856+3585241.201+5242359.172))
-# @constraint(model, Q["HPV", "GSK", (1, 5)]== 13464366.89+13316610.18+19471619.78+51656909.24+65711883.69)
-# @constraint(model, Q["HPV", "Xiamen_Innovax", (1, 5)]== 13907629.41+17691660.99)	
-# # # #IPV			
-# @constraint(model, Q["IPV", "Sanofi_Pasteur", (1, 1)]== 43565104.36)
-# @constraint(model, Q["IPV", "LG_Chem", (1, 1)]== 40213942.49)
-# @constraint(model, Q["IPV", "LG_Chem", (2, 2)]== 111910967.2)
-# # # #OPV
-# @constraint(model, Q["OPV", "GSK", (1, 1)]== 219201481)
-# @constraint(model, Q["OPV", "Sanofi_Pasteur", (1, 1)]== 131520888.6)
-# @constraint(model, Q["OPV", "PT_Bio", (1, 1)]== 87680592.41)
-# # # #Rota
-# @constraint(model, Q["Rotavirus", "GSK", (1, 1)]== 142479003)
-# # # #Td 
-# @constraint(model, Q["Td", "Serum_Institute", (1, 1)]== 180177056.4) 
-# @constraint(model, Q["Td", "BB_NCIPD", (1, 1)]== 63305452.23)
-# # @constraint(model, Q["Td", "BB_NCIPD", (1, 1)]== 29000000)
-# # # #Penta
-# @constraint(model, Q["Penta", "Panacea_Biotec", (1, 1)]== 8948035.869)
-# @constraint(model, Q["Penta", "Panacea_Biotec", (2, 2)]== 9776403.551)
-# @constraint(model, Q["Penta", "Serum_Institute", (1, 1)]== 140931564.9) 
-# @constraint(model, Q["Penta", "Serum_Institute", (2, 2)]== 153978355.9) 
-# @constraint(model, Q["Penta", "LG_Chem", (1, 1)]== 17896071.74)
-# @constraint(model, Q["Penta", "LG_Chem", (2, 2)]== 19552807.1)
-# @constraint(model, Q["Penta", "PT_Bio", (1, 1)]== 31318125.54)
-# @constraint(model, Q["Penta", "PT_Bio", (2, 2)]== 34217412.43)
-# @constraint(model, Q["Penta", "Biological_E", (1, 1)]== 53688215.21)
-# @constraint(model, Q["Penta", "Biological_E", (2, 2)]== 58658421.31) 
+@constraint(model, Q["M", "PT_Bio", (1, 3)] == 13299464)
+@constraint(model, Q["MMR", "GSK", (1, 1)] == 12505034)
+@constraint(model, Q["MMR", "Serum_Institute", (1, 3)] == 13547121)
+@constraint(model, Q["MR", "Biological_E", (1, 3)] == 90279149)
+@constraint(model, Q["HPV", "Merck_Sharp", (1, 5)] == 3625021)
+@constraint(model, Q["HPV", "GSK", (1, 5)] == 13464366)
+@constraint(model, Q["HPV", "Xiamen_Innovax", (1, 5)] == 5390769)
+@constraint(model, Q["IPV", "Sanofi_Pasteur", (1, 1)] == 43565104)
+@constraint(model, Q["IPV", "LG_Chem", (1, 1)] == 40213942)
+# @constraint(model, Q["IPV", "LG_Chem", (2, 2)] == 111910967)
+@constraint(model, Q["OPV", "GSK", (1, 1)] == 219201481)
+@constraint(model, Q["OPV", "Sanofi_Pasteur", (1, 1)] == 61520888)
+@constraint(model, Q["OPV", "PT_Bio", (1, 1)] == 87680592)
+@constraint(model, Q["Rotavirus", "GSK", (1, 1)] == 5)
+@constraint(model, Q["Td", "Serum_Institute", (1, 1)] == 180177056)
+@constraint(model, Q["Td", "BB_NCIPD", (1, 1)] == 13305452)
+@constraint(model, Q["Penta", "Panacea_Biotec", (1, 1)] == 8948035)
+# @constraint(model, Q["Penta", "Panacea_Biotec", (2, 2)] == 9776403)
+@constraint(model, Q["Penta", "Serum_Institute", (1, 1)] == 140931564)
+# @constraint(model, Q["Penta", "Serum_Institute", (2, 2)] == 153978355)
+@constraint(model, Q["Penta", "LG_Chem", (1, 1)] == 17896071)
+# @constraint(model, Q["Penta", "LG_Chem", (2, 2)] == 19552807)
+@constraint(model, Q["Penta", "PT_Bio", (1, 1)] == 31318125)
+# @constraint(model, Q["Penta", "PT_Bio", (2, 2)] == 34217412)
+@constraint(model, Q["Penta", "Biological_E", (1, 1)] == 53688215)
+# @constraint(model, Q["Penta", "Biological_E", (2, 2)] == 58658421)
 
-# Get the absolute path of the current file's directory
-current_directory = @__DIR__
-
-# Specify the JSON file name
-# file_name = "starting_point_JSON.json"
-
-# Specify the path to your JSON file
-json_file_path = joinpath(pwd(), "starting_point_JSON.json")
-# println(json_file_path)
-
-
-# Read the JSON file
-json_content = read(json_file_path, String)
-
-# Parse JSON with the reviver function
-json_content = JSON.parse(json_content)
 
 ##add code here for constraints building
-
+# Step 1: Read the JSON document
+# F_start = JSON.parsefile("starting_point_F.json")
 
 ###---------------------------------------------------------------------------###
 
@@ -590,8 +554,8 @@ end
 # println(JuMP.value.(model[:I]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!!  Vc !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:Vc]))
-# println("!!!!!!!!!!!!!!!!!!!!!!!!!  S !!!!!!!!!!!!!!!!!!!!!!!!!!")
-# println(JuMP.value.(model[:S]))
+println("!!!!!!!!!!!!!!!!!!!!!!!!!  S !!!!!!!!!!!!!!!!!!!!!!!!!!")
+println(JuMP.value.(model[:S]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!! W !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:W]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!! K !!!!!!!!!!!!!!!!!!!!!!!!!!")
