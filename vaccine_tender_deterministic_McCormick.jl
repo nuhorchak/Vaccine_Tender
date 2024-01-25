@@ -7,8 +7,8 @@ import JSON
 gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol"=>1e-6)
 
 # Design of Experiment
-demand_status = "D3" # "D1" => "D_low" or "D2" => "D_med" or "D3" => "D_high"
-supply_status = "S3" # "S1" => "S_low" or "S2" => "S_med" or "S3" => "S_high"
+demand_status = "D2" # "D1" => "D_low" or "D2" => "D_med" or "D3" => "D_high"
+supply_status = "S2" # "S1" => "S_low" or "S2" => "S_med" or "S3" => "S_high"
 price_status = "P1" # "P1" => "P_no_discount"
 
 ################################################### INDICES ####################################################
@@ -492,13 +492,16 @@ end
 @constraint(model, Q["HPV", "Merck_Sharp", (1, 5)] == 3625021)
 @constraint(model, Q["HPV", "GSK", (1, 5)] == 13464366)
 @constraint(model, Q["HPV", "Xiamen_Innovax", (1, 5)] == 5390769)
-@constraint(model, Q["IPV", "Sanofi_Pasteur", (1, 1)] == 43565104)
+@constraint(model, Q["IPV", "Sanofi_Pasteur", (1, 1)] == 43365104)
 @constraint(model, Q["IPV", "LG_Chem", (1, 1)] == 40213942)
 # @constraint(model, Q["IPV", "LG_Chem", (2, 2)] == 111910967)
 @constraint(model, Q["OPV", "GSK", (1, 1)] == 219201481)
-@constraint(model, Q["OPV", "Sanofi_Pasteur", (1, 1)] == 61520888)
-@constraint(model, Q["OPV", "PT_Bio", (1, 1)] == 87680592)
-@constraint(model, Q["Rotavirus", "GSK", (1, 1)] == 5)
+@constraint(model, Q["OPV", "Sanofi_Pasteur", (1, 1)] == 61220888)
+@constraint(model, Q["OPV", "PT_Bio", (1, 1)] == 84680592)
+#zero out those not producting to create shortage
+@constraint(model, Q["Rotavirus", "GSK", (1, 1)] == 29479003)
+@constraint(model, Q["Rotavirus", "Serum_Institute", (1, 1)] == 0)
+@constraint(model, Q["Rotavirus", "Bharat_Biotech", (1, 1)] == 0)
 @constraint(model, Q["Td", "Serum_Institute", (1, 1)] == 180177056)
 @constraint(model, Q["Td", "BB_NCIPD", (1, 1)] == 13305452)
 @constraint(model, Q["Penta", "Panacea_Biotec", (1, 1)] == 8948035)
@@ -534,6 +537,7 @@ optimize!(model)
     end
     # Convert to JSON
     json_results = JSON.json(variable_values)
+
 else
     println("The model is infeasible.")
     println(termination_status(model))
@@ -554,8 +558,8 @@ end
 # println(JuMP.value.(model[:I]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!!  Vc !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:Vc]))
-println("!!!!!!!!!!!!!!!!!!!!!!!!!  S !!!!!!!!!!!!!!!!!!!!!!!!!!")
-println(JuMP.value.(model[:S]))
+# println("!!!!!!!!!!!!!!!!!!!!!!!!!  S !!!!!!!!!!!!!!!!!!!!!!!!!!")
+# println(JuMP.value.(model[:S]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!! W !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:W]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!! K !!!!!!!!!!!!!!!!!!!!!!!!!!")
@@ -570,5 +574,4 @@ println(JuMP.value.(model[:S]))
 # Save the results into a JSON document
 open("Deterministic_results_with_start.json", "w") do f
     write(f, json_results)
-
 end
