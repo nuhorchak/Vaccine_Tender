@@ -92,7 +92,7 @@ for p in P
 end
 
 tmin = 1
-tmax = 15
+tmax = 50
 T = [t for t in tmin:tmax]
 T_initial = [t for t in tmin-1:tmax]
 
@@ -292,13 +292,17 @@ Vc: number of children vaccinated with vaccine v at time t
 S: number of children that were not vaccinated with antigen a due to vaccine shortage at time t
 =#
 
-# model=Model(Gurobi.Optimizer)
-
 #no pre solve 
-model = Model(optimizer_with_attributes(Gurobi.Optimizer,))
+model = Model(optimizer_with_attributes(Gurobi.Optimizer))
 set_optimizer_attribute(model, "Presolve", 1)
 set_optimizer_attribute(model, "Heuristics", 0)
 set_optimizer_attribute(model, "PreCrush", 0)
+set_optimizer_attribute(model, "MIPGap", 0.001) 
+set_optimizer_attribute(model, "Timelimit", 10800)
+
+# source = string("/vast/home/mfcengil/Projects/Data_Generation/",network_instance,"/new_method/",network_instance,"_single_level_max_budget_",constraint_budget,"_warm_start_log.json")
+# set_optimizer_attribute(dual_model, "LogFile", source)
+# set_optimizer_attribute(model, "LogFile", source)
 
 @variable(model, F[a in A, (t,tau) in F_time_set], Bin)
 @variable(model, Q[v in V, p in P_v[v], (t,tau) in F_time_set] >= 0)
@@ -562,7 +566,6 @@ end
 # @constraint(model, Q["Hib", "Centro_de", (1, 1)] == 0)
 
 # Rotavirus
-@constraint(model, Y["GSK", 1] == 1)
 @constraint(model, Q["Rotavirus", "GSK", (1, 1)] == 56510400)
 @constraint(model, Q["Rotavirus", "Serum_Institute", (1, 1)] == 0) #56510400)
 @constraint(model, Q["Rotavirus", "Bharat_Biotech", (1, 1)] == 0) #29479003)
@@ -592,6 +595,7 @@ optimize!(model)
 else
     println("The model is infeasible.")
     # println(termination_status(model))
+
     compute_conflict!(model)
     iis_model, _ = copy_conflict(model)
     print(iis_model)
@@ -651,3 +655,7 @@ end
 #     write(f, json_results)
 # end
 
+# # Save the results into a JSON document
+open("deterministic_horizon_50_year.json", "w") do f
+    write(f, json_results)
+end
