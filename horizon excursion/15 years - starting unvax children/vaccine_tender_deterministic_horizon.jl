@@ -297,8 +297,8 @@ S: number of children that were not vaccinated with antigen a due to vaccine sho
 #no pre solve 
 model = Model(optimizer_with_attributes(Gurobi.Optimizer,))
 set_optimizer_attribute(model, "Presolve", 1)
-set_optimizer_attribute(model, "Heuristics", 0)
-set_optimizer_attribute(model, "PreCrush", 0)
+# set_optimizer_attribute(model, "Heuristics", 0)
+# set_optimizer_attribute(model, "PreCrush", 0)
 
 @variable(model, F[a in A, (t,tau) in F_time_set], Bin)
 @variable(model, Q[v in V, p in P_v[v], (t,tau) in F_time_set] >= 0)
@@ -463,10 +463,24 @@ for p in P
     end
 end
 
-# Constraint (13)
+# Constraint (13) - Inventory 
+#pre defined inventory start
+#inventory at start
+@constraint(model, I["Penta", 0] ==  12542)
+@constraint(model, I["OPV", 0] ==  7598)
+@constraint(model, I["IPV", 0] ==  14598)
+@constraint(model, I["PCV", 0] ==  5145)
+
+defined_values = ["Penta", "OPV", "IPV", "PCV"]
 for v in V
-    @constraint(model, I[v,0] == 0)
+    if v ∉ defined_values
+        @constraint(model, I[v,0] == 0)
+    end
 end
+
+# for v in V
+#     @constraint(model, I[v,0] == 0)
+# end
 ###----------------------------------------------------------###
 # # Tender starting point form historic contract data
 # #ensure tender is assigned, by antigen, by time period
@@ -484,8 +498,7 @@ end
 @constraint(model, F["Rotavirus", (1,1)] == 1)
 @constraint(model, F["PCV", (1,3)] == 1)
 
-
-# # #ensure commitment (Q) is assigned
+# # #ensure commitment (Q) is assigned, inventory at start for higher coverage antigens
 #measles
 @constraint(model, Q["M", "PT_Bio", (1, 3)] == 13299464)
 # @constraint(model, Q["M", "Serum_Institute", (1, 3)] == 0)
@@ -493,7 +506,7 @@ end
 #MMR
 @constraint(model, Q["MMR", "GSK", (1, 1)] == 12505034)
 @constraint(model, Q["MMR", "Serum_Institute", (1, 3)] == 13547121)
-@constraint(model, Q["MMR", "Merck_Sharp", (1, 3)] == 6547121)
+# @constraint(model, Q["MMR", "Merck_Sharp", (1, 3)] == 0)
 
 #MR
 @constraint(model, Q["MR", "Biological_E", (1, 3)] == 90279149)
@@ -511,8 +524,8 @@ end
 
 # Diphtheria-Tetanus (DT)
 # @constraint(model, Q["DT", "Serum_Institute", (1, 1)] == 0)
-# @constraint(model, Q["DT", "BB_NCIPD", (1, 1)] == 0)
-# @constraint(model, Q["DT", "PT_Bio", (1, 1)] == 0)
+@constraint(model, Q["DT", "BB_NCIPD", (1, 1)] == 233443)
+@constraint(model, Q["DT", "PT_Bio", (1, 1)] == 445214)
 
 # DTwP
 # @constraint(model, Q["DTwP", "Serum_Institute", (1, 1)] == 0)
@@ -564,13 +577,29 @@ end
 # Rotavirus
 # @constraint(model, Y["GSK", 1] == 1)
 @constraint(model, Q["Rotavirus", "GSK", (1, 1)] == 56510400)
-@constraint(model, Q["Rotavirus", "Serum_Institute", (1, 1)] == 0) #56510400)
-@constraint(model, Q["Rotavirus", "Bharat_Biotech", (1, 1)] == 0) #29479003)
+@constraint(model, Q["Rotavirus", "Serum_Institute", (1, 1)] == 0)
+@constraint(model, Q["Rotavirus", "Bharat_Biotech", (1, 1)] == 0)
 
 # Pneumococcal Conjugate vaccine
 @constraint(model, Q["PCV", "GSK", (1, 3)] ==  185663042)
 @constraint(model, Q["PCV", "Pfizer", (1, 3)] ==  20000000)
 @constraint(model, Q["PCV", "Serum_Institute", (1, 3)] ==  148533333)
+
+# unvaccinated children (Sat) starting point based on general coverage
+# good supply = 99% coverage, moderate = 90% coverage 
+@constraint(model, S["Measles", 0] ==  37210000)
+@constraint(model, S["Mumps", 0] ==  2610000)
+@constraint(model, S["Rubella", 0] == 35730000)
+@constraint(model, S["Diphtheria", 0] == 5706000)
+@constraint(model, S["Tetanus", 0] ==  5777000)
+@constraint(model, S["Pertussis", 0] ==  3207000)
+@constraint(model, S["Hib", 10] ==  2595000)
+@constraint(model, S["Hepatitis_B", 0] == 3123000)
+@constraint(model, S["Polio", 0] == 5222000)
+@constraint(model, S["HPV", 0] == 1900000)
+@constraint(model, S["Rotavirus", 0] == 14250000)
+@constraint(model, S["PCV", 0] == 1608000)
+
 
 ###---------------------------------------------------------------------------###
 
@@ -622,32 +651,8 @@ end
 
 # COMMENT/UN-COMMENT WHATEVER RESULT YOU ARE LOOKING FOR #
 # Save the results into a JSON document
-# open("Deterministic_results_rota_test.json", "w") do f
-#     write(f, json_results)
-# end
+open("Deterministic_results_unvax_start.json", "w") do f
+    write(f, json_results)
+end
 
-# Save the results into a JSON document
-# open("deterministic_horizon_no_pre_work.json", "w") do f
-#     write(f, json_results)
-# end
-
-# # Save the results into a JSON document
-# open("deterministic_horizon_pre_crush.json", "w") do f
-#     write(f, json_results)
-# end
-
-# # Save the results into a JSON document
-# open("deterministic_horizon_pre_solve_moderate.json", "w") do f
-#     write(f, json_results)
-# end
-
-# # Save the results into a JSON document
-# open("deterministic_horizon_pre_solve_aggressive.json", "w") do f
-#     write(f, json_results)
-# end
-
-# # Save the results into a JSON document
-# open("deterministic_horizon_heuristics.json", "w") do f
-#     write(f, json_results)
-# end
 
