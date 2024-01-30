@@ -1,4 +1,9 @@
 .ipynb_checkpoints
 */.ipynb_checkpoints
+<<<<<<< HEAD
 .vscode
 production_capacity_updated_OLD.xlsx
+=======
+/data
+*.xlsx
+>>>>>>> 30dfb50f95408753ec16c413ea9a120e2a3e13fe
