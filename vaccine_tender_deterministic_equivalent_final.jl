@@ -7,9 +7,9 @@ import JSON
 gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol"=>1e-6)
 
 # Design of Experiment
-demand_status = "D3" # "D1" => "D_low" or "D2" => "D_med" or "D3" => "D_high"
+# demand_status = "D3" # "D1" => "D_low" or "D2" => "D_med" or "D3" => "D_high"
 supply_status = "S3" # "S1" => "S_low" or "S2" => "S_med" or "S3" => "S_high"
-price_status = "P1" # "P1" => "P_no_discount"
+# price_status = "P1" # "P1" => "P_no_discount"
 
 ################################################### INDICES ####################################################
 #=
@@ -24,7 +24,6 @@ T: Set of time periods
 =#
 #println("antigens")
 A = ["Measles","Mumps","Rubella","Diphtheria","Tetanus","Pertussis","Hepatitis_B","Hib","Polio","HPV","Rotavirus","PCV"]
-#println("vaccines")
 V = ["M","MR","MMR","TT","HepB","Hib","IPV","OPV","DT","Td","DTwP","DTwP-Hib","Penta","Hexa","HPV","Rotavirus","PCV"]
 #println("vaccine,antigen dict")
 A_v = Dict("M" => ["Measles"],"MR" => ["Measles","Rubella"],"MMR" => ["Measles","Mumps","Rubella"], "TT" => ["Tetanus"], "HepB" => ["Hepatitis_B"], "Hib" => ["Hib"], "IPV" => ["Polio"], 
@@ -99,6 +98,19 @@ T_neg = [t for t in -3:tmax]
 
 Δ = [1,3,5]
 
+
+Ω = [1,2,3,4,5]
+
+p_ω = Dict()
+for ω in Ω
+    if ω <= 3
+        p_ω[ω] = 0.3
+    else
+        p_ω[ω] = 0.05
+    end
+end
+println(p_ω)
+
 ################################################### PARAMETERS ####################################################
 #=
 Parameter Definitions:
@@ -134,21 +146,29 @@ println("Relative Path: ", relative_path)
 demand_file = XLSX.readxlsx(relative_path)
 
 d_real_raw = demand_file["Medium_Demand"]
+d_pandemic_raw = demand_file["Pandemic_Effect"]
+d_vaccine_replacement_raw = demand_file["Vaccine_Replacement_Effect"]
 
 total_demand_row = length(A)+1
 total_demand_col = length(T)+1
 
 d_real = Dict()
-for row in 2:total_demand_row
-    antigen = d_real_raw[row,1]
-    for col in 2:total_demand_col
-        year = d_real_raw[1,col]
-        if demand_status == "D1"
-            d_real[antigen,year] = 0.8*d_real_raw[row,col]
-        elseif demand_status == "D2"
-            d_real[antigen,year] = d_real_raw[row,col]
-        elseif demand_status == "D3"
-            d_real[antigen,year] = 1.2*d_real_raw[row,col]
+for ω in Ω
+    for row in 2:total_demand_row
+        antigen = d_real_raw[row,1]
+        for col in 2:total_demand_col
+            year = d_real_raw[1,col]
+            if ω == 1
+                d_real[ω,antigen,year] = 0.8*d_real_raw[row,col]
+            elseif ω == 2
+                d_real[ω,antigen,year] = d_real_raw[row,col]
+            elseif ω == 3
+                d_real[ω,antigen,year] = 1.2*d_real_raw[row,col]
+            elseif ω == 4
+                d_real[ω,antigen,year] = d_pandemic_raw[row,col]
+            elseif ω == 5
+                d_real[ω,antigen,year] = d_vaccine_replacement_raw[row,col]
+            end
         end
     end
 end
@@ -329,23 +349,23 @@ model=Model(Gurobi.Optimizer)
 
 @variable(model, F[a in A, (t,tau) in F_time_set_neg], Bin)
 @variable(model, Q[v in V, p in P_v[v], (t,tau) in F_time_set_neg] >= 0)
-@variable(model, X[v in V, p in P_v[v], t in T] >= 0)
-@variable(model, X_tilde[v in V, p in P_v[v], (t,tau) in F_time_set_neg] >= 0)
-@variable(model, K[v in V, p in P_v[v], (t,tau) in F_time_set_neg] >= 0)
+@variable(model, X[ω in Ω, v in V, p in P_v[v], t in T] >= 0)
+@variable(model, X_tilde[ω in Ω, v in V, p in P_v[v], (t,tau) in F_time_set_neg] >= 0)
+@variable(model, K[ω in Ω, v in V, p in P_v[v], (t,tau) in F_time_set_neg] >= 0)
 @variable(model, Y[p in P, t in T], Bin)
-@variable(model, I[v in V, t in T_initial] >= 0)
-@variable(model, Vc[v in V, t in T] >= 0)
-@variable(model, S[a in A, t in T_initial] >=0)
+@variable(model, I[ω in Ω, v in V, t in T_initial] >= 0)
+@variable(model, Vc[ω in Ω, v in V, t in T] >= 0)
+@variable(model, S[ω in Ω, a in A, t in T_initial] >=0)
 @variable(model, W[p in P, (t,tau) in F_time_set_neg], Bin)
-@variable(model, L[p in P, t in T], Bin)
+@variable(model, L[ω in Ω, p in P, t in T], Bin)
 
 ################################################### OBJECTIVE FUNCTION AND CONSTRAINTS ####################################################
 
 @objective(model, Min, sum(g[t]*F[a,(t,tau)] for (t,tau) in F_time_set_neg, a in A)
-                            + sum(r[v,p,t]*X[v,p,t] for v in V, p in P_v[v], t in T)
-                                + sum(pi*S[a,t] for a in A, t in T)
-                                    + sum(h[v]*r_avg[v,t]*I[v,t] for v in V, t in T)
-                                        + sum(Γ[p]*L[p,t] for p in P, t in T)
+                        + sum(p_ω[ω]*r[v,p,t]*X[ω,v,p,t] for v in V, p in P_v[v], t in T, ω in Ω)
+                            + sum(p_ω[ω]*pi*S[ω,a,t] for a in A, t in T, ω in Ω)
+                                + sum(p_ω[ω]*h[v]*r_avg[v,t]*I[ω,v,t] for v in V, t in T, ω in Ω)
+                                    + sum(p_ω[ω]*Γ[p]*L[ω,p,t] for p in P, t in T, ω in Ω)
                                                                                     )
 
 # Constraint (2)
@@ -377,7 +397,7 @@ for a in A
                                 end
                             end
                             if ((t,tau) in F_time_set_neg) && ((t_prime,tau_prime) in F_time_set_neg) && ((t,tau) != (t_prime,tau_prime)) && (t <= 0 && t_prime <= 0)
-                                @constraint(model, F[a,(t,tau)] + F[a,(t_prime,tau_prime)] <= 1)
+                                test = @constraint(model, F[a,(t,tau)] + F[a,(t_prime,tau_prime)] <= 1)
                             end
                         end
                     end
@@ -423,29 +443,33 @@ for p in P
 end
 
 # Constraint (7)
-for p in P
-    for t in T_neg
-        for tau in T_neg
-            if (t,tau) in F_time_set
-                @constraint(model, sum(Q[v,p,(t,tau)] for v in V_p[p]) <= W[p,(t,tau)]*sum((s_real[p,l] + sum(s_real[p,k]*κ*L[p,k] for k in 1:l)) for l in t:tau))
-            elseif (t,tau) in F_time_set_neg
-                nonneg = 1
-                @constraint(model, sum(Q[v,p,(t,tau)] for v in V_p[p]) <= W[p,(t,tau)]*sum((s_real[p,l] + sum(s_real[p,k]*κ*L[p,k] for k in 1:l)) for l in nonneg:tau))
+for ω in Ω
+    for p in P
+        for t in T_neg
+            for tau in T_neg
+                if (t,tau) in F_time_set
+                    @constraint(model, sum(Q[v,p,(t,tau)] for v in V_p[p]) <= W[p,(t,tau)]*sum((s_real[p,l] + sum(s_real[p,k]*κ*L[ω,p,k] for k in 1:l)) for l in t:tau))
+                elseif (t,tau) in F_time_set_neg
+                    nonneg = 1
+                    @constraint(model, sum(Q[v,p,(t,tau)] for v in V_p[p]) <= W[p,(t,tau)]*sum((s_real[p,l] + sum(s_real[p,k]*κ*L[ω,p,k] for k in 1:l)) for l in nonneg:tau))
+                end
             end
         end
     end
 end
 
 # Constraint (8) - McCormick_1
-for v in V
-    for p in P_v[v]
-        for t in T_neg
-            for tau in T_neg
-                if (t,tau) in F_time_set
-                    @constraint(model, X_tilde[v,p,(t,tau)] == sum(X[v,p,l] for l in t:tau))
-                elseif (t,tau) in F_time_set_neg
-                    nonneg = 1
-                    @constraint(model, X_tilde[v,p,(t,tau)] == sum(X[v,p,l] for l in nonneg:tau))
+for ω in Ω
+    for v in V
+        for p in P_v[v]
+            for t in T_neg
+                for tau in T_neg
+                    if (t,tau) in F_time_set
+                        @constraint(model, X_tilde[ω,v,p,(t,tau)] == sum(X[ω,v,p,l] for l in t:tau))
+                    elseif (t,tau) in F_time_set_neg
+                        nonneg = 1
+                        @constraint(model, X_tilde[ω,v,p,(t,tau)] == sum(X[ω,v,p,l] for l in nonneg:tau))
+                    end
                 end
             end
         end
@@ -453,12 +477,14 @@ for v in V
 end
 
 # Constraint (8) - McCormick_2
-for v in V
-    for p in P_v[v]
-        for t in T_neg
-            for tau in T_neg
-                if (t,tau) in F_time_set_neg
-                    @constraint(model, Q[v,p,(t,tau)] >= K[v,p,(t,tau)])
+for ω in Ω
+    for v in V
+        for p in P_v[v]
+            for t in T_neg
+                for tau in T_neg
+                    if (t,tau) in F_time_set_neg
+                        @constraint(model, Q[v,p,(t,tau)] >= K[ω,v,p,(t,tau)])
+                    end
                 end
             end
         end
@@ -466,14 +492,16 @@ for v in V
 end
 
 # Constraint (8) - McCormick_3
-for v in V
-    for p in P_v[v]
-        for t in T_neg
-            for tau in T_neg
-                if (t,tau) in F_time_set_neg
-                    @constraint(model, K[v,p,(t,tau)] >= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] + X_tilde[v,p,(t,tau)] - X_tilde_upper[v,p,(t,tau)])
-                    @constraint(model, K[v,p,(t,tau)] <= X_tilde[v,p,(t,tau)])
-                    @constraint(model, K[v,p,(t,tau)] <= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
+for ω in Ω
+    for v in V
+        for p in P_v[v]
+            for t in T_neg
+                for tau in T_neg
+                    if (t,tau) in F_time_set_neg
+                        @constraint(model, K[ω,v,p,(t,tau)] >= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] + X_tilde[ω,v,p,(t,tau)] - X_tilde_upper[v,p,(t,tau)])
+                        @constraint(model, K[ω,v,p,(t,tau)] <= X_tilde[ω,v,p,(t,tau)])
+                        @constraint(model, K[ω,v,p,(t,tau)] <= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
+                    end
                 end
             end
         end
@@ -481,40 +509,50 @@ for v in V
 end
 
 # Constraint (9)
-for p in P
-    for t in T
-        @constraint(model, sum(X[v,p,t] for v in V_p[p]) <= Y[p,t]*(s_real[p,t]+sum(s_real[p,l]*κ*L[p,l] for l in 1:t)))
+for ω in Ω
+    for p in P
+        for t in T
+            @constraint(model, sum(X[ω,v,p,t] for v in V_p[p]) <= Y[p,t]*(s_real[p,t]+sum(s_real[p,l]*κ*L[ω,p,l] for l in 1:t)))
+        end
     end
 end
 
 # Constraint (10)
-for v in V
-    for t in T
-        if t >= tmin
-            @constraint(model, I[v,t-1] + sum(X[v,p,t] for p in P_v[v]) == Vc[v,t] + I[v,t])
+for ω in Ω
+    for v in V
+        for t in T
+            if t >= tmin
+                @constraint(model, I[ω,v,t-1] + sum(X[ω,v,p,t] for p in P_v[v]) == Vc[ω,v,t] + I[ω,v,t])
+            end
         end
     end
 end
 
 # Constraint (11)
-for a in A
-    for t in T
-        if t >= tmin
-            @constraint(model, d_real[a,t] - sum(Vc[v,t] for v in V_a[a]) + S[a,t-1] <= S[a,t])
+for ω in Ω
+    for a in A
+        for t in T
+            if t >= tmin
+                @constraint(model, d_real[ω,a,t] - sum(Vc[ω,v,t] for v in V_a[a]) + S[ω,a,t-1] <= S[ω,a,t])
+            end
         end
     end
 end
 
 # Constraint (12)
-for p in P
-    for t in T
-        @constraint(model, sum(r[v,p,t]*X[v,p,t] for v in V_p[p]) >= Y[p,t]*sum((1+l[v,p])*f[v,p,t] for v in V_p[p]))
+for ω in Ω
+    for p in P
+        for t in T
+            @constraint(model, sum(r[v,p,t]*X[ω,v,p,t] for v in V_p[p]) >= Y[p,t]*sum((1+l[v,p])*f[v,p,t] for v in V_p[p]))
+        end
     end
 end
 
 # Constraint (13)
-for v in V
-    @constraint(model, I[v,0] == 0)
+for ω in Ω
+    for v in V
+        @constraint(model, I[ω,v,0] == 0)
+    end
 end
 
 ###----------------------------------------------------------###
@@ -643,8 +681,8 @@ println(JuMP.value.(model[:F]))
 # println(JuMP.value.(model[:I]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!!  Vc !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:Vc]))
-println("!!!!!!!!!!!!!!!!!!!!!!!!!  S !!!!!!!!!!!!!!!!!!!!!!!!!!")
-println(JuMP.value.(model[:S]))
+# println("!!!!!!!!!!!!!!!!!!!!!!!!!  S !!!!!!!!!!!!!!!!!!!!!!!!!!")
+# println(JuMP.value.(model[:S]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!! W !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:W]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!! K !!!!!!!!!!!!!!!!!!!!!!!!!!")
