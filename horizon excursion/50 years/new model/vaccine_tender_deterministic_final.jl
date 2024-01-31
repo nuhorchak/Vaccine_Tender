@@ -664,9 +664,6 @@ if termination_status(model) == MOI.OPTIMAL
     end
     # Convert to JSON
     json_results = JSON.json(variable_values)
-    open("Deterministic_results_new_model_with_start.json", "w") do f
-        write(f, json_results)
-    end
 else
     println("The model is infeasible.")
     # println(termination_status(model))
@@ -679,8 +676,8 @@ else
     end
 end
 
-println("!!!!!!!!!!!!!!!!!!!!!!!!!  F !!!!!!!!!!!!!!!!!!!!!!!!!!")
-println(JuMP.value.(model[:F]))
+# println("!!!!!!!!!!!!!!!!!!!!!!!!!  F !!!!!!!!!!!!!!!!!!!!!!!!!!")
+# println(JuMP.value.(model[:F]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!!  Y !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:Y]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!!  Q !!!!!!!!!!!!!!!!!!!!!!!!!!")
@@ -702,6 +699,6 @@ println(JuMP.value.(model[:F]))
 
 # COMMENT/UN-COMMENT WHATEVER RESULT YOU ARE LOOKING FOR #
 # Save the results into a JSON document
-# open("Deterministic_results_new_model_with_start.json", "w") do f
-#     write(f, json_results)
-# end
+open("Deterministic_results_new_model_with_start.json", "w") do f
+    write(f, json_results)
+end

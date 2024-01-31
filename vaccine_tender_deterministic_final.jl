@@ -7,8 +7,8 @@ import JSON
 gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol"=>1e-6)
 
 # Design of Experiment
-demand_status = "D3" # "D1" => "D_low" or "D2" => "D_med" or "D3" => "D_high"
-supply_status = "S3" # "S1" => "S_low" or "S2" => "S_med" or "S3" => "S_high"
+demand_status = "D2" # "D1" => "D_low" or "D2" => "D_med" or "D3" => "D_high"
+supply_status = "S2" # "S1" => "S_low" or "S2" => "S_med" or "S3" => "S_high"
 price_status = "P1" # "P1" => "P_no_discount"
 
 ################################################### INDICES ####################################################
