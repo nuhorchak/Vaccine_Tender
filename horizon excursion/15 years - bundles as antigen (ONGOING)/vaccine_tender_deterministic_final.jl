@@ -10,8 +10,8 @@ gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol
 demand_status = "D2" # "D1" => "D_low" or "D2" => "D_med" or "D3" => "D_high"
 supply_status = "S2" # "S1" => "S_low" or "S2" => "S_med" or "S3" => "S_high"
 price_status = "P1" # "P1" => "P_no_discount"
-overlap_decision = true
-capacity_extension_decision = true
+overlap_decision = false
+capacity_extension_decision = false
 
 ################################################### INDICES ####################################################
 #=
@@ -25,11 +25,11 @@ P_v: Subset of producers of vaccine v
 T: Set of time periods
 =#
 #println("antigens")
-A = ["Measles","Mumps","Rubella","Diphtheria","Tetanus","Pertussis","Hepatitis_B","Hib","Polio","HPV","Rotavirus","PCV"]
+A = ["Measles","Mumps","Rubella","Diphtheria","Tetanus","Pertussis","Hepatitis_B","Hib","Polio","HPV","Rotavirus","PCV", "MMR"]
 #println("vaccines")
 V = ["M","MR","MMR","TT","HepB","Hib","IPV","OPV","DT","Td","DTwP","DTwP-Hib","Penta","Hexa","HPV","Rotavirus","PCV"]
 #println("vaccine,antigen dict")
-A_v = Dict("M" => ["Measles"],"MR" => ["Measles","Rubella"],"MMR" => ["Measles","Mumps","Rubella"], "TT" => ["Tetanus"], "HepB" => ["Hepatitis_B"], "Hib" => ["Hib"], "IPV" => ["Polio"], 
+A_v = Dict("M" => ["Measles"],"MR" => ["Measles","Rubella"],"MMR" => ["Measles","Mumps","Rubella", "MMR"], "TT" => ["Tetanus"], "HepB" => ["Hepatitis_B"], "Hib" => ["Hib"], "IPV" => ["Polio"], 
             "OPV" => ["Polio"], "DT" => ["Diphtheria","Tetanus"], "Td" => ["Diphtheria","Tetanus"], "DTwP" => ["Diphtheria","Tetanus","Pertussis"],
             "DTwP-Hib" => ["Diphtheria","Tetanus","Pertussis","Hib"], "Penta" => ["Diphtheria","Tetanus","Pertussis","Hepatitis_B","Hib"], 
             "Hexa" => ["Diphtheria","Tetanus","Pertussis","Hepatitis_B","Hib","Polio"],"HPV" => ["HPV"], "Rotavirus" => ["Rotavirus"], "PCV" => ["PCV"])
@@ -94,7 +94,7 @@ for p in P
 end
 
 tmin = 1
-tmax = 10
+tmax = 15
 T = [t for t in tmin:tmax]
 T_initial = [t for t in tmin-1:tmax]
 
@@ -767,7 +767,7 @@ if termination_status(model) == MOI.OPTIMAL
     # Convert to JSON
     json_results = JSON.json(variable_values)
 
-    open("Deterministic_results_with_initial_conditions.json", "w") do f
+    open("JSON/Deterministic_results_F_Q_I_S_MMR_as_antigen.json", "w") do f
         write(f, json_results)
     end
 else
@@ -794,8 +794,8 @@ end
 # println(JuMP.value.(model[:I]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!!  Vc !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:Vc]))
-println("!!!!!!!!!!!!!!!!!!!!!!!!!  S !!!!!!!!!!!!!!!!!!!!!!!!!!")
-println(JuMP.value.(model[:S]))
+# println("!!!!!!!!!!!!!!!!!!!!!!!!!  S !!!!!!!!!!!!!!!!!!!!!!!!!!")
+# println(JuMP.value.(model[:S]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!! W !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:W]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!! K !!!!!!!!!!!!!!!!!!!!!!!!!!")

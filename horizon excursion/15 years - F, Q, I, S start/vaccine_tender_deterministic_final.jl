@@ -9,9 +9,9 @@ gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol
 # Design of Experiment
 demand_status = "D2" # "D1" => "D_low" or "D2" => "D_med" or "D3" => "D_high"
 supply_status = "S2" # "S1" => "S_low" or "S2" => "S_med" or "S3" => "S_high"
-price_status = "P1" # "P1" => "P_no_discount"
-overlap_decision = true
-capacity_extension_decision = true
+price_status = "P1" # "P1" => "P_no_discount" #not used in this model
+overlap_decision = false
+capacity_extension_decision = false
 
 ################################################### INDICES ####################################################
 #=
@@ -94,7 +94,7 @@ for p in P
 end
 
 tmin = 1
-tmax = 10
+tmax = 15
 T = [t for t in tmin:tmax]
 T_initial = [t for t in tmin-1:tmax]
 
@@ -183,6 +183,8 @@ for row in 2:total_supply_row
         end
     end
 end
+
+
 
 r = Dict()
 for v in V
@@ -277,18 +279,39 @@ for row in 2:total_row_F
 end
 println(starting_points_vect_F)
 
+# starting_points_Q_raw = starting_points_file["Q_start"]
+# total_row_Q = 27
+# starting_points_vect_Q = []
+# for row in 2:total_row_Q
+#     vaccine = starting_points_Q_raw[row,1]
+#     producer = starting_points_Q_raw[row,2]
+#     starting_year = starting_points_Q_raw[row,3]
+#     ending_year = starting_points_Q_raw[row,4]
+#     amount = starting_points_Q_raw[row,5]
+#     push!(starting_points_vect_Q, (vaccine,producer,starting_year,ending_year,amount))
+# end
+# println(starting_points_vect_Q)
+
 starting_points_Q_raw = starting_points_file["Q_start"]
 total_row_Q = 27
 starting_points_vect_Q = []
+
 for row in 2:total_row_Q
-    vaccine = starting_points_Q_raw[row,1]
-    producer = starting_points_Q_raw[row,2]
-    starting_year = starting_points_Q_raw[row,3]
-    ending_year = starting_points_Q_raw[row,4]
-    amount = starting_points_Q_raw[row,5]
-    push!(starting_points_vect_Q, (vaccine,producer,starting_year,ending_year,amount))
+    vaccine = starting_points_Q_raw[row, 1]
+    producer = starting_points_Q_raw[row, 2]
+    starting_year = starting_points_Q_raw[row, 3]
+    ending_year = starting_points_Q_raw[row, 4]
+    amount = starting_points_Q_raw[row, 5]
+
+    if supply_status == "S1"
+        amount = 0.8*amount
+    elseif supply_status == "S3"
+        amount = 1.2*amount
+    # Note: No change needed for "S2" as it remains unchanged
+    end
+    push!(starting_points_vect_Q, (vaccine, producer, starting_year, ending_year, amount))
 end
-println(starting_points_vect_Q)
+
 
 starting_points_I_raw = starting_points_file["I_start"]
 total_row_I = 5
@@ -767,7 +790,7 @@ if termination_status(model) == MOI.OPTIMAL
     # Convert to JSON
     json_results = JSON.json(variable_values)
 
-    open("Deterministic_results_with_initial_conditions.json", "w") do f
+    open("JSON/Deterministic_results_F_Q_I_S_low_supply.json", "w") do f
         write(f, json_results)
     end
 else
@@ -794,8 +817,8 @@ end
 # println(JuMP.value.(model[:I]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!!  Vc !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:Vc]))
-println("!!!!!!!!!!!!!!!!!!!!!!!!!  S !!!!!!!!!!!!!!!!!!!!!!!!!!")
-println(JuMP.value.(model[:S]))
+# println("!!!!!!!!!!!!!!!!!!!!!!!!!  S !!!!!!!!!!!!!!!!!!!!!!!!!!")
+# println(JuMP.value.(model[:S]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!! W !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:W]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!! K !!!!!!!!!!!!!!!!!!!!!!!!!!")

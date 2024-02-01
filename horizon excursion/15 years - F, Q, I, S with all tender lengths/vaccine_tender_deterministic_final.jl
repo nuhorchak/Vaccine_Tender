@@ -98,7 +98,8 @@ tmax = 10
 T = [t for t in tmin:tmax]
 T_initial = [t for t in tmin-1:tmax]
 
-Δ = [1,3,5]
+# Δ = [1,2,3,4,5]
+Δ = [1,2,3,4,5,6,7,8,9,10]
 
 ################################################### PARAMETERS ####################################################
 #=
@@ -767,7 +768,7 @@ if termination_status(model) == MOI.OPTIMAL
     # Convert to JSON
     json_results = JSON.json(variable_values)
 
-    open("Deterministic_results_with_initial_conditions.json", "w") do f
+    open("JSON/Deterministic_results_F_Q_I_S_decade_lenghts_extend_overlap.json", "w") do f
         write(f, json_results)
     end
 else
@@ -794,8 +795,8 @@ end
 # println(JuMP.value.(model[:I]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!!  Vc !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:Vc]))
-println("!!!!!!!!!!!!!!!!!!!!!!!!!  S !!!!!!!!!!!!!!!!!!!!!!!!!!")
-println(JuMP.value.(model[:S]))
+# println("!!!!!!!!!!!!!!!!!!!!!!!!!  S !!!!!!!!!!!!!!!!!!!!!!!!!!")
+# println(JuMP.value.(model[:S]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!! W !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:W]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!! K !!!!!!!!!!!!!!!!!!!!!!!!!!")

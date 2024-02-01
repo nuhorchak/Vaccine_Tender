@@ -94,7 +94,7 @@ for p in P
 end
 
 tmin = 1
-tmax = 10
+tmax = 35
 T = [t for t in tmin:tmax]
 T_initial = [t for t in tmin-1:tmax]
 
@@ -767,7 +767,7 @@ if termination_status(model) == MOI.OPTIMAL
     # Convert to JSON
     json_results = JSON.json(variable_values)
 
-    open("Deterministic_results_with_initial_conditions.json", "w") do f
+    open("Deterministic_results_F_Q_I_S_30.json", "w") do f
         write(f, json_results)
     end
 else
