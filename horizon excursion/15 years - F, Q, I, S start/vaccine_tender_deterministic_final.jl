@@ -664,6 +664,10 @@ if termination_status(model) == MOI.OPTIMAL
     end
     # Convert to JSON
     json_results = JSON.json(variable_values)
+
+    open("Deterministic_results_with_initial_conditions.json", "w") do f
+        write(f, json_results)
+    end
 else
     println("The model is infeasible.")
     # println(termination_status(model))
@@ -697,8 +701,6 @@ end
 
 # COMMENT/UN-COMMENT WHATEVER RESULT YOU ARE LOOKING FOR #
 # Save the results into a JSON document
-open("Deterministic_results_with_initial_conditions.json", "w") do f
-    write(f, json_results)
-end
+
 
 

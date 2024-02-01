@@ -92,7 +92,7 @@ for p in P
 end
 
 tmin = 1
-tmax = 10
+tmax = 15
 T = [t for t in tmin:tmax]
 T_initial = [t for t in tmin-1:tmax]
 T_neg = [t for t in -3:tmax]
@@ -512,20 +512,9 @@ for p in P
     end
 end
 
-# Constraint (13) - Inventory 
-#pre defined inventory start
-#inventory at start
-@constraint(model, I["Penta", 0] ==  12542)
-@constraint(model, I["OPV", 0] ==  7598)
-@constraint(model, I["IPV", 0] ==  14598)
-@constraint(model, I["PCV", 0] ==  5145)
-
-defined_values = ["Penta", "OPV", "IPV", "PCV"]
-# defined_values = []
+# Constraint (13)
 for v in V
-    if v ∉ defined_values
-        @constraint(model, I[v,0] == 0)
-    end
+    @constraint(model, I[v,0] == 0)
 end
 
 ###----------------------------------------------------------###
@@ -632,21 +621,6 @@ end
 @constraint(model, Q["PCV", "Pfizer", (-1, 3)] ==  20000000)
 @constraint(model, Q["PCV", "Serum_Institute", (-1, 3)] ==  148533333)
 
-# unvaccinated children (Sat) starting point based on general coverage
-# good supply = 99% coverage, moderate = 90% coverage 
-@constraint(model, S["Measles", 0] ==  37210000)
-@constraint(model, S["Mumps", 0] ==  2610000)
-@constraint(model, S["Rubella", 0] == 35730000)
-@constraint(model, S["Diphtheria", 0] == 5706000)
-@constraint(model, S["Tetanus", 0] ==  5777000)
-@constraint(model, S["Pertussis", 0] ==  3207000)
-@constraint(model, S["Hib", 10] ==  2595000)
-@constraint(model, S["Hepatitis_B", 0] == 3123000)
-@constraint(model, S["Polio", 0] == 5222000)
-@constraint(model, S["HPV", 0] == 1900000)
-@constraint(model, S["Rotavirus", 0] == 14250000)
-@constraint(model, S["PCV", 0] == 1608000)
-
 ###---------------------------------------------------------------------------###
 
 optimize!(model)
@@ -664,6 +638,10 @@ if termination_status(model) == MOI.OPTIMAL
     end
     # Convert to JSON
     json_results = JSON.json(variable_values)
+
+    open("Deterministic_results_with_initial_conditions.json", "w") do f
+        write(f, json_results)
+    end
 else
     println("The model is infeasible.")
     # println(termination_status(model))
@@ -694,11 +672,3 @@ end
 # println(JuMP.value.(model[:W]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!! K !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:K]))
-
-# COMMENT/UN-COMMENT WHATEVER RESULT YOU ARE LOOKING FOR #
-# Save the results into a JSON document
-open("Deterministic_results_with_initial_conditions.json", "w") do f
-    write(f, json_results)
-end
-
-

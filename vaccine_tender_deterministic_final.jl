@@ -512,9 +512,20 @@ for p in P
     end
 end
 
-# Constraint (13)
+# Constraint (13) - Inventory 
+#pre defined inventory start
+#inventory at start
+@constraint(model, I["Penta", 0] ==  12542)
+@constraint(model, I["OPV", 0] ==  7598)
+@constraint(model, I["IPV", 0] ==  14598)
+@constraint(model, I["PCV", 0] ==  5145)
+
+defined_values = ["Penta", "OPV", "IPV", "PCV"]
+# defined_values = []
 for v in V
-    @constraint(model, I[v,0] == 0)
+    if v ∉ defined_values
+        @constraint(model, I[v,0] == 0)
+    end
 end
 
 ###----------------------------------------------------------###
@@ -621,18 +632,56 @@ end
 @constraint(model, Q["PCV", "Pfizer", (-1, 3)] ==  20000000)
 @constraint(model, Q["PCV", "Serum_Institute", (-1, 3)] ==  148533333)
 
+# unvaccinated children (Sat) starting point based on general coverage
+# good supply = 99% coverage, moderate = 90% coverage 
+@constraint(model, S["Measles", 0] ==  37210000)
+@constraint(model, S["Mumps", 0] ==  2610000)
+@constraint(model, S["Rubella", 0] == 35730000)
+@constraint(model, S["Diphtheria", 0] == 5706000)
+@constraint(model, S["Tetanus", 0] ==  5777000)
+@constraint(model, S["Pertussis", 0] ==  3207000)
+@constraint(model, S["Hib", 10] ==  2595000)
+@constraint(model, S["Hepatitis_B", 0] == 3123000)
+@constraint(model, S["Polio", 0] == 5222000)
+@constraint(model, S["HPV", 0] == 1900000)
+@constraint(model, S["Rotavirus", 0] == 14250000)
+@constraint(model, S["PCV", 0] == 1608000)
+
 ###---------------------------------------------------------------------------###
 
 optimize!(model)
 
-if primal_status(model) == MOI.NO_SOLUTION
+# Check feasibility status
+if termination_status(model) == MOI.OPTIMAL
+    println("The model is feasible.")
+    println("Objective Value: $(JuMP.objective_value(model))")
+    println("Run Time: $(JuMP.solve_time(model))")
+    # Collect variable names and values
+    variable_names = JuMP.all_variables(model)
+    variable_values = Dict()
+    for variable in variable_names
+        variable_values[variable] = value(variable)
+    end
+    # Convert to JSON
+    json_results = JSON.json(variable_values)
+
+    open("Deterministic_results_with_initial_conditions.json", "w") do f
+        write(f, json_results)
+    end
+else
+    println("The model is infeasible.")
+    # println(termination_status(model))
     compute_conflict!(model)
     iis_model, _ = copy_conflict(model)
     print(iis_model)
+    json_errors = iis_model
+    open("errors.json", "w") do f
+        write(f, json_errors)
+    end
 end
 
-println("!!!!!!!!!!!!!!!!!!!!!!!!!  F !!!!!!!!!!!!!!!!!!!!!!!!!!")
-println(JuMP.value.(model[:F]))
+# println("!!!!!!!!!!!!!!!!!!!!!!!!!  F !!!!!!!!!!!!!!!!!!!!!!!!!!")
+# println(JuMP.value.(model[:F]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!!  Y !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:Y]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!!  Q !!!!!!!!!!!!!!!!!!!!!!!!!!")
@@ -643,36 +692,9 @@ println(JuMP.value.(model[:F]))
 # println(JuMP.value.(model[:I]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!!  Vc !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:Vc]))
-println("!!!!!!!!!!!!!!!!!!!!!!!!!  S !!!!!!!!!!!!!!!!!!!!!!!!!!")
-println(JuMP.value.(model[:S]))
+# println("!!!!!!!!!!!!!!!!!!!!!!!!!  S !!!!!!!!!!!!!!!!!!!!!!!!!!")
+# println(JuMP.value.(model[:S]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!! W !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:W]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!! K !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:K]))
-# println("!!!!!!!!!!!!!!!!!!!!!!!!! L !!!!!!!!!!!!!!!!!!!!!!!!!!")
-# println(JuMP.value.(model[:L]))
-
-println("Objective Value: $(JuMP.objective_value(model))")
-println("Run Time: $(JuMP.solve_time(model))")
-
-# # Collect variable names and values
-# variable_names = JuMP.all_variables(model)
-# variable_values = Dict()
-
-# for variable in variable_names
-#     variable_values[variable] = value(variable)
-# end
-
-# # Convert to JSON
-# json_results = JSON.json(variable_values)
-
-# COMMENT/UN-COMMENT WHATEVER RESULT YOU ARE LOOKING FOR #
-# # Save the results into a JSON document
-# open("Deterministic_results.json", "w") do f
-#     write(f, json_results)
-# end
-
-# Save the results into a JSON document
-# open("Deterministic_results_with_start.json", "w") do f
-#     write(f, json_results)
-# end
