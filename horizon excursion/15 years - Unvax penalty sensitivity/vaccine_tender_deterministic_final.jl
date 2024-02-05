@@ -3,6 +3,8 @@ using Gurobi
 using Random
 import XLSX
 import JSON
+using DataFrames
+using CSV
 
 gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol"=>1e-6)
 
@@ -221,7 +223,7 @@ for p in P
 end
 
 # Unvaccinated children penalty
-pi = 100
+pi = 1.4
 
 # Tender cost
 g = Dict()
@@ -275,7 +277,7 @@ for row in 2:total_row_F
     ending_year = starting_points_F_raw[row,3]
     push!(starting_points_vect_F, (antigen,starting_year,ending_year))
 end
-println(starting_points_vect_F)
+# println(starting_points_vect_F)
 
 starting_points_Q_raw = starting_points_file["Q_start"]
 total_row_Q = 27
@@ -288,7 +290,7 @@ for row in 2:total_row_Q
     amount = starting_points_Q_raw[row,5]
     push!(starting_points_vect_Q, (vaccine,producer,starting_year,ending_year,amount))
 end
-println(starting_points_vect_Q)
+# println(starting_points_vect_Q)
 
 starting_points_I_raw = starting_points_file["I_start"]
 total_row_I = 5
@@ -298,7 +300,7 @@ for row in 2:total_row_I
     amount = starting_points_I_raw[row,2]
     push!(starting_points_vect_I, (vaccine,amount))
 end
-println(starting_points_vect_I)
+# println(starting_points_vect_I)
 
 starting_points_S_raw = starting_points_file["S_start"]
 total_row_S = 13
@@ -308,7 +310,7 @@ for row in 2:total_row_S
     amount = starting_points_S_raw[row,2]
     push!(starting_points_vect_S, (antigen,amount))
 end
-println(starting_points_vect_S)
+# println(starting_points_vect_S)
 
 F_time_set = []
 for t in T
@@ -386,6 +388,7 @@ else
             + sum(h[v]*r_avg[v,t]*I[v,t] for v in V, t in T)
                                                             )
 end
+
 
 
 # Constraint (2)
@@ -614,143 +617,7 @@ for i in 1:length(starting_points_vect_S)
     @constraint(model, S[a, 0] == amount)
 end
 
-# # Constraint (13) - Inventory 
-# #pre defined inventory start
-# #inventory at start
-# @constraint(model, I["Penta", 0] ==  12542)
-# @constraint(model, I["OPV", 0] ==  7598)
-# @constraint(model, I["IPV", 0] ==  14598)
-# @constraint(model, I["PCV", 0] ==  5145)
 
-# defined_values = ["Penta", "OPV", "IPV", "PCV"]
-# # defined_values = []
-# for v in V
-#     if v ∉ defined_values
-#         @constraint(model, I[v,0] == 0)
-#     end
-# end
-
-# unvaccinated children (Sat) starting point based on general coverage
-# good supply = 99% coverage, moderate = 90% coverage 
-# @constraint(model, S["Measles", 0] ==  37210000)
-# @constraint(model, S["Mumps", 0] ==  2610000)
-# @constraint(model, S["Rubella", 0] == 35730000)
-# @constraint(model, S["Diphtheria", 0] == 5706000)
-# @constraint(model, S["Tetanus", 0] ==  5777000)
-# @constraint(model, S["Pertussis", 0] ==  3207000)
-# @constraint(model, S["Hib", 10] ==  2595000)
-# @constraint(model, S["Hepatitis_B", 0] == 3123000)
-# @constraint(model, S["Polio", 0] == 5222000)
-# @constraint(model, S["HPV", 0] == 1900000)
-# @constraint(model, S["Rotavirus", 0] == 14250000)
-# @constraint(model, S["PCV", 0] == 1608000)
-#=
-###----------------------------------------------------------###
-# # Tender starting point form historic contract data
-# #ensure tender is assigned, by antigen, by time period
-
-@constraint(model, F["Measles", (-1, 3)] == 1)
-@constraint(model, F["Mumps", (-1, 3)] == 1)
-@constraint(model, F["Rubella", (-1, 3)] == 1)
-@constraint(model, F["Diphtheria", (-3, 1)] == 1)
-@constraint(model, F["Tetanus", (-3, 1)] == 1)
-@constraint(model, F["Pertussis", (-3, 1)] == 1)
-@constraint(model, F["Hib", (-3, 1)] == 1)
-@constraint(model, F["Hepatitis_B", (-3, 1)] == 1)
-@constraint(model, F["Polio", (-3, 1)] == 1)
-@constraint(model, F["HPV", (1, 5)] == 1)
-@constraint(model, F["Rotavirus", (-3, 1)] == 1)
-@constraint(model, F["PCV", (-1, 3)] == 1)
-
-
-# # #ensure commitment (Q) is assigned
-#measles
-@constraint(model, Q["M", "PT_Bio", (-1, 3)] == 13299464)
-# @constraint(model, Q["M", "Serum_Institute", (-1, 3)] == 0)
-
-#MMR
-@constraint(model, Q["MMR", "GSK", (-3, 1)] == 12505034)
-@constraint(model, Q["MMR", "Serum_Institute", (-1, 3)] == 13547121)
-@constraint(model, Q["MMR", "Merck_Sharp", (-1, 3)] == 6547121)
-
-#MR
-@constraint(model, Q["MR", "Biological_E", (-1, 3)] == 90279149)
-# @constraint(model, Q["MR", "Serum_Institute", (-1, 3)] == 0)
-
-# Tetanus Toxoid
-# @constraint(model, Q["TT", "BB_NCIPD", (-3, 1)] == 0)
-# @constraint(model, Q["TT", "Serum_Institute", (-3, 1)] == 0)
-# @constraint(model, Q["TT", "PT_Bio", (-3, 1)] == 0)
-
-# Tetanus-Diphtheria (Td)
-@constraint(model, Q["Td", "Serum_Institute", (-3, 1)] == 180177056)
-@constraint(model, Q["Td", "BB_NCIPD", (-3, 1)] == 13305452)
-# @constraint(model, Q["Td", "PT_Bio", (-3, 1)] == 0)
-
-# Diphtheria-Tetanus (DT)
-# @constraint(model, Q["DT", "Serum_Institute", (-3, 1)] == 0)
-# @constraint(model, Q["DT", "BB_NCIPD", (-3, 1)] == 0)
-# @constraint(model, Q["DT", "PT_Bio", (-3, 1)] == 0)
-
-# DTwP
-# @constraint(model, Q["DTwP", "Serum_Institute", (-3, 1)] == 0)
-# @constraint(model, Q["DTwP", "Biological_E", (-3, 1)] == 0)
-
-# DTwP-Hib
-# @constraint(model, Q["DTwP-Hib", "Serum_Institute", (-3, 1)] == 0)
-
-# Penta
-@constraint(model, Q["Penta", "Panacea_Biotec", (-3, 1)] == 8948035)
-@constraint(model, Q["Penta", "Serum_Institute", (-3, 1)] == 140931564)
-@constraint(model, Q["Penta", "LG_Chem", (-3, 1)] == 17896071)
-@constraint(model, Q["Penta", "PT_Bio", (-3, 1)] == 31318125)
-@constraint(model, Q["Penta", "Biological_E", (-3, 1)] == 53688215)
-
-# Hexa
-# @constraint(model, Q["Hexa", "Sanofi_Pasteur", (-3, 1)] == 0)
-
-# Polio Vaccine - Inactivated (IPV)
-@constraint(model, Q["IPV", "Sanofi_Pasteur", (-3, 1)] == 43365104)
-@constraint(model, Q["IPV", "LG_Chem", (-3, 1)] == 40213942)
-# @constraint(model, Q["IPV", "Bilthoven", (-3, 1)] == 0)
-# @constraint(model, Q["IPV", "AJ_Vaccines", (-3, 1)] == 0)
-
-# Polio Vaccine - Oral (OPV) 
-@constraint(model, Q["OPV", "GSK", (-3, 1)] == 219201481)
-@constraint(model, Q["OPV", "Sanofi_Pasteur", (-3, 1)] == 61220888)
-@constraint(model, Q["OPV", "PT_Bio", (-3, 1)] == 84680592)
-# @constraint(model, Q["OPV", "Bharat_Biotech", (-3, 1)] == 0)
-# @constraint(model, Q["OPV", "Beijing_Institute", (-3, 1)] == 0)
-# @constraint(model, Q["OPV", "Haffkine_Bio", (-3, 1)] == 0)
-# @constraint(model, Q["OPV", "Panacea_Biotec", (-3, 1)] == 0)
-# @constraint(model, Q["OPV", "Serum_Institute", (-3, 1)] == 0)
-
-# Human Papillomavirus (HPV)
-@constraint(model, Q["HPV", "Merck_Sharp", (1, 5)] == 3625021)
-@constraint(model, Q["HPV", "GSK", (1, 5)] == 13464366)
-@constraint(model, Q["HPV", "Xiamen_Innovax", (1, 5)] == 5390769)
-
-# Hepatitis B
-# @constraint(model, Q["HepB", "LG_Chem", (-3, 1)] == 0)
-# @constraint(model, Q["HepB", "Serum_Institute", (-3, 1)] == 0)
-
-# Haemophilus influenzae type b (Hib)
-# @constraint(model, Q["Hib", "Sanofi_Pasteur", (-3, 1)] == 0)
-# @constraint(model, Q["Hib", "Serum_Institute", (-3, 1)] == 0)
-# @constraint(model, Q["Hib", "Centro_de", (-3, 1)] == 0)
-
-# Rotavirus
-@constraint(model, Q["Rotavirus", "GSK", (-3, 1)] == 56510400)
-@constraint(model, Q["Rotavirus", "Serum_Institute", (-3, 1)] == 0) #56510400)
-@constraint(model, Q["Rotavirus", "Bharat_Biotech", (-3, 1)] == 0) #29479003)
-
-# Pneumococcal Conjugate vaccine
-@constraint(model, Q["PCV", "GSK", (-1, 3)] ==  185663042)
-@constraint(model, Q["PCV", "Pfizer", (-1, 3)] ==  20000000)
-@constraint(model, Q["PCV", "Serum_Institute", (-1, 3)] ==  148533333)
-
-###---------------------------------------------------------------------------###
-=#
 optimize!(model)
 
 # Check feasibility status
@@ -766,10 +633,29 @@ if termination_status(model) == MOI.OPTIMAL
     end
     # Convert to JSON
     json_results = JSON.json(variable_values)
-
-    open("JSON/Deterministic_results_F_Q_I_S_MMR_Penta_as_antigen.json", "w") do f
+    # dynamic filename for pi value
+    variable_value = value(pi)
+    # Concatenate with a string to create the JSON file name
+    file_name = "JSON/Beta_sensitivity_$(variable_value).json"
+    # file_name = "JSON/Beta_sensitivity_50.json"
+    print(file_name)
+    open(file_name, "w") do f
         write(f, json_results)
     end
+    # Extract relevant information
+    # beta_value = value(pi)
+    # obj_value = JuMP.objective_value(model)
+    my_dict = Dict("beta_value" => value(pi), "obj_value" => JuMP.objective_value(model))
+    # print(my_dict)
+    my_dict = JSON.json(my_dict)
+    # Writing the dictionary to a JSON file
+    json_file_path = "15 years - Unvax penalty sensitivity/Beta_results.json"
+
+    # Open the file in write mode and write the JSON representation of the dictionary
+    open(json_file_path, "a") do file
+        write(file, "\n", my_dict)
+    end
+    
 else
     println("The model is infeasible.")
     # println(termination_status(model))
