@@ -228,7 +228,7 @@ pi = 5
 # Tender cost
 g = Dict()
 for t in T
-    g[t] = 1e8
+    g[t] = 1e3
 end
 
 # Inventory holding cost
@@ -633,23 +633,17 @@ if termination_status(model) == MOI.OPTIMAL
     end
     # Convert to JSON
     json_results = JSON.json(variable_values)
-    # dynamic filename for pi value
-    variable_value = value(pi)
     # Concatenate with a string to create the JSON file name
-    file_name = "JSON/Beta_sensitivity_$(variable_value)_Gtest.json"
-    # file_name = "JSON/Beta_sensitivity_50.json"
+    file_name = "JSON/tender_cost_sensitivity_1e3.json"
     print(file_name)
     open(file_name, "w") do f
         write(f, json_results)
     end
-    # Extract relevant information
-    # beta_value = value(pi)
-    # obj_value = JuMP.objective_value(model)
-    my_dict = Dict("beta_value" => value(pi), "obj_value" => JuMP.objective_value(model))
+    my_dict = Dict("tender_cost" => 1e3, "obj_value" => JuMP.objective_value(model))
     # print(my_dict)
     my_dict = JSON.json(my_dict)
     # Writing the dictionary to a JSON file
-    json_file_path = "15 years - Unvax penalty sensitivity/Beta_results.json"
+    json_file_path = "15 years - Tender cost sensitivity/tender_results.json"
 
     # Open the file in write mode and write the JSON representation of the dictionary
     open(json_file_path, "a") do file
