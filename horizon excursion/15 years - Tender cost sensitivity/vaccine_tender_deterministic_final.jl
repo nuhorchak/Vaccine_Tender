@@ -96,7 +96,7 @@ for p in P
 end
 
 tmin = 1
-tmax = 15
+tmax = 35
 T = [t for t in tmin:tmax]
 T_initial = [t for t in tmin-1:tmax]
 
@@ -223,12 +223,12 @@ for p in P
 end
 
 # Unvaccinated children penalty
-pi = 5
+pi = 100
 
 # Tender cost
 g = Dict()
 for t in T
-    g[t] = 1e3
+    g[t] = 1e8
 end
 
 # Inventory holding cost
@@ -634,21 +634,21 @@ if termination_status(model) == MOI.OPTIMAL
     # Convert to JSON
     json_results = JSON.json(variable_values)
     # Concatenate with a string to create the JSON file name
-    file_name = "JSON/tender_cost_sensitivity_1e3.json"
+    file_name = "JSON/Deterministic_results_F_Q_I_S_base_35.json"
     print(file_name)
     open(file_name, "w") do f
         write(f, json_results)
     end
-    my_dict = Dict("tender_cost" => 1e3, "obj_value" => JuMP.objective_value(model))
-    # print(my_dict)
-    my_dict = JSON.json(my_dict)
-    # Writing the dictionary to a JSON file
-    json_file_path = "15 years - Tender cost sensitivity/tender_results.json"
+    # my_dict = Dict("tender_cost" => 1e3, "obj_value" => JuMP.objective_value(model))
+    # # print(my_dict)
+    # my_dict = JSON.json(my_dict)
+    # # Writing the dictionary to a JSON file
+    # json_file_path = "15 years - Tender cost sensitivity/tender_results.json"
 
-    # Open the file in write mode and write the JSON representation of the dictionary
-    open(json_file_path, "a") do file
-        write(file, "\n", my_dict)
-    end
+    # # Open the file in write mode and write the JSON representation of the dictionary
+    # open(json_file_path, "a") do file
+    #     write(file, "\n", my_dict)
+    # end
     
 else
     println("The model is infeasible.")
