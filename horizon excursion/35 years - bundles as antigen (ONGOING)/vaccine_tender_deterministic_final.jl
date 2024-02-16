@@ -8,10 +8,10 @@ gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol
 
 # Design of Experiment
 demand_status = "D2" # "D1" => "D_low" or "D2" => "D_med" or "D3" => "D_high"
-supply_status = "S1" # "S1" => "S_low" or "S2" => "S_med" or "S3" => "S_high"
+supply_status = "S2" # "S1" => "S_low" or "S2" => "S_med" or "S3" => "S_high"
 price_status = "P1" # "P1" => "P_no_discount"
 overlap_decision = true
-capacity_extension_decision = false
+capacity_extension_decision = true
 
 ################################################### INDICES ####################################################
 #=
@@ -221,7 +221,7 @@ for p in P
 end
 
 # Unvaccinated children penalty
-pi = 100
+pi = 6
 
 # Tender cost
 g = Dict()
@@ -630,7 +630,7 @@ if termination_status(model) == MOI.OPTIMAL
     # Convert to JSON
     json_results = JSON.json(variable_values)
 
-    open("horizon excursion/35 years - bundles as antigen (ONGOING)/JSON/MMR_Penta_$(supply_status)_$(demand_status).json", "w") do f
+    open("horizon excursion/35 years - bundles as antigen (ONGOING)/JSON/MMR_Penta_$(supply_status)_$(demand_status)_overlap_cap_$(pi).json", "w") do f
         write(f, json_results)
     end
 else
