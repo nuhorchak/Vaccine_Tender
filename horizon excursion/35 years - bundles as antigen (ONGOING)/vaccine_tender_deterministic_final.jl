@@ -3,6 +3,8 @@ using Gurobi
 using Random
 import XLSX
 import JSON
+using DataFrames
+using CSV
 
 gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol"=>1e-6)
 
@@ -24,14 +26,14 @@ P: Set of producers
 P_v: Subset of producers of vaccine v
 T: Set of time periods
 =#
-#println("antigens")
-A = ["Measles","Mumps","Rubella","Diphtheria","Tetanus","Pertussis","Hepatitis_B","Hib","Polio","HPV","Rotavirus","PCV", "MMR", "Penta"]
+#println("antigens") (single antigen only)
+A = ["Measles","Mumps","Rubella","Diphtheria","Tetanus","Pertussis","Hepatitis_B","Hib","Polio","HPV","Rotavirus","PCV"]
 #println("vaccines")
 V = ["M","MR","MMR","TT","HepB","Hib","IPV","OPV","DT","Td","DTwP","DTwP-Hib","Penta","Hexa","HPV","Rotavirus","PCV"]
 #println("vaccine,antigen dict")
-A_v = Dict("M" => ["Measles"],"MR" => ["Measles","Rubella"],"MMR" => ["Measles","Mumps","Rubella", "MMR"], "TT" => ["Tetanus"], "HepB" => ["Hepatitis_B"], "Hib" => ["Hib"], "IPV" => ["Polio"], 
+A_v = Dict("M" => ["Measles"],"MR" => ["Measles","Rubella"],"MMR" => ["Measles","Mumps","Rubella"], "TT" => ["Tetanus"], "HepB" => ["Hepatitis_B"], "Hib" => ["Hib"], "IPV" => ["Polio"], 
             "OPV" => ["Polio"], "DT" => ["Diphtheria","Tetanus"], "Td" => ["Diphtheria","Tetanus"], "DTwP" => ["Diphtheria","Tetanus","Pertussis"],
-            "DTwP-Hib" => ["Diphtheria","Tetanus","Pertussis","Hib"], "Penta" => ["Diphtheria","Tetanus","Pertussis","Hepatitis_B","Hib", "Penta"], 
+            "DTwP-Hib" => ["Diphtheria","Tetanus","Pertussis","Hib"], "Penta" => ["Diphtheria","Tetanus","Pertussis","Hepatitis_B","Hib"], 
             "Hexa" => ["Diphtheria","Tetanus","Pertussis","Hepatitis_B","Hib","Polio"],"HPV" => ["HPV"], "Rotavirus" => ["Rotavirus"], "PCV" => ["PCV"])
 
 V_a = Dict()
@@ -94,7 +96,7 @@ for p in P
 end
 
 tmin = 1
-tmax = 35
+tmax = 15
 T = [t for t in tmin:tmax]
 T_initial = [t for t in tmin-1:tmax]
 
@@ -221,7 +223,7 @@ for p in P
 end
 
 # Unvaccinated children penalty
-pi = 6
+pi = 100
 
 # Tender cost
 g = Dict()
@@ -254,12 +256,15 @@ end
 
 beta = 0.1
 γ = 0.1
+# inflation rate
+delta = []
+delta = [0.03 for t in 1:tmax]
 
 # Get the absolute path of the current file's directory
 current_directory = @__DIR__
 
 # Define the file name
-filename = "Starting_point.xlsx"
+filename = "starts/Starting_point.xlsx"
 
 # Construct the relative path using joinpath
 relative_path = joinpath(current_directory, filename)
@@ -267,7 +272,7 @@ relative_path = joinpath(current_directory, filename)
 starting_points_file = XLSX.readxlsx(relative_path)
 
 starting_points_F_raw = starting_points_file["F_start"]
-total_row_F = 13
+total_row_F = length(starting_points_F_raw[:, 1])
 starting_points_vect_F = []
 for row in 2:total_row_F
     antigen = starting_points_F_raw[row,1]
@@ -278,7 +283,7 @@ end
 # println(starting_points_vect_F)
 
 starting_points_Q_raw = starting_points_file["Q_start"]
-total_row_Q = 25
+total_row_Q = length(starting_points_Q_raw[:, 1])
 starting_points_vect_Q = []
 for row in 2:total_row_Q
     vaccine = starting_points_Q_raw[row,1]
@@ -291,7 +296,7 @@ end
 # println(starting_points_vect_Q)
 
 starting_points_I_raw = starting_points_file["I_start"]
-total_row_I = 5
+total_row_I = length(starting_points_I_raw[:, 1])
 starting_points_vect_I = []
 for row in 2:total_row_I
     vaccine = starting_points_I_raw[row,1]
@@ -301,13 +306,14 @@ end
 # println(starting_points_vect_I)
 
 starting_points_S_raw = starting_points_file["S_start"]
-total_row_S = 13
+total_row_S = length(starting_points_S_raw[:, 1])
 starting_points_vect_S = []
 for row in 2:total_row_S
     antigen = starting_points_S_raw[row,1]
     amount = starting_points_S_raw[row,2]
     push!(starting_points_vect_S, (antigen,amount))
 end
+# println("S Start")
 # println(starting_points_vect_S)
 
 F_time_set = []
@@ -373,19 +379,20 @@ model=Model(Gurobi.Optimizer)
 
 ################################################### OBJECTIVE FUNCTION AND CONSTRAINTS ####################################################
 if capacity_extension_decision
-    @objective(model, Min, sum(g[t]*F[a,(t,tau)] for (t,tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
-    + sum(r[v,p,t]*X[v,p,t] for v in V, p in P_v[v], t in T)
-        + sum(pi*S[a,t] for a in A, t in T)
-            + sum(h[v]*r_avg[v,t]*I[v,t] for v in V, t in T)
-                + sum(Γ[p]*L[p,t] for p in P, t in T)
+    @objective(model, Min, sum(g[t]*F[a,(t,tau)]/(1+delta[t]) for (t,tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
+    + sum((r[v,p,t]*X[v,p,t]/(1+delta[t])) for v in V, p in P_v[v], t in T)
+        + sum((pi*S[a,t]/(1+delta[t])) for a in A, t in T)
+            + sum((h[v]*r_avg[v,t]*I[v,t]/(1+delta[t])) for v in V, t in T)
+                + sum((Γ[p]*L[p,t]/(1+delta[t])) for p in P, t in T)
                                                             )
 else
-    @objective(model, Min, sum(g[t]*F[a,(t,tau)] for (t,tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
-    + sum(r[v,p,t]*X[v,p,t] for v in V, p in P_v[v], t in T)
-        + sum(pi*S[a,t] for a in A, t in T)
-            + sum(h[v]*r_avg[v,t]*I[v,t] for v in V, t in T)
+    @objective(model, Min, sum(g[t]*F[a,(t,tau)]/(1+delta[t]) for (t,tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
+    + sum((r[v,p,t]*X[v,p,t]/(1+delta[t])) for v in V, p in P_v[v], t in T)
+        + sum((pi*S[a,t]/(1+delta[t])) for a in A, t in T)
+            + sum((h[v]*r_avg[v,t]*I[v,t]/(1+delta[t])) for v in V, t in T)
                                                             )
 end
+
 
 
 # Constraint (2)
@@ -572,13 +579,14 @@ for a in A
     end
 end
 
-# Constraint (12)
+# Constraint (12) ROI
 for p in P
     for t in T
         @constraint(model, sum(r[v,p,t]*X[v,p,t] for v in V_p[p]) >= Y[p,t]*sum((1+l[v,p])*f[v,p,t] for v in V_p[p]))
     end
 end
 
+#sets starts as constraints in model
 for i in 1:length(starting_points_vect_F)
     a = starting_points_vect_F[i][1]
     t = starting_points_vect_F[i][2]
@@ -600,19 +608,20 @@ for i in 1:length(starting_points_vect_I)
     amount = starting_points_vect_I[i][2]
     @constraint(model, I[v, 0] == amount)
 end
-defined_values = ["Penta", "OPV", "IPV", "PCV"]
-# defined_values = []
-for v in V
-    if v ∉ defined_values
-        @constraint(model, I[v,0] == 0)
-    end
-end
+# # defined_values = ["Penta", "OPV", "IPV", "PCV"]
+# # # defined_values = []
+# # for v in V
+# #     if v ∉ defined_values
+# #         @constraint(model, I[v,0] == 0)
+# #     end
+# # end
 
 for i in 1:length(starting_points_vect_S)
     a = starting_points_vect_S[i][1]
     amount = starting_points_vect_S[i][2]
     @constraint(model, S[a, 0] == amount)
 end
+
 
 optimize!(model)
 
@@ -630,10 +639,12 @@ if termination_status(model) == MOI.OPTIMAL
     # Convert to JSON
     json_results = JSON.json(variable_values)
 
-    open("horizon excursion/35 years - bundles as antigen (ONGOING)/JSON/MMR_Penta_$(supply_status)_$(demand_status)_overlap_cap_$(pi).json", "w") do f
-        write(f, json_results)
-    end
+    # open("JSON/2 year/discount_test.json", "w") do f
+    #     write(f, json_results)
+    # end
+    
 else
+
     println("The model is infeasible.")
     # println(termination_status(model))
     compute_conflict!(model)
@@ -643,7 +654,7 @@ else
     open("errors.json", "w") do f
         write(f, json_errors)
     end
-end
+end 
 
 # println("!!!!!!!!!!!!!!!!!!!!!!!!!  F !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:F]))
