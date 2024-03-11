@@ -6,6 +6,9 @@
   },
   "variables": [
     {
+      "name": "Q[DTwP,Biological_E,(1, 1)]"
+    },
+    {
       "name": "F[Measles,(1, 1)]"
     },
     {
@@ -13819,9 +13822,6 @@
     },
     {
       "name": "Q[DTwP,Serum_Institute,(15, 15)]"
-    },
-    {
-      "name": "Q[DTwP,Biological_E,(1, 1)]"
     },
     {
       "name": "Q[DTwP,Biological_E,(1, 2)]"
@@ -41485,51 +41485,51 @@
       "terms": [
         {
           "coefficient": 1.0e8,
-          "variable": "F[Measles,(1, 2)]"
+          "variable": "F[Measles,(1, 1)]"
         },
         {
           "coefficient": 1.0e8,
-          "variable": "F[Mumps,(1, 2)]"
+          "variable": "F[Mumps,(1, 1)]"
         },
         {
           "coefficient": 1.0e8,
-          "variable": "F[Rubella,(1, 2)]"
+          "variable": "F[Rubella,(1, 1)]"
         },
         {
           "coefficient": 1.0e8,
-          "variable": "F[Diphtheria,(1, 2)]"
+          "variable": "F[Diphtheria,(1, 1)]"
         },
         {
           "coefficient": 1.0e8,
-          "variable": "F[Tetanus,(1, 2)]"
+          "variable": "F[Tetanus,(1, 1)]"
         },
         {
           "coefficient": 1.0e8,
-          "variable": "F[Pertussis,(1, 2)]"
+          "variable": "F[Pertussis,(1, 1)]"
         },
         {
           "coefficient": 1.0e8,
-          "variable": "F[Hepatitis_B,(1, 2)]"
+          "variable": "F[Hepatitis_B,(1, 1)]"
         },
         {
           "coefficient": 1.0e8,
-          "variable": "F[Hib,(1, 2)]"
+          "variable": "F[Hib,(1, 1)]"
         },
         {
           "coefficient": 1.0e8,
-          "variable": "F[Polio,(1, 2)]"
+          "variable": "F[Polio,(1, 1)]"
         },
         {
           "coefficient": 1.0e8,
-          "variable": "F[HPV,(1, 2)]"
+          "variable": "F[HPV,(1, 1)]"
         },
         {
           "coefficient": 1.0e8,
-          "variable": "F[Rotavirus,(1, 2)]"
+          "variable": "F[Rotavirus,(1, 1)]"
         },
         {
           "coefficient": 1.0e8,
-          "variable": "F[PCV,(1, 2)]"
+          "variable": "F[PCV,(1, 1)]"
         },
         {
           "coefficient": 1.0e8,
@@ -50387,14 +50387,14 @@
         "terms": [
           {
             "coefficient": 1.0,
-            "variable": "I[M,0]"
+            "variable": "Q[MR,Biological_E,(1, 1)]"
           }
         ],
         "constant": 0.0
       },
       "set": {
         "type": "EqualTo",
-        "value": 3.6942955570033e6
+        "value": 1.44446638e8
       }
     },
     {
@@ -50404,14 +50404,60 @@
         "terms": [
           {
             "coefficient": 1.0,
-            "variable": "I[M,0]"
+            "variable": "Q[Penta,Biological_E,(1, 1)]"
           }
         ],
         "constant": 0.0
       },
       "set": {
         "type": "EqualTo",
-        "value": 0.0
+        "value": 8.5901144e7
+      }
+    },
+    {
+      "name": "c1_1",
+      "function": {
+        "type": "ScalarQuadraticFunction",
+        "affine_terms": [
+          {
+            "coefficient": 1.0,
+            "variable": "Q[DTwP,Biological_E,(1, 1)]"
+          },
+          {
+            "coefficient": -1.601e8,
+            "variable": "W[Biological_E,(1, 1)]"
+          },
+          {
+            "coefficient": 1.0,
+            "variable": "Q[MR,Biological_E,(1, 1)]"
+          },
+          {
+            "coefficient": 1.0,
+            "variable": "Q[Penta,Biological_E,(1, 1)]"
+          }
+        ],
+        "quadratic_terms": [
+          {
+            "coefficient": -1.601e7,
+            "variable_1": "L[Biological_E,1]",
+            "variable_2": "W[Biological_E,(1, 1)]"
+          }
+        ],
+        "constant": 0.0
+      },
+      "set": {
+        "type": "LessThan",
+        "upper": 0.0
+      }
+    },
+    {
+      "function": {
+        "type": "Variable",
+        "name": "Q[DTwP,Biological_E,(1, 1)]"
+      },
+      "set": {
+        "type": "GreaterThan",
+        "lower": 0.0
       }
     },
     {
