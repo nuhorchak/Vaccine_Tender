@@ -264,7 +264,7 @@ delta = [0.03 for t in 1:tmax]
 current_directory = @__DIR__
 
 # Define the file name
-filename = "starts/Starting_point.xlsx"
+filename = "Starting_point.xlsx"
 
 # Construct the relative path using joinpath
 relative_path = joinpath(current_directory, filename)
