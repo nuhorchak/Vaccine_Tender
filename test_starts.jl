@@ -28,13 +28,34 @@ starting_points_file = XLSX.readxlsx(relative_path)
 # end
 # println(starting_points_vect_Q) 
 
-starting_points_F_raw = starting_points_file["F_start"]
-total_row_F = length(starting_points_F_raw[:, 1])
-starting_points_vect_F = []
-for row in 2:total_row_F
-    antigen = starting_points_F_raw[row,1]
-    starting_year = starting_points_F_raw[row,2]
-    ending_year = starting_points_F_raw[row,3]
-    push!(starting_points_vect_F, (antigen,starting_year,ending_year))
+# starting_points_F_raw = starting_points_file["F_start"]
+# total_row_F = length(starting_points_F_raw[:, 1])
+# starting_points_vect_F = []
+# for row in 2:total_row_F
+#     antigen = starting_points_F_raw[row,1]
+#     starting_year = starting_points_F_raw[row,2]
+#     ending_year = starting_points_F_raw[row,3]
+#     push!(starting_points_vect_F, (antigen,starting_year,ending_year))
+# end
+# println(starting_points_vect_F)
+
+# starting_points_I_raw = starting_points_file["I_start"]
+# total_row_I = length(starting_points_I_raw[:, 1])
+# starting_points_vect_I = []
+# for row in 2:total_row_I
+#     vaccine = starting_points_I_raw[row,1]
+#     amount = starting_points_I_raw[row,2]
+#     push!(starting_points_vect_I, (vaccine,amount))
+# end
+# println(starting_points_vect_I)
+
+starting_points_S_raw = starting_points_file["S_start"]
+total_row_S = length(starting_points_S_raw[:, 1])
+starting_points_vect_S = []
+for row in 2:total_row_S
+    antigen = starting_points_S_raw[row,1]
+    amount = starting_points_S_raw[row,2]
+    push!(starting_points_vect_S, (antigen,amount))
 end
-println(starting_points_vect_F)
+println("S Start")
+println(starting_points_vect_S)

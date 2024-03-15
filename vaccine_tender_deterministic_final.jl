@@ -258,7 +258,7 @@ beta = 0.1
 γ = 0.1
 # inflation rate
 delta = []
-delta = [0.00 for t in 1:tmax]
+delta = [0.03 for t in 1:tmax]
 
 # Get the absolute path of the current file's directory
 current_directory = @__DIR__
