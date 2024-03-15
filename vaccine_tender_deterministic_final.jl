@@ -379,17 +379,17 @@ model=Model(Gurobi.Optimizer)
 
 ################################################### OBJECTIVE FUNCTION AND CONSTRAINTS ####################################################
 if capacity_extension_decision
-    @objective(model, Min, sum(g[t]*F[a,(t,tau)]/(1+delta[t]) for (t,tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
-    + sum((r[v,p,t]*X[v,p,t]/(1+delta[t])) for v in V, p in P_v[v], t in T)
-        + sum((pi*S[a,t]/(1+delta[t])) for a in A, t in T)
-            + sum((h[v]*r_avg[v,t]*I[v,t]/(1+delta[t])) for v in V, t in T)
-                + sum((Γ[p]*L[p,t]/(1+delta[t])) for p in P, t in T)
+    @objective(model, Min, sum(g[t]*F[a,(t,tau)]/(1+delta[t])^tmax for (t,tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
+    + sum((r[v,p,t]*X[v,p,t]/(1+delta[t])^tmax) for v in V, p in P_v[v], t in T)
+        + sum((pi*S[a,t]/(1+delta[t])^tmax) for a in A, t in T)
+            + sum((h[v]*r_avg[v,t]*I[v,t]/(1+delta[t])^tmax) for v in V, t in T)
+                + sum((Γ[p]*L[p,t]/(1+delta[t])^tmax) for p in P, t in T)
                                                             )
 else
-    @objective(model, Min, sum(g[t]*F[a,(t,tau)]/(1+delta[t]) for (t,tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
-    + sum((r[v,p,t]*X[v,p,t]/(1+delta[t])) for v in V, p in P_v[v], t in T)
-        + sum((pi*S[a,t]/(1+delta[t])) for a in A, t in T)
-            + sum((h[v]*r_avg[v,t]*I[v,t]/(1+delta[t])) for v in V, t in T)
+    @objective(model, Min, sum(g[t]*F[a,(t,tau)]/(1+delta[t])^tmax for (t,tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
+    + sum((r[v,p,t]*X[v,p,t]/(1+delta[t])^tmax) for v in V, p in P_v[v], t in T)
+        + sum((pi*S[a,t]/(1+delta[t])^tmax) for a in A, t in T)
+            + sum((h[v]*r_avg[v,t]*I[v,t]/(1+delta[t])^tmax) for v in V, t in T)
                                                             )
 end
 
