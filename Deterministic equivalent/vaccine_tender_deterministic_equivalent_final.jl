@@ -103,13 +103,18 @@ T_initial = [t for t in tmin-1:tmax]
 Ω = [1,2,3,4,5]
 
 p_ω = Dict()
+# for ω in Ω
+#     if ω <= 3
+#         p_ω[ω] = 0.3
+#     else
+#         p_ω[ω] = 0.05
+#     end
+# end
+
+#all scenarios are random numbers for demand and equi-probable 
 for ω in Ω
-    if ω <= 3
-        p_ω[ω] = 0.3
-    else
-        p_ω[ω] = 0.05
-    end
-end
+    p_ω[ω] = 1/length(Ω)
+end 
 println(p_ω)
 
 ################################################### PARAMETERS ####################################################
@@ -129,14 +134,11 @@ pi: penalty for shortage of amount committed
 beta: risk parameter for demand
 =#
 
-# source_1 = string("C:/Users/fthcn/Desktop/Vaccine_Tender_Scheduling_Problem/Demand_Scenarios_updated.xlsx")
-# demand_file = XLSX.readxlsx(source_1)
-
 # Get the absolute path of the current file's directory
 current_directory = @__DIR__
 
 # Define the file name
-filename = "Demand_Scenarios_updated.xlsx"
+filename = "random_normal_forecast_data.xlsx"
 
 # Construct the relative path using joinpath
 relative_path = joinpath(current_directory, filename)
@@ -144,38 +146,27 @@ relative_path = joinpath(current_directory, filename)
 # Print the resulting path
 println("Relative Path: ", relative_path)
 
-demand_file = XLSX.readxlsx(relative_path)
-
-d_real_raw = demand_file["Medium_Demand"]
-d_pandemic_raw = demand_file["Pandemic_Effect"]
-d_vaccine_replacement_raw = demand_file["Vaccine_Replacement_Effect"]
+random_demand_file = XLSX.readxlsx(relative_path)
 
 total_demand_row = length(A)+1
 total_demand_col = length(T)+1
 
 d_real = Dict()
-for ω in Ω
-    for row in 2:total_demand_row
-        antigen = d_real_raw[row,1]
-        for col in 2:total_demand_col
-            year = d_real_raw[1,col]
-            if ω == 1
-                d_real[antigen,year,ω] = 0.8*d_real_raw[row,col]
-            elseif ω == 2
-                d_real[antigen,year,ω] = d_real_raw[row,col]
-            elseif ω == 3
-                d_real[antigen,year,ω] = 1.2*d_real_raw[row,col]
-            elseif ω == 4
-                d_real[antigen,year,ω] = d_pandemic_raw[row,col]
-            elseif ω == 5
-                d_real[antigen,year,ω] = d_vaccine_replacement_raw[row,col]
+sheet_names = XLSX.sheetnames(random_demand_file)
+for name in sheet_names
+    data = random_demand_file[name]
+    for ω in Ω
+        for row in 2:total_demand_row
+            antigen = data[row,1]
+            for col in 2:total_demand_col
+                year = data[1,col]
+                d_real[antigen,year,ω] = data[row,col]
+                # println(antigen, year, ω)
+                # println(d_real[antigen,year,ω])
             end
         end
     end
 end
-
-# source_2 = string("C:/Users/fthcn/Desktop/Vaccine_Tender_Scheduling_Problem/production_capacity_updated.xlsx")
-# capacity_file = XLSX.readxlsx(source_2)
 
 # Define the file name
 filename2 = "production_capacity_updated.xlsx"
@@ -203,6 +194,17 @@ for row in 2:total_supply_row
         end
     end
 end
+
+# Define the file name
+filename = "Demand_Scenarios_updated.xlsx"
+
+# Construct the relative path using joinpath
+relative_path = joinpath(current_directory, filename)
+
+# Print the resulting path
+println("Relative Path: ", relative_path)
+
+demand_file = XLSX.readxlsx(relative_path)
 
 r = Dict()
 for v in V

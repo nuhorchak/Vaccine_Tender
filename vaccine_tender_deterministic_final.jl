@@ -96,7 +96,7 @@ for p in P
 end
 
 tmin = 1
-tmax = 15
+tmax = 10
 T = [t for t in tmin:tmax]
 T_initial = [t for t in tmin-1:tmax]
 
