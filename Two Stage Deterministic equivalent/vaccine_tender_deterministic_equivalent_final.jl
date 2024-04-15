@@ -153,20 +153,21 @@ total_demand_col = length(T)+1
 
 d_real = Dict()
 sheet_names = XLSX.sheetnames(random_demand_file)
+println(sheet_names)
 for name in sheet_names
     data = random_demand_file[name]
-    for ω in Ω
-        for row in 2:total_demand_row
-            antigen = data[row,1]
-            for col in 2:total_demand_col
-                year = data[1,col]
-                d_real[antigen,year,ω] = data[row,col]
-                # println(antigen, year, ω)
-                # println(d_real[antigen,year,ω])
-            end
+    ω = findfirst((x -> x==name), sheet_names)
+    for row in 2:total_demand_row
+        antigen = data[row,1]
+        for col in 2:total_demand_col
+            year = data[1,col]
+            d_real[antigen,year,ω] = data[row,col]
+            # println(antigen, year, ω)
+            # println(d_real[antigen,year,ω])
         end
     end
 end
+# println(d_real)
 
 # Define the file name
 filename2 = "production_capacity_updated.xlsx"
@@ -703,8 +704,8 @@ end
 # println(JuMP.value.(model[:I]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!!  Vc !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:Vc]))
-println("!!!!!!!!!!!!!!!!!!!!!!!!!  S !!!!!!!!!!!!!!!!!!!!!!!!!!")
-println(JuMP.value.(model[:S]))
+# println("!!!!!!!!!!!!!!!!!!!!!!!!!  S !!!!!!!!!!!!!!!!!!!!!!!!!!")
+# println(JuMP.value.(model[:S]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!! W !!!!!!!!!!!!!!!!!!!!!!!!!!")
 # println(JuMP.value.(model[:W]))
 # println("!!!!!!!!!!!!!!!!!!!!!!!!! K !!!!!!!!!!!!!!!!!!!!!!!!!!")
