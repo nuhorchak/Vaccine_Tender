@@ -100,7 +100,7 @@ T_initial = [t for t in tmin-1:tmax]
 
 Δ = [1,3,5]
 
-Ω = [1,2,3,4,5]
+Ω = [1,2,3,4,5,6,7,8,9,10]
 
 p_ω = Dict()
 # for ω in Ω
@@ -155,15 +155,16 @@ d_real = Dict()
 sheet_names = XLSX.sheetnames(random_demand_file)
 for name in sheet_names
     data = random_demand_file[name]
-    for ω in Ω
-        for row in 2:total_demand_row
-            antigen = data[row,1]
-            for col in 2:total_demand_col
-                year = data[1,col]
-                d_real[antigen,year,ω] = data[row,col]
-                # println(antigen, year, ω)
-                # println(d_real[antigen,year,ω])
-            end
+    ω = findfirst((x -> x==name), sheet_names)
+    for row in 2:total_demand_row
+        antigen = data[row,1]
+        for col in 2:total_demand_col
+            year = data[1,col]
+            d_real[antigen,year,ω] = data[row,col]
+            # if (antigen == "Polio" && year == 1)
+            #     println(antigen, year, ω)
+            #     println(d_real[antigen,year,ω])
+            # end
         end
     end
 end
