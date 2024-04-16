@@ -98,9 +98,9 @@ tmax = 10
 T = [t for t in tmin:tmax]
 T_initial = [t for t in tmin-1:tmax]
 
-Δ = [1,3,5]
+Δ = [1,2,3,4,5]
 
-Ω = [1,2,3,4,5,6,7,8,9,10]
+Ω = [1,2,3,4,5]
 
 p_ω = Dict()
 # for ω in Ω
@@ -154,7 +154,7 @@ total_demand_col = length(T)+1
 d_real = Dict()
 sheet_names = XLSX.sheetnames(random_demand_file)
 println(sheet_names)
-for name in sheet_names
+for name in sheet_names[1:5]
     data = random_demand_file[name]
     ω = findfirst((x -> x==name), sheet_names)
     for row in 2:total_demand_row
@@ -662,6 +662,19 @@ for ω in Ω
         @constraint(model, S[a,0,ω] == amount)
     end
 end
+
+#log output for time tracking
+current_directory = @__DIR__
+
+# Define the file name based on the number of scenarios
+deltas = length(Δ)
+scenarios = length(Ω)
+filename = "log_output_$(scenarios)_scenarios_$(deltas)deltas_$(overlap_decision)_overlap_$(capacity_extension_decision)_capacity.json"
+
+# Construct the relative path using joinpath
+source = joinpath(current_directory, filename)
+
+set_optimizer_attribute(model, "LogFile", source)
 
 optimize!(model)
 
