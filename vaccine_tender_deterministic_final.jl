@@ -126,7 +126,7 @@ beta: risk parameter for demand
 current_directory = @__DIR__
 
 # Define the file name
-filename = "Demand_Scenarios_updated.xlsx"
+filename = "MVP_random_normal_forecast_data.xlsx"
 
 # Construct the relative path using joinpath
 relative_path = joinpath(current_directory, filename)
@@ -185,6 +185,18 @@ for row in 2:total_supply_row
         end
     end
 end
+
+
+# Define the file name
+filename = "Demand_Scenarios_updated.xlsx"
+
+# Construct the relative path using joinpath
+relative_path = joinpath(current_directory, filename)
+
+# Print the resulting path
+println("Relative Path: ", relative_path)
+
+demand_file = XLSX.readxlsx(relative_path)
 
 r = Dict()
 for v in V

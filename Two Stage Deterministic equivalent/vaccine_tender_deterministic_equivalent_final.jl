@@ -100,7 +100,7 @@ T_initial = [t for t in tmin-1:tmax]
 
 Δ = [1,2,3,4,5]
 
-Ω = [1,2,3,4,5]
+Ω = [1,2,3,4,5,6,7,8,9,10]
 
 p_ω = Dict()
 # for ω in Ω
@@ -154,7 +154,7 @@ total_demand_col = length(T)+1
 d_real = Dict()
 sheet_names = XLSX.sheetnames(random_demand_file)
 println(sheet_names)
-for name in sheet_names[1:5]
+for name in sheet_names
     data = random_demand_file[name]
     ω = findfirst((x -> x==name), sheet_names)
     for row in 2:total_demand_row
