@@ -315,7 +315,7 @@ for row in 2:total_row_I
     amount = starting_points_I_raw[row,2]
     push!(starting_points_vect_I, (vaccine,amount))
 end
-# println(starting_points_vect_I)
+println(starting_points_vect_I)
 
 starting_points_S_raw = starting_points_file["S_start"]
 total_row_S = length(starting_points_S_raw[:, 1])
@@ -651,9 +651,9 @@ if termination_status(model) == MOI.OPTIMAL
     # Convert to JSON
     json_results = JSON.json(variable_values)
 
-    # open("JSON/2 year/discount_test.json", "w") do f
-    #     write(f, json_results)
-    # end
+    open("Deterministic_results_with_initial_conditions.json", "w") do f
+        write(f, json_results)
+    end
     
 else
 

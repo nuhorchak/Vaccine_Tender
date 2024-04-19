@@ -100,16 +100,11 @@ T_initial = [t for t in tmin-1:tmax]
 
 Δ = [1,2,3,4,5]
 
-Ω = [1,2,3,4,5,6,7,8,9,10]
+# Ω = [1,2,3,4,5,6,7,8,9,10]
+# Ω = [1,2,3,4,5]
+Ω = [1]
 
 p_ω = Dict()
-# for ω in Ω
-#     if ω <= 3
-#         p_ω[ω] = 0.3
-#     else
-#         p_ω[ω] = 0.05
-#     end
-# end
 
 #all scenarios are random numbers for demand and equi-probable 
 for ω in Ω
@@ -138,7 +133,7 @@ beta: risk parameter for demand
 current_directory = @__DIR__
 
 # Define the file name
-filename = "random_normal_forecast_data.xlsx"
+filename = "MVP_random_normal_forecast_data.xlsx"
 
 # Construct the relative path using joinpath
 relative_path = joinpath(current_directory, filename)
@@ -154,7 +149,7 @@ total_demand_col = length(T)+1
 d_real = Dict()
 sheet_names = XLSX.sheetnames(random_demand_file)
 println(sheet_names)
-for name in sheet_names
+for name in first(sheet_names, 1) #change the number based on scenario numbers
     data = random_demand_file[name]
     ω = findfirst((x -> x==name), sheet_names)
     for row in 2:total_demand_row
@@ -296,7 +291,7 @@ relative_path = joinpath(current_directory, filename)
 starting_points_file = XLSX.readxlsx(relative_path)
 
 starting_points_F_raw = starting_points_file["F_start"]
-total_row_F = 13
+total_row_F = length(starting_points_F_raw[:, 1])
 starting_points_vect_F = []
 for row in 2:total_row_F
     antigen = starting_points_F_raw[row,1]
@@ -304,10 +299,10 @@ for row in 2:total_row_F
     ending_year = starting_points_F_raw[row,3]
     push!(starting_points_vect_F, (antigen,starting_year,ending_year))
 end
-println(starting_points_vect_F)
+# println(starting_points_vect_F)
 
 starting_points_Q_raw = starting_points_file["Q_start"]
-total_row_Q = 27
+total_row_Q = length(starting_points_Q_raw[:, 1])
 starting_points_vect_Q = []
 for row in 2:total_row_Q
     vaccine = starting_points_Q_raw[row,1]
@@ -317,10 +312,10 @@ for row in 2:total_row_Q
     amount = starting_points_Q_raw[row,5]
     push!(starting_points_vect_Q, (vaccine,producer,starting_year,ending_year,amount))
 end
-println(starting_points_vect_Q)
+# println(starting_points_vect_Q)
 
 starting_points_I_raw = starting_points_file["I_start"]
-total_row_I = 5
+total_row_I = length(starting_points_I_raw[:, 1])
 starting_points_vect_I = []
 for row in 2:total_row_I
     vaccine = starting_points_I_raw[row,1]
@@ -330,14 +325,14 @@ end
 println(starting_points_vect_I)
 
 starting_points_S_raw = starting_points_file["S_start"]
-total_row_S = 13
+total_row_S = length(starting_points_S_raw[:, 1])
 starting_points_vect_S = []
 for row in 2:total_row_S
     antigen = starting_points_S_raw[row,1]
     amount = starting_points_S_raw[row,2]
     push!(starting_points_vect_S, (antigen,amount))
 end
-println(starting_points_vect_S)
+# println(starting_points_vect_S)
 
 F_time_set = []
 for t in T
@@ -646,13 +641,6 @@ for ω in Ω
         amount = starting_points_vect_I[i][2]
         @constraint(model, I[v,0,ω] == amount)
     end
-    defined_values = ["Penta", "OPV", "IPV", "PCV"]
-    # defined_values = []
-    for v in V
-        if v ∉ defined_values
-            @constraint(model, I[v,0,ω] == 0)
-        end
-    end
 end
 
 for ω in Ω
@@ -692,7 +680,7 @@ if termination_status(model) == MOI.OPTIMAL
     # Convert to JSON
     json_results = JSON.json(variable_values)
 
-    open("Deterministic_results_with_initial_conditions.json", "w") do f
+    open("DeterministicEquivalent_results_with_initial_conditions.json", "w") do f
         write(f, json_results)
     end
 else
