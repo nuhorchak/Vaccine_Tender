@@ -100,9 +100,9 @@ T_initial = [t for t in tmin-1:tmax]
 
 Δ = [1,2,3,4,5]
 
-# Ω = [1,2,3,4,5,6,7,8,9,10]
+Ω = [1,2,3,4,5,6,7,8,9,10]
 # Ω = [1,2,3,4,5]
-Ω = [1]
+# Ω = [1]
 
 p_ω = Dict()
 
@@ -133,7 +133,7 @@ beta: risk parameter for demand
 current_directory = @__DIR__
 
 # Define the file name
-filename = "MVP_random_normal_forecast_data.xlsx"
+filename = "random_normal_forecast_data.xlsx"
 
 # Construct the relative path using joinpath
 relative_path = joinpath(current_directory, filename)
@@ -149,7 +149,7 @@ total_demand_col = length(T)+1
 d_real = Dict()
 sheet_names = XLSX.sheetnames(random_demand_file)
 println(sheet_names)
-for name in first(sheet_names, 1) #change the number based on scenario numbers
+for name in first(sheet_names, 10) #change the number based on scenario numbers
     data = random_demand_file[name]
     ω = findfirst((x -> x==name), sheet_names)
     for row in 2:total_demand_row
@@ -680,7 +680,7 @@ if termination_status(model) == MOI.OPTIMAL
     # Convert to JSON
     json_results = JSON.json(variable_values)
 
-    open("DeterministicEquivalent_results_with_initial_conditions.json", "w") do f
+    open("10_Scenario_results_with_initial_conditions.json", "w") do f
         write(f, json_results)
     end
 else
