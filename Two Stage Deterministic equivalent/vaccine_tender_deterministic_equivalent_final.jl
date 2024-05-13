@@ -1,6 +1,7 @@
 using JuMP
 using Gurobi
 using Random
+using Base.Iterators: flatten
 import XLSX
 import JSON
 
@@ -34,16 +35,8 @@ A_v = Dict("M" => ["Measles"],"MR" => ["Measles","Rubella"],"MMR" => ["Measles",
             "DTwP-Hib" => ["Diphtheria","Tetanus","Pertussis","Hib"], "Penta" => ["Diphtheria","Tetanus","Pertussis","Hepatitis_B","Hib"], 
             "Hexa" => ["Diphtheria","Tetanus","Pertussis","Hepatitis_B","Hib","Polio"],"HPV" => ["HPV"], "Rotavirus" => ["Rotavirus"], "PCV" => ["PCV"])
 
-V_a = Dict()
-for a in A
-    vector_a = []
-    for v in keys(A_v)
-        if a in A_v[v]
-            push!(vector_a, v)
-        end
-    end
-    V_a[a] = vector_a
-end
+V_a = Dict(a => [v for v in keys(A_v) if a in A_v[v]] for a in A)
+# println(V_a)
 
 P = ["AJ_Vaccines","BB_NCIPD","Beijing_Institute","Bharat_Biotech","Bilthoven","Biological_E","Centro_de","GSK","Haffkine_Bio",
         "LG_Chem","Merck_Sharp","Panacea_Biotec","PT_Bio","Sanofi_Pasteur","Serum_Institute","Xiamen_Innovax","Pfizer"]
@@ -56,42 +49,10 @@ P_v = Dict("M" => ["Serum_Institute", "PT_Bio"], "MR" => ["Serum_Institute", "Bi
     "Penta" => ["Serum_Institute","PT_Bio","Biological_E","LG_Chem","Panacea_Biotec"], "Hexa" => ["Sanofi_Pasteur"], 
     "HPV" => ["GSK","Merck_Sharp","Xiamen_Innovax"], "Rotavirus" => ["Serum_Institute","GSK","Bharat_Biotech"], "PCV" => ["Serum_Institute","GSK","Pfizer"])
 
-V_p = Dict()
-for p in P
-    vector_p = []
-    for v in keys(P_v)
-        if p in P_v[v]
-            push!(vector_p, v)
-        end
-    end
-    V_p[p] = vector_p
-end
+V_p = Dict(p => [v for v in keys(P_v) if p in P_v[v]] for p in P)
 
-P_a = Dict()
-for a in A
-    vector_a = []
-    vaccines = V_a[a]
-    for v in vaccines
-        producers = P_v[v]
-        for p in producers
-            if p ∉ vector_a
-                push!(vector_a, p)
-            end
-        end
-    end
-    P_a[a] = vector_a
-end
-
-A_p = Dict()
-for p in P
-    vector_p = []
-    for a in keys(P_a)
-        if p in P_a[a]
-            push!(vector_p, a)
-        end
-    end
-    A_p[p] = vector_p
-end
+P_a = Dict(a => unique(flatten([P_v[v] for v in V_a[a]])) for a in A)
+A_p = Dict(p => [a for a in keys(P_a) if p in P_a[a]] for p in P)
 
 tmin = 1
 tmax = 10
@@ -100,17 +61,13 @@ T_initial = [t for t in tmin-1:tmax]
 
 Δ = [1,2,3,4,5]
 
-Ω = [1,2,3,4,5,6,7,8,9,10]
+# Ω = [1,2,3,4,5,6,7,8,9,10]
 # Ω = [1,2,3,4,5]
-# Ω = [1]
-
-p_ω = Dict()
+Ω = [1]
 
 #all scenarios are random numbers for demand and equi-probable 
-for ω in Ω
-    p_ω[ω] = 1/length(Ω)
-end 
-println(p_ω)
+p_ω = Dict(ω => 1/length(Ω) for ω in Ω)
+# println(p_ω)
 
 ################################################### PARAMETERS ####################################################
 #=
@@ -133,7 +90,7 @@ beta: risk parameter for demand
 current_directory = @__DIR__
 
 # Define the file name
-filename = "random_normal_forecast_data.xlsx"
+filename = "MVP_random_normal_forecast_data.xlsx"
 
 # Construct the relative path using joinpath
 relative_path = joinpath(current_directory, filename)
@@ -149,7 +106,7 @@ total_demand_col = length(T)+1
 d_real = Dict()
 sheet_names = XLSX.sheetnames(random_demand_file)
 println(sheet_names)
-for name in first(sheet_names, 10) #change the number based on scenario numbers
+for name in first(sheet_names, 1) #change the number based on scenario numbers
     data = random_demand_file[name]
     ω = findfirst((x -> x==name), sheet_names)
     for row in 2:total_demand_row
@@ -157,10 +114,6 @@ for name in first(sheet_names, 10) #change the number based on scenario numbers
         for col in 2:total_demand_col
             year = data[1,col]
             d_real[antigen,year,ω] = data[row,col]
-            # if (antigen == "Polio" && year == 1)
-            #     println(antigen, year, ω)
-            #     println(d_real[antigen,year,ω])
-            # end
         end
     end
 end
@@ -334,37 +287,13 @@ for row in 2:total_row_S
 end
 # println(starting_points_vect_S)
 
-F_time_set = []
-for t in T
-    for tau in T
-        if tau >= t
-            if (tau-t+1) in Δ
-                push!(F_time_set,(t,tau))
-            end
-        end
-    end
-end
+F_time_set = [(t, tau) for t in T, tau in T if tau >= t && (tau - t + 1) in Δ]
 
-X_tilde_lower = Dict()
-X_tilde_upper = Dict()
-for v in V
-    for p in P_v[v]
-        for t in T
-            for tau in T
-                if (t,tau) in F_time_set
-                    X_tilde_lower[v,p,(t,tau)] = 0
-                    X_tilde_upper[v,p,(t,tau)] = sum(s_real[p,l] for l in t:tau)
-                end
-            end
-        end
-    end
-end
+X_tilde_lower = Dict((v, p, tt) => 0 for v in V for p in P_v[v] for tt in F_time_set)
+X_tilde_upper = Dict((v, p, tt) => sum(s_real[(p, l)] for l in tt[1]:tt[2]) for v in V for p in P_v[v] for tt in F_time_set)
 
 # Γ is the cost of expanding capacity by 20% for producer p
-Γ = Dict()
-for p in P
-    Γ[p] = 1e8
-end
+Γ = Dict(p => 1e8 for p in P)
 
 # κ is the allowable capacity increase in a period
 κ = 0.1
@@ -673,14 +602,14 @@ if termination_status(model) == MOI.OPTIMAL
     println("Run Time: $(JuMP.solve_time(model))")
     # Collect variable names and values
     variable_names = JuMP.all_variables(model)
-    variable_values = Dict()
+    variable_values = Dict() 
     for variable in variable_names
         variable_values[variable] = value(variable)
     end
     # Convert to JSON
     json_results = JSON.json(variable_values)
 
-    open("10_Scenario_results_with_initial_conditions.json", "w") do f
+    open("MVP_Scenario_results_with_initial_conditions.json", "w") do f
         write(f, json_results)
     end
 else
