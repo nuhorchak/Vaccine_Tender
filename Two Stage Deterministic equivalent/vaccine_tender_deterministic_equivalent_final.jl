@@ -61,9 +61,11 @@ T_initial = [t for t in tmin-1:tmax]
 
 Δ = [1,2,3,4,5]
 
-# Ω = [1,2,3,4,5,6,7,8,9,10]
-# Ω = [1,2,3,4,5]
-Ω = [1]
+function generate_omega_list(omega::Int)
+    return collect(1:omega)
+end
+Ω = generate_omega_list(1)
+# println(Ω)
 
 #all scenarios are random numbers for demand and equi-probable 
 p_ω = Dict(ω => 1/length(Ω) for ω in Ω)
@@ -89,11 +91,12 @@ beta: risk parameter for demand
 # Get the absolute path of the current file's directory
 current_directory = @__DIR__
 
-# Define the file name
-filename = "MVP_random_normal_forecast_data.xlsx"
+# Define the relative path to the DATA folder and the file name
+data_folder = joinpath(current_directory, "..", "DATA")  # Adjust ".." based on the location of the DATA folder relative to your script
+filename = "MVP20_random_normal_forecast_data.xlsx"
 
 # Construct the relative path using joinpath
-relative_path = joinpath(current_directory, filename)
+relative_path = joinpath(data_folder, filename)
 
 # Print the resulting path
 println("Relative Path: ", relative_path)
@@ -123,7 +126,7 @@ end
 filename2 = "production_capacity_updated.xlsx"
 
 # Construct the relative path using joinpath
-relative_path2 = joinpath(current_directory, filename2)
+relative_path2 = joinpath(data_folder, filename2)
 
 capacity_file = XLSX.readxlsx(relative_path2)
 
@@ -150,7 +153,7 @@ end
 filename = "Demand_Scenarios_updated.xlsx"
 
 # Construct the relative path using joinpath
-relative_path = joinpath(current_directory, filename)
+relative_path = joinpath(data_folder, filename)
 
 # Print the resulting path
 println("Relative Path: ", relative_path)
@@ -239,7 +242,7 @@ current_directory = @__DIR__
 filename = "Starting_point.xlsx"
 
 # Construct the relative path using joinpath
-relative_path = joinpath(current_directory, filename)
+relative_path = joinpath(data_folder, filename)
 
 starting_points_file = XLSX.readxlsx(relative_path)
 
@@ -586,7 +589,7 @@ current_directory = @__DIR__
 # Define the file name based on the number of scenarios
 deltas = length(Δ)
 scenarios = length(Ω)
-filename = "log_output_$(scenarios)_scenarios_$(deltas)deltas_$(overlap_decision)_overlap_$(capacity_extension_decision)_capacity.json"
+filename = "MVP20_log_output_$(scenarios)_scenarios_$(deltas)deltas_$(overlap_decision)_overlap_$(capacity_extension_decision)_capacity.json"
 
 # Construct the relative path using joinpath
 source = joinpath(current_directory, filename)
@@ -609,7 +612,7 @@ if termination_status(model) == MOI.OPTIMAL
     # Convert to JSON
     json_results = JSON.json(variable_values)
 
-    open("MVP_Scenario_results_with_initial_conditions.json", "w") do f
+    open("MVP20_`$(scenarios)_Scenario_results_with_initial_conditions.json", "w") do f
         write(f, json_results)
     end
 else
