@@ -5,6 +5,7 @@
 using DataFrames
 using XLSX
 using Distributions
+using Random
 
 #generates random normal data, given parameters avg, sd, lower, upper (bounds0)
 function number_generation(avg, sd, lower, upper)
@@ -68,6 +69,8 @@ function data_generation(n::Integer, filepath::String, save_to_excel::Bool, mean
     sheet_names = []
 
     for scenario in 1:n
+        # Set the random seed
+        Random.seed!(scenario)
         random_demand_df = DataFrame()
         
         for (sheet, df) in dataframes
