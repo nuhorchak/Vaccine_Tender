@@ -6,10 +6,12 @@ using DataFrames
 using XLSX
 using Distributions
 
+#generates random normal data, given parameters avg, sd, lower, upper (bounds0)
 function number_generation(avg, sd, lower, upper)
     return rand(Normal(avg, sd)) |> x -> clamp(x, lower, upper)
 end
 
+#calculat the average of a list of dataframes
 function average_dataframes(df_list::Vector{DataFrame})
     # Ensure there is at least one dataframe in the list
     if length(df_list) == 0
@@ -42,6 +44,13 @@ function average_dataframes(df_list::Vector{DataFrame})
     return df_combined
 end
 
+#= Generate data, using the random number generator, and mean value calculator
+n is an integer, the number of datasets to generate
+filepath is the location of the excel data to generate random numbers (CI file)
+save_to_excel is a boolean, to save to excel when true, or just create a memory object
+mean_value is a boolean, which calculates the average of all DFs when true
+RETURNS: when mean_value is true, ther eare 2 returns, the list of DFs, and the mean value DF
+=#
 function data_generation(n::Integer, filepath::String, save_to_excel::Bool, mean_value::Bool)
     println("Generating $n datasets!")
     # Load the workbook and get all sheet names except the last one
