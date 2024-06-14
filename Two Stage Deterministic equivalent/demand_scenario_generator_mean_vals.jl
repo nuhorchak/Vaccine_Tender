@@ -64,6 +64,10 @@ function data_generation(n::Integer, filepath::String, save_to_excel::Bool, mean
         dataframes[sheet] = DataFrame(XLSX.readtable(filepath, sheet))
     end
 
+    # Predefined order for sorting
+    predefined_order = ["Measles", "Mumps", "Rubella", "Diphtheria", "Tetanus", "Pertussis",
+    "Hepatitis_B", "Hib", "Polio", "HPV", "Rotavirus", "PCV"]
+
     # Init array to store 1 to N dataframe forecasts
     random_demand_data = Vector{DataFrame}(undef, n)
     sheet_names = []
@@ -92,6 +96,9 @@ function data_generation(n::Integer, filepath::String, save_to_excel::Bool, mean
         # Rename columns dynamically
         rename!(df_transposed, new_column_names)
         insertcols!(df_transposed, 1, :Vaccine => column_headers)
+
+        # Sort the dataframe according to the predefined order
+        df_transposed = df_transposed[sortperm(df_transposed.Vaccine, by=x -> findfirst(isequal(x), predefined_order)), :]
 
         random_demand_data[scenario] = df_transposed
         push!(sheet_names, "Scenario_$scenario")
