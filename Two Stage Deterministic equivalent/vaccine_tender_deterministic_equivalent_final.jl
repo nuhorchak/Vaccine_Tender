@@ -38,16 +38,16 @@ A_v = Dict("M" => ["Measles"],"MR" => ["Measles","Rubella"],"MMR" => ["Measles",
 V_a = Dict(a => [v for v in keys(A_v) if a in A_v[v]] for a in A)
 # println(V_a)
 
-P = ["AJ_Vaccines","BB_NCIPD","Beijing_Institute","Bharat_Biotech","Bilthoven","Biological_E","Centro_de","GSK","Haffkine_Bio",
-        "LG_Chem","Merck_Sharp","Panacea_Biotec","PT_Bio","Sanofi_Pasteur","Serum_Institute","Xiamen_Innovax","Pfizer"]
+P = ["AJ_Vaccines","BB_NCIPD","China_National","Bharat_Biotech","Bilthoven","Biological_E","GSK","Haffkine_Bio",
+        "LG_Chem","Merck_Sharp","Panacea_Biotec","PT_Bio","Sanofi","Serum_Institute","Pfizer"]
 
-P_v = Dict("M" => ["Serum_Institute", "PT_Bio"], "MR" => ["Serum_Institute", "Biological_E"], "MMR" => ["Serum_Institute","GSK","Merck_Sharp"],
-    "TT"=> ["Serum_Institute","PT_Bio","BB_NCIPD"], "HepB" => ["Serum_Institute","LG_Chem"], "Hib" => ["Serum_Institute","Sanofi_Pasteur","Centro_de"], 
-    "IPV" => ["LG_Chem","AJ_Vaccines","Bilthoven","Sanofi_Pasteur"], 
-    "OPV" => ["Serum_Institute","PT_Bio","GSK","Sanofi_Pasteur","Panacea_Biotec","Beijing_Institute","Bharat_Biotech","Haffkine_Bio"],
-    "DT" => ["Serum_Institute","PT_Bio","BB_NCIPD"], "Td" => ["Serum_Institute","PT_Bio","BB_NCIPD"], "DTwP" => ["Serum_Institute","Biological_E"], "DTwP-Hib" => ["Serum_Institute"],
-    "Penta" => ["Serum_Institute","PT_Bio","Biological_E","LG_Chem","Panacea_Biotec"], "Hexa" => ["Sanofi_Pasteur"], 
-    "HPV" => ["GSK","Merck_Sharp","Xiamen_Innovax"], "Rotavirus" => ["Serum_Institute","GSK","Bharat_Biotech"], "PCV" => ["Serum_Institute","GSK","Pfizer"])
+P_v = Dict("M" => ["Serum_Institute", "PT_Bio"], "MR" => ["Serum_Institute", "Biological_E"], "MMR" => ["Serum_Institute","GSK"],
+    "TT"=> ["Serum_Institute","PT_Bio","BB_NCIPD", "Biological_E"], "HepB" => ["Serum_Institute","LG_Chem"], "Hib" => ["Serum_Institute"], 
+    "IPV" => ["LG_Chem","AJ_Vaccines","Bilthoven","Sanofi"], 
+    "OPV" => ["Serum_Institute","PT_Bio","GSK","Sanofi","Panacea_Biotec","China_National","Bharat_Biotech","Haffkine_Bio"],
+    "DT" => ["PT_Bio","BB_NCIPD"], "Td" => , ["Serum_Institute","PT_Bio","BB_NCIPD", "Biological_E"], "DTwP" => ["Serum_Institute","Biological_E"], "DTwP-Hib" => ["Serum_Institute"],
+    "Penta" => ["Serum_Institute","PT_Bio","Biological_E","LG_Chem","Panacea_Biotec"], "Hexa" => ["Sanofi"], 
+    "HPV" => ["GSK","Merck_Sharp","China_National"], "Rotavirus" => ["Serum_Institute","GSK","Bharat_Biotech"], "PCV" => ["Serum_Institute","GSK","Pfizer"])
 
 V_p = Dict(p => [v for v in keys(P_v) if p in P_v[v]] for p in P)
 
@@ -152,7 +152,7 @@ for row in 2:total_supply_row
 end
 
 # Define the file name
-filename = "Demand_Scenarios_updated.xlsx"
+filename = "Vaccine_price_data.xlsx"
 
 # Construct the relative path using joinpath
 relative_path = joinpath(data_folder, filename)
