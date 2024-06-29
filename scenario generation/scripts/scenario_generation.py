@@ -62,23 +62,24 @@ def roulette_wheel_selection(df: pd.DataFrame, verbose: bool = True) -> Tuple[pd
 
 
 def create_portfolios(df: pd.DataFrame, n_scenarios: int, verbose: bool = True):
-    portfolios = []
+    demand_scenarios = []
     prob_dict = {}
     for i in range(n_scenarios):
-        print(f"Creating portfolio {i+1}...") if verbose else None
-        portfolio, prob = roulette_wheel_selection(df, verbose=verbose)
-        portfolio["portfolio"] = i + 1
-        portfolios.append(portfolio)
+        print(f"Creating demand scenario {i+1}...") if verbose else None
+        demand_scenario, prob = roulette_wheel_selection(df, verbose=verbose)
+        demand_scenario["demand_scenario"] = i + 1
+        demand_scenarios.append(demand_scenario)
         prob_dict[i + 1] = prob
         
-    portfolios_df = pd.concat(portfolios, ignore_index=True)
+    demand_scenario_df = pd.concat(demand_scenarios, ignore_index=True)
+    demand_scenario_df.rename(columns={"index": "antigen"}, inplace=True)
     # Calculate the sum of all probabilities
     total_sum = sum(prob_dict.values())
     # Scale the probabilities so they sum up to 1
     scaled_probabilities = {k: v / total_sum for k, v in prob_dict.items()}
-    portfolios_df["portfolio_probability"] = portfolios_df["portfolio"].map(scaled_probabilities)
+    demand_scenario_df["demand_scenario_probability"] = demand_scenario_df["demand_scenario"].map(scaled_probabilities)
     
-    return portfolios_df
+    return demand_scenario_df
 
 
 def combine_reduced_scenarios(reduce_dict: dict, years:int=np.arange(1, 11)) -> pd.DataFrame:
