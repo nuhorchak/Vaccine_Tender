@@ -3,6 +3,8 @@ from loguru import logger
 from tabulate import tabulate
 import pandas as pd
 import numpy as np
+import joblib
+import random
 
 # Add the path to the code directory to the system path
 code_path = "/Users/htbui/Active Projects/Vaccine Tender/Github/Vaccine_Tender/scenario generation"
@@ -20,15 +22,20 @@ memory_available = int(os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES") 
 python_version = sys.version.split()[0]
 conda_env_name = os.environ["CONDA_DEFAULT_ENV"]
 
-class bcolors:
-    HEADER = "\033[95m"
-    OKBLUE = "\033[94m"
-    OKGREEN = "\033[92m"
-    WARNING = "\033[93m"
-    FAIL = "\033[91m"
-    ENDC = "\033[0m"
-    BOLD = "\033[1m"
-    UNDERLINE = "\033[4m"
+ANTIGENS = [
+    "Diphtheria",
+    "Pertussis",
+    "Polio",
+    "Tetanus",
+    "Rotavirus",
+    "PCV",
+    "Measles",
+    "Mumps",
+    "Rubella",
+    "Hepatitis_B",
+    "Hib",
+    "HPV",
+]
 
 d3_colors = ['#1F77B4', '#FF7F0E', '#2CA02C', '#D62728', '#9467BD', '#8C564B', '#E377C2', '#7F7F7F', '#BCBD22', '#17BECF']
 
