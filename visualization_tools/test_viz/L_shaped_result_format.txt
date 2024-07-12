@@ -1,0 +1,30 @@
+Indices 
+a => antigens
+v => vaccines
+p => producers
+t => time periods
+tau => time periods for the end of the tenders
+w (omega) => scenarios
+
+L_shaped_output is a dictionary 
+keys = ["F","Y","W","L","Q","X","I","Vc","S"]
+values
+"F" => binary, tender schedule => F[a][t][tau]
+"Y" => binary, manufacturers producing in period t => Y[p][t]
+"W" => binary, manufacturers if they participate in a tender => W[p][t][tau]
+"L" => integer (btw 0 and 5), capacity extension decision => L[p][t]
+"Q" => continuous, commitment amounts => Q[v][p][t][tau]
+"X" => continuous, production amounts => X[v][p][t]
+"I" => continuous, inventory level => I[v][t][w]
+"Vc" => continuous, vaccinated children => Vc[v][t][w]
+"S" => continuous, unvaccinated children => S[a][t][w]
+
+* We will compare the results for (10,5,21,1,1,1,1) vs (10,5,21,1,1,1,5) vs (10,5,21,1,1,1.5,5) (analysis for what happens if we use different levels of capacity and capacity extension rates)
+	* We can compare the tender schedules, F
+	* capacity extension decisions, L
+	* unvaccinated children, S
+
+* We will compare the results for (10,5,21,1,1,1,5) vs (10,5,21,1,2,1,5) (analysis for what happens if we have different levels of initial inventory levels)
+	* We can compare the tender schedules, F
+	* capacity extension decisions, L
+	* unvaccinated children, S
