@@ -1,0 +1,192 @@
+ENTRY: Hexa
+Current capacity: 87429432 for Sanofi
+Modified Hepatitis_B demand: 0
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Polio demand: 264931594
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Polio demand: 0
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Polio demand: 0
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Polio demand: 0
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Hib demand: 282777100
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Pertussis demand: 347414000
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Diphtheria demand: 605351423
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Diphtheria demand: 422345754
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Diphtheria demand: 390387254
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Diphtheria demand: 391870554
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Tetanus demand: 626351000
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Hib demand: 548964543
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Pertussis demand: 370920005
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Hib demand: 751559770
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Pertussis demand: 635464332
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Diphtheria demand: 1242571360
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Tetanus demand: 601333100
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Polio demand: 1786552414
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Hib demand: 1025899170
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Pertussis demand: 970319632
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Diphtheria demand: 1749240851
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Tetanus demand: 1110392691
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Polio demand: 1458412856
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Hib demand: 1295940470
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Pertussis demand: 1298355432
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Diphtheria demand: 1914126541
+ENTRY: Hexa
+Current capacity: 87429432 for Sanofi
+Modified Diphtheria demand: 0
+ENTRY: Hexa
+Current capacity: 87429432 for Sanofi
+Modified Diphtheria demand: 0
+ENTRY: Hexa
+Current capacity: 87429432 for Sanofi
+Modified Diphtheria demand: 0
+ENTRY: Hexa
+Current capacity: 87429432 for Sanofi
+Modified Diphtheria demand: 0
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Tetanus demand: 1700432791
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Hepatitis_B demand: 332308900
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Polio demand: 544184606
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Hib demand: 1044533590
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Pertussis demand: 1105066452
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Diphtheria demand: 2015927317
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Hepatitis_B demand: 506898175
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Polio demand: 193020302
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Hib demand: 1314949190
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Pertussis demand: 1433375352
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Diphtheria demand: 1237173486
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Tetanus demand: 590973100
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Hepatitis_B demand: 839113075
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Hib demand: 1588662590
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Pertussis demand: 1764837552
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Diphtheria demand: 1825127586
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Tetanus demand: 1188737700
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Hepatitis_B demand: 1174638475
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Polio demand: 197118084
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Hib demand: 1865378090
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Pertussis demand: 2099149552
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Diphtheria demand: 2419834986
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Tetanus demand: 1791986100
+ENTRY: Hexa
+Current capacity: 87429432 for Sanofi
+Modified Hepatitis_B demand: 623721969
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Polio demand: 83552242
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Hib demand: 2139091490
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Pertussis demand: 2430611752
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Diphtheria demand: 3575477430
+ENTRY: Hexa
+Current capacity: 87429432 for Sanofi
+Modified Diphtheria demand: 0
+ENTRY: Hexa
+Current capacity: 87429432 for Sanofi
+Modified Diphtheria demand: 0
+ENTRY: Hexa
+Current capacity: 87429432 for Sanofi
+Modified Diphtheria demand: 0
+ENTRY: Hexa
+Current capacity: 87429432 for Sanofi
+Modified Diphtheria demand: 0
+ENTRY: Hexa
+Current capacity: 0 for Sanofi
+Modified Tetanus demand: 2389750700

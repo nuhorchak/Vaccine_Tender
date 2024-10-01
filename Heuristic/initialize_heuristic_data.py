@@ -16,7 +16,7 @@ demand_80_expanded.columns = range(1, 11)
 # Concatenating the expanded demands columns back to the original antigen column
 demand_80_final = pd.concat([demand_80['antigen'], demand_80_expanded], axis=1)
 #added 11th year to capture any left overdemand at the end of year 10.
-demand_80_final[11] = 0.1
+# demand_80_final[11] = 0.1
 
 file_path = 'data/real/Starting_point.xlsx'
 
@@ -98,7 +98,7 @@ missed_doses['Missed Doses'] = np.zeros(len(antigens))
 vaccine_purchases = defaultdict(list)
 
 max_tender_length = 5
-tender_cost = 10
+tender_cost = 1e8
 
 total_price = [0]
 
