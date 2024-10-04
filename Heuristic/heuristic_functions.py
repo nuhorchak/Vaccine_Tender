@@ -139,12 +139,12 @@ def calculate_coverage_and_ratios(inventory_DF, demand_DF, V_a, year):
 def search_vaccine(vaccine, A_v_list, antigen):
     if vaccine in A_v_list:
         values = A_v_list[vaccine]
-        print(f"this vaccine contains: {values}")
+        # print(f"this vaccine contains: {values}")
         if antigen in values:
-            print(f"checking for {antigen} in {vaccine}")
+            # print(f"checking for {antigen} in {vaccine}")
             values.remove(antigen)
-            print(f"removing antigen {antigen}")
-            print(f"updated list is: {values}")
+            # print(f"removing antigen {antigen}")
+            # print(f"updated list is: {values}")
             if not values:
                 return None
             else:
@@ -189,10 +189,11 @@ def build_tenders_partial_redux(antigen, interim_demand, capacity_data, inventor
             A_v_list_new = dict(sorted(A_v_list_new.items(), key=lambda item: len(item[1]), reverse=True))
             entry = price_list.pop(0)
             manufacturer = entry['Manufacturer']
-            # print(f"manufacturer: {manufacturer}")
+            print(f"manufacturer: {manufacturer}")
             vaccine = entry['Vaccine']
-            # print(f"vaccine: {vaccine}")
+            print(f"vaccine: {vaccine}")
             price = entry['Price'] 
+            print(f"price: {price}")
 
             # Get manufacturer capacity for the current tender year
             manufacturer_row = capacity_data[capacity_data['Manufacturer'] == manufacturer]
@@ -318,7 +319,7 @@ def build_tenders_partial_redux(antigen, interim_demand, capacity_data, inventor
                 'Ending': tender_year,
                 'Fill': 'Partial'
             }
-            total_price += tender_cost
+            # total_price += tender_cost
             break
         else:
             # print(f"Demand fulfilled in year {tender_year}")
@@ -328,7 +329,7 @@ def build_tenders_partial_redux(antigen, interim_demand, capacity_data, inventor
                 'Ending': tender_year,
                 'Fill': 'Full'
             }
-            total_price += tender_cost
+            # total_price += tender_cost
     new_tender_df = pd.DataFrame([new_tender])
 
     results = {
