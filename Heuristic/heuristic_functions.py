@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
-from collections import Counter
-from collections import defaultdict
+# from collections import Counter
+# from collections import defaultdict
+from copy import deepcopy
 
 def get_manufacturer_vaccine_price(antigen, price_data, Vax_ant_dict, prod_vax_dict, year, find_lowest=False):
     """
@@ -133,94 +134,207 @@ def calculate_coverage_and_ratios(inventory_DF, demand_DF, V_a, year):
 
     return calculate_ratios_DF, total_coverage_df
 
-def build_tenders_partial(antigen, interim_demand, capacity_data, inventory_DF, year, max_tender_length, total_price, A_v, antigen_list):
-    tender_start = year
-    # tender_end = 0
+
+# Function to search for a vaccine and return the diseases
+def search_vaccine(vaccine, A_v_list, antigen):
+    if vaccine in A_v_list:
+        values = A_v_list[vaccine]
+        print(f"this vaccine contains: {values}")
+        if antigen in values:
+            print(f"checking for {antigen} in {vaccine}")
+            values.remove(antigen)
+            print(f"removing antigen {antigen}")
+            print(f"updated list is: {values}")
+            if not values:
+                return None
+            else:
+                return values
+        else:
+            print("Antigen not present")
+            return None
+    else:
+        return f"Vaccine '{vaccine}' not found."
+    
+def build_tenders_partial_redux(antigen, interim_demand, capacity_data, inventory_DF, year, max_tender_length, total_price, price_data, V_a, P_v, tender_cost, A_v):
+    # Initialize variables
+    inventory_used = []
     new_tender = None
+
+    # Validate year
     if year not in capacity_data.columns:
         print(f"Year {year} is not valid. Exiting function.")
         return {
-            'Inventory_Used': [],
-            'Demand_Filled': 0,
-            'Demand_unfilled': [],
-            'Total_Price': total_price,
+            'New_Tender': None,
             'Message': "Invalid year",
         }
 
-    for tender_year in range(year + 1, year + max_tender_length + 1): 
+    # Loop over tender years
+    for tender_year in range(year + 1, year + 1 + max_tender_length): 
         print(f"CHECKING YEAR: {tender_year} FOR CAPACITY!")
-        # Check the demand
-        if antigen in interim_demand.iloc[:, 0].tolist():
-            antigen_demand = interim_demand.loc[interim_demand['antigen'] == antigen, tender_year].iloc[0]
-            starting_antigen_demand = interim_demand.loc[interim_demand['antigen'] == antigen, tender_year].iloc[0]
-            print(f"antigen {antigen} demand: {antigen_demand} in year {tender_year}")
-        else:
+        
+        # Validate antigen existence in interim_demand
+        if antigen not in interim_demand['antigen'].tolist():
             raise ValueError(f"Antigen '{antigen}' not found in the list of antigens.")
+        
+        # Get antigen demand for the current year
+        antigen_demand = interim_demand.loc[interim_demand['antigen'] == antigen, tender_year].iloc[0]
+        starting_antigen_demand = deepcopy(antigen_demand)
+        # print(f"the INTERIM DEMAND DF VALUE FOR demand for antigen {antigen} is {antigen_demand}")
 
-        print(f"can we find supply enough for {antigen}?????")
-        # for the antigen, is there supply of a vaccine that can cover it?
-        price_list = get_manufacturer_vaccine_price(row.loc['antigen'], price_data, V_a, P_v, tender_year)
-
-        #sort price list based on most coverage, to least coverage
-
-
-        for entry in price_list: #tenders can cover partial demand, so we need to update for that and also for othe antigen demands filled
-            print(f"ENTRY: {entry['Vaccine']}")
+        # print(f"Getting price list for vaccines with antigen: {antigen}?")   
+        price_list = get_manufacturer_vaccine_price(antigen, price_data, V_a, P_v, tender_year)
+        
+        while price_list and antigen_demand > 0:
+            A_v_list_new = deepcopy(A_v)
+            A_v_list_new = dict(sorted(A_v_list_new.items(), key=lambda item: len(item[1]), reverse=True))
+            entry = price_list.pop(0)
             manufacturer = entry['Manufacturer']
+            # print(f"manufacturer: {manufacturer}")
             vaccine = entry['Vaccine']
-            price = entry['Price'] # need to track cost still
+            # print(f"vaccine: {vaccine}")
+            price = entry['Price'] 
 
-            #supply
+            # Get manufacturer capacity for the current tender year
             manufacturer_row = capacity_data[capacity_data['Manufacturer'] == manufacturer]
             if not manufacturer_row.empty:
-                # capacity = manufacturer_row.iloc[0][year]
-                capacity = capacity_data.loc[capacity_data['Manufacturer']==manufacturer, tender_year].iloc[0]
-                print(f"Current capacity: {capacity} for {manufacturer}")
+                capacity = capacity_data.loc[capacity_data['Manufacturer'] == manufacturer, tender_year].iloc[0]
             else:
                 raise ValueError(f"Manufacturer '{manufacturer}' not found in the list of manufacturers.")
-                        
-            # print(antigen_demand)
-            if capacity > antigen_demand: #we need to update inventory based on teh vaccine, so that we cover all antigens in all vaccines tendered for
-                interim_demand.loc[interim_demand['antigen'] == antigen, tender_year] = 0
 
-                # capacity_data.loc[capacity_data['Manufacturer'] == manufacturer, year] = capacity_data.loc[capacity_data['Manufacturer'] == manufacturer, tender_year].iloc[0] - antigen_demand
-                capacity_data.loc[capacity_data['Manufacturer'] == manufacturer, year] = max(capacity_data.loc[capacity_data['Manufacturer'] == manufacturer, tender_year].iloc[0] - antigen_demand, 0)
-                print(f"! Updated {antigen} demand: {interim_demand.loc[interim_demand['antigen'] == antigen, tender_year].iloc[0]}")
-                inventory_DF.loc[inventory_DF['Vaccine'] == vaccine, 'Amount'] += antigen_demand
-                break
-            else:
-                interim_demand.loc[interim_demand['antigen'] == antigen, tender_year] = max(interim_demand.loc[interim_demand['antigen'] == antigen, tender_year].iloc[0] - capacity, 0)
-
-                print(f"Modified {antigen} demand: {interim_demand.loc[interim_demand['antigen'] == antigen, tender_year].iloc[0]}")
-                capacity_data.loc[capacity_data['Manufacturer'] == manufacturer, tender_year] = 0
-                inventory_DF.loc[inventory_DF['Vaccine'] == vaccine, 'Amount'] += capacity
-
+            # Check if capacity can fulfill antigen demand
+            if capacity > antigen_demand:
+                # print("capacity > demand, total tender fill")
+                #demand = 0
+                interim_demand.loc[interim_demand['antigen']==antigen, tender_year] = 0
                 
+                
+                #capacity - demand
+                capacity_data.loc[capacity_data['Manufacturer']==manufacturer, tender_year] -= - antigen_demand
+                #update inventory
+                inventory_DF.loc[inventory_DF['Vaccine']==vaccine, 'Amount'] += antigen_demand
+                #vax fulfilled
+                vax_filled = {
+                    'Manufacturer': manufacturer,
+                    'Vaccine': vaccine,
+                    'Doses': antigen_demand,
+                    'Year': tender_year
+                }
+                # total price = demand * price
+                total_price += antigen_demand * price
+                #check for additional antigens in the vaccine in question!
+                
+                remaining_antigens = search_vaccine(vaccine, A_v_list_new, antigen)
+                if remaining_antigens is not None:
+                    # print(f"remaining antigens: {remaining_antigens}")
+                    for ant in remaining_antigens:
+                        # print(f"decermenting: {ant} from {interim_demand.loc[interim_demand['antigen']== ant, tender_year].iloc[0]} to {interim_demand.loc[interim_demand['antigen']== ant, tender_year].iloc[0] - antigen_demand}")
+                        interim_demand.loc[interim_demand['antigen']== ant, tender_year] = max( interim_demand.loc[interim_demand['antigen']== ant, tender_year].iloc[0] - antigen_demand, 0)
+                # else:
+                #     print("No other antigens to update")
+                
+                antigen_demand = 0
+                # print(f"updated demand is : {interim_demand.loc[interim_demand['antigen']==antigen, tender_year]}")
 
-        if interim_demand.loc[interim_demand['antigen'] == antigen, tender_year].iloc[0] == 0:
-            # no tender for this year
-            print(f"Year {tender_year}: Demand fully met.")
+            elif capacity == antigen_demand:
+                # print("cap = demand")
+                #demand = 0
+                interim_demand.loc[interim_demand['antigen']==antigen, tender_year] = 0
+                
+                
+                #capacity = 0
+                capacity_data.loc[capacity_data['Manufacturer']==manufacturer, tender_year] = 0
+                #update inventory
+                inventory_DF.loc[inventory_DF['Vaccine']==vaccine, 'Amount'] += antigen_demand
+                #vax filled
+                vax_filled = {
+                    'Manufacturer': manufacturer,
+                    'Vaccine': vaccine,
+                    'Doses': antigen_demand,
+                    'Year': tender_year
+                }
+                # total_price = price * antigen_demand
+                total_price += antigen_demand * price
+                remaining_antigens = search_vaccine(vaccine, A_v_list_new, antigen)
+                if remaining_antigens is not None:
+                    # print(f"remaining antigens: {remaining_antigens}")
+                    for ant in remaining_antigens:
+                        # print(f"decermenting: {ant} from {interim_demand.loc[interim_demand['antigen']== ant, tender_year].iloc[0]} to {interim_demand.loc[interim_demand['antigen']== ant, tender_year].iloc[0] - antigen_demand}")
+                        interim_demand.loc[interim_demand['antigen']== ant, tender_year] = max( interim_demand.loc[interim_demand['antigen']== ant, tender_year].iloc[0] - antigen_demand, 0)
+                # else:
+                #     print("No other antigens to update")
+
+                antigen_demand = 0
+                # print(f"updated demand is : {interim_demand.loc[interim_demand['antigen']==antigen, tender_year]}")
+
+            else:
+                # print("capacity less than demand, cannot fulfill total demand")
+                #demand - capacity
+                interim_demand.loc[interim_demand['antigen']==antigen, tender_year] -= capacity
+
+                #capacity = 0
+                capacity_data.loc[capacity_data['Manufacturer']==manufacturer, tender_year] = 0
+                #update inventory
+                inventory_DF.loc[inventory_DF['Vaccine']==vaccine, 'Amount'] += capacity
+                #vax fulfilled
+                vax_filled = {
+                    'Manufacturer': manufacturer,
+                    'Vaccine': vaccine,
+                    'Doses': antigen_demand,
+                    'Year': tender_year -1
+                }
+                # total price = capacity * price
+                total_price += capacity * price
+                #check for additional antigens in the vaccine in question!
+                remaining_antigens = search_vaccine(vaccine, A_v_list_new, antigen)
+                if remaining_antigens is not None:
+                    # print(f"remaining antigens: {remaining_antigens}")
+                    for ant in remaining_antigens:
+                        # print(f"decermenting: {ant} from {interim_demand.loc[interim_demand['antigen']== ant, tender_year].iloc[0]} to {interim_demand.loc[interim_demand['antigen']== ant, tender_year].iloc[0] - capacity}")
+                        interim_demand.loc[interim_demand['antigen']== ant, tender_year] = max( interim_demand.loc[interim_demand['antigen']== ant, tender_year].iloc[0] - capacity, 0)
+                # else:
+                #     print("No other antigens to update")
+                
+                antigen_demand -= capacity
+                # print(f"updated demand is : {interim_demand.loc[interim_demand['antigen']==antigen, tender_year]}")
+
+            inventory_used.append(vax_filled)
+
+
+        # if capacity remains, then we return partial tender, otherwise, demand was satisfied.
+        if starting_antigen_demand == 0:
+            # print('started with ZERO demand')
             new_tender = {
                 'Antigen': antigen,
-                'Starting': tender_start,
-                'Ending': tender_year +1
+                'Starting': 0,
+                'Ending': 0,
+                'Fill': '0'
             }
-        elif starting_antigen_demand > interim_demand.loc[interim_demand['antigen'] == antigen, tender_year].iloc[0]:
-            # tender
-            print(f"Year {tender_year}: Demand partially met.")
-            new_tender = {
-                'Antigen': antigen,
-                'Starting': tender_start,
-                'Ending': tender_year +1
-            }
-        else:
-            print(f"Year {tender_year}: Demand Not Met")
-            new_tender = None
             break
-            
-        if new_tender is not None:
-            new_tender = pd.DataFrame([new_tender])
+        elif antigen_demand > 0:
+            # print(f"IN THE YEAR OF OUR LORD {tender_year}, WE SHALL NOT FULFILL DEMAND FULLY")
+            new_tender = {
+                'Antigen': antigen,
+                'Starting': year,
+                'Ending': tender_year,
+                'Fill': 'Partial'
+            }
+            total_price += tender_cost
+            break
+        else:
+            # print(f"Demand fulfilled in year {tender_year}")
+            new_tender = {
+                'Antigen': antigen,
+                'Starting': year,
+                'Ending': tender_year,
+                'Fill': 'Full'
+            }
+            total_price += tender_cost
+    new_tender_df = pd.DataFrame([new_tender])
 
+    results = {
+        'New_Tender': new_tender_df,
+        'Inventory_Used': inventory_used,
+        'Total_Price': total_price
+        }
 
-
-    return new_tender
+    return results

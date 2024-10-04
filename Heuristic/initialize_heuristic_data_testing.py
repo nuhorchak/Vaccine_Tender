@@ -5,7 +5,7 @@ from collections import defaultdict
 from copy import deepcopy
 
 # Load demand data
-demand_path = 'data/real/antigen_demand_80_20_2_scenarios.csv'
+demand_path = 'data/test/antigen_demand_80_20_2_scenarios.csv'
 data = pd.read_csv(demand_path)
 # Create the two dataframes based on the 'prob' column
 demand_80 = data[data['prob'] == 0.8]
@@ -16,10 +16,9 @@ demand_80_expanded = demand_80['demands'].apply(lambda x: pd.Series(eval(x)))
 demand_80_expanded.columns = range(1, 11)
 # Concatenating the expanded demands columns back to the original antigen column
 demand_80_final = pd.concat([demand_80['antigen'], demand_80_expanded], axis=1)
-#added 11th year to capture any left overdemand at the end of year 10.
-# demand_80_final[11] = 0.1
 
-file_path = 'data/real/Starting_point.xlsx'
+
+file_path = 'data/test/Starting_point.xlsx'
 
 # Load the sheets 'F_start', 'I_start', 'S_start' into their own DataFrames
 f_start = pd.read_excel(file_path, sheet_name='F_start')
@@ -27,7 +26,7 @@ i_start = pd.read_excel(file_path, sheet_name='I_start')
 s_start = pd.read_excel(file_path, sheet_name='S_start')
 
 # Load the Excel file, skipping the first two sheets
-money_path = 'data/Vaccine_price_data.xlsx'
+money_path = 'data/test/Vaccine_price_data.xlsx'
 sheet_names = pd.ExcelFile(money_path).sheet_names
 
 # Load the remaining sheets into a dictionary of DataFrames
@@ -35,16 +34,11 @@ sheet_names = pd.ExcelFile(money_path).sheet_names
 price_data = {sheet_names[i]: pd.read_excel(money_path, sheet_name=i).rename(columns=lambda x: "Manufacturer" if x == pd.read_excel(money_path, sheet_name=i).columns[0] else x) for i in range(2, len(sheet_names))}
 
 # Load the Excel file, only reading the first sheet
-capacity_path = 'data/production_capacity_scenarios.xlsx'
+capacity_path = 'data/test/production_capacity_scenarios.xlsx'
 sheet_names = pd.ExcelFile(capacity_path).sheet_names
 
 capacity_data = pd.read_excel(capacity_path, sheet_name='base_capacity')
 # capacity_data
-
-#tender length
-delta = 3
-vaccine_consumption_percent = 1
-years = 10
 
 # Creating an empty DataFrame with the specified structure for calculating ratios
 antigens = f_start['Antigen']
@@ -103,78 +97,72 @@ tender_cost = 1e8
 
 total_price = [0]
 
-# A = ["Measles", "Mumps", "Rubella"]
-# V = ["M", "MR", "MMR"]
-
-# A_v = {
-#     "M": ["Measles"],
-#     "MR": ["Measles", "Rubella"],
-#     "MMR": ["Measles", "Mumps", "Rubella"]
-# }
-
-# P = ["Biological_E", 
-#     "GSK","PT_Bio", 
-#     "Serum_Institute"
-# ]
-
-# P_v = {
-#     "M": ["Serum_Institute", "PT_Bio"],
-#     "MR": ["Serum_Institute", "Biological_E"],
-#     "MMR": ["Serum_Institute", "GSK"]
-# }
-
-# P_v = {
-#     "M": ["Serum_Institute", "PT_Bio"],
-#     "MR": ["Serum_Institute", "Biological_E"],
-#     "MMR": ["Serum_Institute", "GSK"]
-# }
-
-A = ["Measles", "Mumps", "Rubella", "Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib", "Polio", "HPV", "Rotavirus", "PCV"]
-
-V = ["M", "MR", "MMR", "TT", "HepB", "Hib", "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "Penta", "Hexa", "HPV", "Rotavirus", "PCV"]
+A = ["Measles", "Mumps", "Rubella"]
+V = ["M", "MR", "MMR"]
 
 A_v = {
     "M": ["Measles"],
     "MR": ["Measles", "Rubella"],
-    "MMR": ["Measles", "Mumps", "Rubella"],
-    "TT": ["Tetanus"],
-    "HepB": ["Hepatitis_B"],
-    "Hib": ["Hib"],
-    "IPV": ["Polio"],
-    "OPV": ["Polio"],
-    "DT": ["Diphtheria", "Tetanus"],
-    "Td": ["Diphtheria", "Tetanus"],
-    "DTwP": ["Diphtheria", "Tetanus", "Pertussis"],
-    "DTwP-Hib": ["Diphtheria", "Tetanus", "Pertussis", "Hib"],
-    "Penta": ["Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib"],
-    "Hexa": ["Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib", "Polio"],
-    "HPV": ["HPV"],
-    "Rotavirus": ["Rotavirus"],
-    "PCV": ["PCV"]
+    "MMR": ["Measles", "Mumps", "Rubella"]
 }
 
-P = ["AJ_Vaccines", "BB_NCIPD", "China_National", "Bharat_Biotech", "Bilthoven", "Biological_E", "GSK", "Haffkine_Bio",
-     "LG_Chem", "Merck_Sharp", "Panacea_Biotec", "PT_Bio", "Sanofi", "Serum_Institute", "Pfizer"]
+P = ["Biological_E", 
+    "GSK","PT_Bio", 
+    "Serum_Institute"
+]
 
 P_v = {
     "M": ["Serum_Institute", "PT_Bio"],
     "MR": ["Serum_Institute", "Biological_E"],
-    "MMR": ["Serum_Institute", "GSK"],
-    "TT": ["Serum_Institute", "PT_Bio", "BB_NCIPD", "Biological_E"],
-    "HepB": ["Serum_Institute", "LG_Chem"],
-    "Hib": ["Serum_Institute"],
-    "IPV": ["LG_Chem", "AJ_Vaccines", "Bilthoven", "Sanofi"],
-    "OPV": ["Serum_Institute", "PT_Bio", "GSK", "Sanofi", "Panacea_Biotec", "China_National", "Bharat_Biotech", "Haffkine_Bio"],
-    "DT": ["PT_Bio", "BB_NCIPD"],
-    "Td": ["Serum_Institute", "PT_Bio", "BB_NCIPD", "Biological_E"],
-    "DTwP": ["Serum_Institute", "Biological_E"],
-    "DTwP-Hib": ["Serum_Institute"],
-    "Penta": ["Serum_Institute", "PT_Bio", "Biological_E", "LG_Chem", "Panacea_Biotec"],
-    "Hexa": ["Sanofi"],
-    "HPV": ["GSK", "Merck_Sharp", "China_National"],
-    "Rotavirus": ["Serum_Institute", "GSK", "Bharat_Biotech"],
-    "PCV": ["Serum_Institute", "GSK", "Pfizer"]
+    "MMR": ["Serum_Institute", "GSK"]
 }
+
+# A = ["Measles", "Mumps", "Rubella", "Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib", "Polio", "HPV", "Rotavirus", "PCV"]
+
+# V = ["M", "MR", "MMR", "TT", "HepB", "Hib", "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "Penta", "Hexa", "HPV", "Rotavirus", "PCV"]
+
+# A_v = {
+#     "M": ["Measles"],
+#     "MR": ["Measles", "Rubella"],
+#     "MMR": ["Measles", "Mumps", "Rubella"],
+#     "TT": ["Tetanus"],
+#     "HepB": ["Hepatitis_B"],
+#     "Hib": ["Hib"],
+#     "IPV": ["Polio"],
+#     "OPV": ["Polio"],
+#     "DT": ["Diphtheria", "Tetanus"],
+#     "Td": ["Diphtheria", "Tetanus"],
+#     "DTwP": ["Diphtheria", "Tetanus", "Pertussis"],
+#     "DTwP-Hib": ["Diphtheria", "Tetanus", "Pertussis", "Hib"],
+#     "Penta": ["Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib"],
+#     "Hexa": ["Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib", "Polio"],
+#     "HPV": ["HPV"],
+#     "Rotavirus": ["Rotavirus"],
+#     "PCV": ["PCV"]
+# }
+
+# P = ["AJ_Vaccines", "BB_NCIPD", "China_National", "Bharat_Biotech", "Bilthoven", "Biological_E", "GSK", "Haffkine_Bio",
+#      "LG_Chem", "Merck_Sharp", "Panacea_Biotec", "PT_Bio", "Sanofi", "Serum_Institute", "Pfizer"]
+
+# P_v = {
+#     "M": ["Serum_Institute", "PT_Bio"],
+#     "MR": ["Serum_Institute", "Biological_E"],
+#     "MMR": ["Serum_Institute", "GSK"],
+#     "TT": ["Serum_Institute", "PT_Bio", "BB_NCIPD", "Biological_E"],
+#     "HepB": ["Serum_Institute", "LG_Chem"],
+#     "Hib": ["Serum_Institute"],
+#     "IPV": ["LG_Chem", "AJ_Vaccines", "Bilthoven", "Sanofi"],
+#     "OPV": ["Serum_Institute", "PT_Bio", "GSK", "Sanofi", "Panacea_Biotec", "China_National", "Bharat_Biotech", "Haffkine_Bio"],
+#     "DT": ["PT_Bio", "BB_NCIPD"],
+#     "Td": ["Serum_Institute", "PT_Bio", "BB_NCIPD", "Biological_E"],
+#     "DTwP": ["Serum_Institute", "Biological_E"],
+#     "DTwP-Hib": ["Serum_Institute"],
+#     "Penta": ["Serum_Institute", "PT_Bio", "Biological_E", "LG_Chem", "Panacea_Biotec"],
+#     "Hexa": ["Sanofi"],
+#     "HPV": ["GSK", "Merck_Sharp", "China_National"],
+#     "Rotavirus": ["Serum_Institute", "GSK", "Bharat_Biotech"],
+#     "PCV": ["Serum_Institute", "GSK", "Pfizer"]
+# }
 
 #translate vaccine - antigen, to antigen - vaccine
 V_a = {a: [v for v in A_v if a in A_v[v]] for a in A}
