@@ -54,7 +54,7 @@ P_v = Dict("M" => ["Serum_Institute", "PT_Bio"], "MR" => ["Serum_Institute", "Bi
     "TT"=> ["Serum_Institute","PT_Bio","BB_NCIPD", "Biological_E"], "HepB" => ["Serum_Institute","LG_Chem"], "Hib" => ["Serum_Institute"], 
     "IPV" => ["LG_Chem","AJ_Vaccines","Bilthoven","Sanofi"], 
     "OPV" => ["Serum_Institute","PT_Bio","GSK","Sanofi","Panacea_Biotec","China_National","Bharat_Biotech","Haffkine_Bio"],
-    "DT" => ["PT_Bio","BB_NCIPD"], "Td" => , ["Serum_Institute","PT_Bio","BB_NCIPD", "Biological_E"], "DTwP" => ["Serum_Institute","Biological_E"], "DTwP-Hib" => ["Serum_Institute"],
+    "DT" => ["PT_Bio","BB_NCIPD"], "Td" => ["Serum_Institute","PT_Bio","BB_NCIPD", "Biological_E"], "DTwP" => ["Serum_Institute","Biological_E"], "DTwP-Hib" => ["Serum_Institute"],
     "Penta" => ["Serum_Institute","PT_Bio","Biological_E","LG_Chem","Panacea_Biotec"], "Hexa" => ["Sanofi"], 
     "HPV" => ["GSK","Merck_Sharp","China_National"], "Rotavirus" => ["Serum_Institute","GSK","Bharat_Biotech"], "PCV" => ["Serum_Institute","GSK","Pfizer"])
 
