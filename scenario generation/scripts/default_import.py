@@ -5,10 +5,13 @@ import pandas as pd
 import numpy as np
 import joblib
 import random
+import psutil
+
+
 
 # Add the path to the code directory to the system path
-code_path = "/Users/htbui/Active Projects/Vaccine Tender/Github/Vaccine_Tender/scenario generation"
-Github_path = "/Users/htbui/Active Projects/Vaccine Tender/Github/Vaccine_Tender"
+code_path = "C:/Users/nicho/OneDrive/Desktop/Vaccine_Tender/scenario generation"
+Github_path = "C:/Users/nicho/OneDrive/Desktop/Vaccine_Tender"
 
 if code_path not in sys.path:
     sys.path.insert(0, code_path)
@@ -18,7 +21,8 @@ image_path = f"{Github_path}/visualization"
 
 host_name = socket.gethostname()
 cpu_count = os.cpu_count()
-memory_available = int(os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES") / (1024.0**3))
+# memory_available = int(os.sysconf("SC_PAGE_SIZE") * os.sysconf("SC_PHYS_PAGES") / (1024.0**3))
+memory_available = psutil.virtual_memory().total / (1024.0 ** 3)
 python_version = sys.version.split()[0]
 conda_env_name = os.environ["CONDA_DEFAULT_ENV"]
 
