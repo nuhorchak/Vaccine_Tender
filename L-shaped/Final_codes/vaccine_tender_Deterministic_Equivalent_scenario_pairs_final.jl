@@ -19,8 +19,8 @@ gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "Feasibility
 # scaled_capacity => base value is 1. For the scaled_capacity effect, 1.5 should be input.
 # allowable_capacity_increase_number => Default value is 5 meaning that a producer can increase its capacity by 50% (5x10%) in a year. It can be selected as allowable_capacity_increase_number ∈ {1,2,3,4,5}
 
-# tender_stochastic_sensitivity(10,5,2,2,1,1,1,5)
-function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,number_of_demand_scenarios,total_capacity_scenarios,number_of_trials,initial_inventory_rate,scaled_capacity,allowable_capacity_increase_number)
+# tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, false)
+function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,number_of_demand_scenarios,total_capacity_scenarios,number_of_trials,initial_inventory_rate,scaled_capacity,allowable_capacity_increase_number, cap_inc_bool = false)
 
     DE_output = Dict()
     Scenarios_used = Dict()
@@ -29,7 +29,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
         println("trial: $trial")
 
         overlap_decision = true
-        capacity_extension_decision = true
+        capacity_extension_decision = cap_inc_bool
 
         ################################################### INDICES ####################################################
         A = ["Measles", "Mumps", "Rubella", "Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib", "Polio", "HPV", "Rotavirus", "PCV"]
@@ -119,7 +119,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
         source = string(current_directory, "/results/log_DE_L_T_", max_horizon_length, "_delta_", max_tender_length, "_scen_", number_of_demand_scenarios * total_capacity_scenarios, "_trial_", trial, "_inv_", initial_inventory_rate, "_cap._", scaled_capacity, "_cap.inc._", allowable_capacity_increase_number, "_base.json")
 
         current_directory = @__DIR__
-        filename = "data/scenario_pair_probabilities_new_demand_base_capacity_pandemic.json"
+        filename = "data/scenario_pair_probabilities_new.json"
         relative_path = joinpath(current_directory, filename)
         scenario_pair_probs = JSON.parsefile(relative_path)
 
@@ -167,7 +167,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
         unit = 1000
 
         current_directory = @__DIR__
-        filename = "data/scenario_pairs_new_demand_base_capacity_pandemic.json"
+        filename = "data/scenario_pairs_new.json"
         # Construct the relative path using joinpath
         relative_path = joinpath(current_directory, filename)
 
@@ -740,7 +740,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                 for ω in Ω
                     for p in P
                         for t in T
-                            @constraint(model, sum(X[v, p, t, ω] for v in V_p[p]) <= s_real[p, t] * Y[p, t])
+                            @constraint(model, sum(X[v, p, t, ω] for v in V_p[p]) <= s_real[p] * Y[p, t])
                         end
                     end
                 end
@@ -865,3 +865,5 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
         save_L_shaped_results(F_de, Y_de, W_de, L_de, Q_de, X_de, I_de, Vc_de, S_de)
     end
 end
+
+tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, false)

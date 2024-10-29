@@ -1,7 +1,7 @@
 
 import sys
 from typing import Tuple
-code_path = "/Users/htbui/Active Projects/Vaccine Tender/Github/Vaccine_Tender/scenario generation"
+code_path = "C:/Users/nicho/OneDrive/Desktop/Vaccine_Tender/Github/Vaccine_Tender/scenario generation"
 
 if code_path not in sys.path:
     sys.path.insert(0, code_path)
@@ -31,7 +31,9 @@ def generate_time_series(
         # Generate random values from a normal distribution with the given mean and standard deviation
         values = np.random.normal(mu, sigma, n)
         # Clip the values to the lower and upper bounds
-        capped_values = np.clip(values, lower_bound, upper_bound)
+        # capped_values = np.clip(values, max(lower_bound,0), upper_bound)
+        capped_values = np.where(values < 0, max(lower_bound, 0), values)
+        capped_values = np.where(capped_values > upper_bound, upper_bound, capped_values)
         # Store the values in the DataFrame
         ts[year] = capped_values
 
