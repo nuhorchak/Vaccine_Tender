@@ -8,7 +8,6 @@ using CSV
 import XLSX
 import JSON
 
-
 gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-2, "Threads" => 8) 
 gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-2, "Threads" => 8) 
 gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 0, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-3, "Threads" => 8) 
@@ -18,7 +17,7 @@ gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "Fe
 # number_of_demand_scenarios => Number of demand scenarios. Integer number. We pair each demand scenario (N) with capacity scenarios (M). We obtain NxM scenarios in total.
 # total_capacity_scenarios => Number of capacity scenarios. Integer number. We pair each demand scenario (N) with capacity scenarios (M). We obtain NxM scenarios in total.
 # number_of_trials => to run the experiment multiple times. Integer number
-# initial_inventory_rate => base value is 1, which is OBE since we are running modified starts
+# initial_inventory_rate => base value is 1, which represents half year demand (inventory level) for each vaccine. If selected as 2, it gives around one full year demand (inventory level) for each vaccine
 # scaled_capacity => base value is 1. For the scaled_capacity effect, 1.5 should be input.
 # allowable_capacity_increase_number => Default value is 5 meaning that a producer can increase its capacity by 50% (5x10%) in a year. It can be selected as allowable_capacity_increase_number ∈ {1,2,3,4,5}
 
@@ -124,7 +123,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
             Δ = [i for i in 1:max_tender_length]
         
             current_directory = @__DIR__
-            filename = "data/scenario_pair_probabilities_new.json"
+            filename = "data/scenario_pair_probabilities_new_demand_base_capacity_pandemic.json"
             relative_path = joinpath(current_directory, filename)
             scenario_pair_probs = JSON.parsefile(relative_path)
         
@@ -151,7 +150,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
             println("Selected random scenarios: ", random_scenarios)
         
             current_directory = @__DIR__
-            filename = "data/scenario_pairs_new.json"
+            filename = "data/scenario_pairs_new_demand_base_capacity_pandemic.json"
             # Construct the relative path using joinpath
             relative_path = joinpath(current_directory, filename)
         
@@ -2126,4 +2125,4 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
     end
 end
 
-tender_stochastic_sensitivity(10,5,5,7,1,1,1,0, false)
+tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, false)

@@ -1,0 +1,63 @@
+
+Gurobi 11.0.3 (win64) logging started Fri Nov  8 10:45:32 2024
+
+Set parameter LogFile to value "c:\Users\nicho\OneDrive\Desktop\Vaccine_Tender\L-shaped\Final_codes/results/log_DE_L_T_10_delta_5_scen_35_trial_1_inv_1_cap._1_cap.inc._0.json"
+
+Gurobi 11.0.3 (win64) logging started Fri Nov  8 10:45:32 2024
+
+Set parameter LogFile to value "c:\Users\nicho\OneDrive\Desktop\Vaccine_Tender\L-shaped\Final_codes/results/log_DE_L_T_10_delta_5_scen_35_trial_1_inv_1_cap._1_cap.inc._0.json"
+Gurobi Optimizer version 11.0.3 build v11.0.3rc0 (win64 - Windows 11.0 (22631.2))
+
+CPU model: AMD Ryzen 7 5700U with Radeon Graphics, instruction set [SSE2|AVX|AVX2]
+Thread count: 8 physical cores, 16 logical processors, using up to 8 threads
+
+Optimize a model with 370060 rows, 182755 columns and 1003540 nonzeros
+Model fingerprint: 0x8a1e8d19
+Variable types: 181375 continuous, 1380 integer (1230 binary)
+Coefficient statistics:
+  Matrix range     [3e-02, 3e+06]
+  Objective range  [3e-08, 1e+05]
+  Bounds range     [0e+00, 0e+00]
+  RHS range        [1e+00, 3e+06]
+Presolve removed 309297 rows and 124386 columns
+Presolve time: 0.40s
+Presolved: 60763 rows, 58369 columns, 205464 nonzeros
+Variable types: 58362 continuous, 7 integer (7 binary)
+Deterministic concurrent LP optimizer: primal and dual simplex
+Showing primal log only...
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+   33307    1.6298636e+08   0.000000e+00   6.188086e+05      5s
+   42429    1.1899995e+08   0.000000e+00   1.983691e+05     10s
+   51989    1.0674403e+08   0.000000e+00   1.457559e+05     15s
+   64194    9.5033918e+07   0.000000e+00   6.206999e+03     20s
+   70246    9.4608615e+07   0.000000e+00   1.022706e+05     25s
+   75718    9.3586900e+07   0.000000e+00   3.242763e+04     30s
+   84126    9.0975493e+07   0.000000e+00   0.000000e+00     33s
+Concurrent spin time: 11.06s (can be avoided by choosing Method=3)
+
+Solved with primal simplex
+   84126    9.0975493e+07   0.000000e+00   0.000000e+00     44s
+
+Root relaxation: objective 9.097549e+07, 84126 iterations, 41.93 seconds (21.84 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 9.0975e+07    0    3          - 9.0975e+07      -     -   43s
+     0     0 9.0975e+07    0    3          - 9.0975e+07      -     -   44s
+     0     2 9.0975e+07    0    3          - 9.0975e+07      -     -   44s
+*    1     0               1    9.097782e+07 9.0975e+07  0.00%   228   45s
+
+Explored 3 nodes (85618 simplex iterations) in 45.29 seconds (22.96 work units)
+Thread count was 8 (of 16 available processors)
+
+Solution count 2: 9.09778e+07 9.09778e+07 
+
+Optimal solution found (tolerance 1.00e-02)
+Best objective 9.097782366765e+07, best bound 9.097782366765e+07, gap 0.0000%
+
+User-callback calls 15348, time in user-callback 0.03 sec

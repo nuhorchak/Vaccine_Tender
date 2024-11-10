@@ -1,0 +1,76 @@
+
+Gurobi 11.0.2 (linux64) logging started Mon 14 Oct 2024 03:12:17 PM CDT
+
+Set parameter LogFile to value "/scrfs/storage/uhorchak/home/model/OOB_testing/L_shape_min_unvax_35_scenarios/results/log_DE_L_T_10_delta_5_scen_35_trial_1_inv_1_cap._1_cap.inc._1.json"
+
+Gurobi 11.0.2 (linux64) logging started Mon 14 Oct 2024 03:12:17 PM CDT
+
+Set parameter LogFile to value "/scrfs/storage/uhorchak/home/model/OOB_testing/L_shape_min_unvax_35_scenarios/results/log_DE_L_T_10_delta_5_scen_35_trial_1_inv_1_cap._1_cap.inc._1.json"
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "CentOS Linux 7 (Core)")
+
+CPU model: Intel(R) Xeon(R) Gold 6130 CPU @ 2.10GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 32 physical cores, 64 logical processors, using up to 8 threads
+
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Optimize a model with 369755 rows, 182755 columns and 1003235 nonzeros
+Model fingerprint: 0x5bd0d232
+Variable types: 181375 continuous, 1380 integer (1230 binary)
+Coefficient statistics:
+  Matrix range     [3e-02, 3e+06]
+  Objective range  [1e-07, 1e+05]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 3e+06]
+Presolve removed 254522 rows and 127647 columns
+Presolve time: 3.73s
+Presolved: 115233 rows, 55108 columns, 382972 nonzeros
+Variable types: 55028 continuous, 80 integer (80 binary)
+
+Deterministic concurrent LP optimizer: primal and dual simplex (primal and dual model)
+Showing primal log only...
+
+Root relaxation presolved: 115233 rows, 55108 columns, 382972 nonzeros
+
+
+Root simplex log...
+
+Iteration    Objective       Primal Inf.    Dual Inf.      Time
+   17396    1.7338885e+09   0.000000e+00   3.177061e+06     10s
+   20859    1.3261326e+09   0.000000e+00   2.797237e+06     15s
+   22949    1.2442797e+09   0.000000e+00   1.104866e+07     20s
+   25039    1.0445540e+09   0.000000e+00   4.971023e+06     25s
+   27509    8.5872862e+08   0.000000e+00   9.315792e+06     30s
+   29379    8.0843073e+08   0.000000e+00   3.437778e+07     35s
+   30839    7.8975871e+08   0.000000e+00   6.517388e+06     40s
+   32739    7.2344957e+08   0.000000e+00   5.535636e+06     45s
+   34149    6.9315940e+08   0.000000e+00   1.167208e+08     51s
+   35579    6.4804892e+08   0.000000e+00   3.529357e+07     56s
+   36909    6.2898855e+08   0.000000e+00   1.532276e+06     60s
+   38989    6.1549770e+08   0.000000e+00   3.420212e+06     66s
+   40509    5.9738005e+08   0.000000e+00   1.541330e+07     70s
+   41939    5.9236833e+08   0.000000e+00   9.831993e+05     75s
+   43549    5.8430845e+08   0.000000e+00   2.175864e+06     80s
+   45219    5.6409292e+08   0.000000e+00   1.524915e+06     85s
+   46746    5.5737535e+08   0.000000e+00   1.582382e+06     90s
+   47956    5.4436416e+08   0.000000e+00   1.931399e+05     95s
+   49056    5.4016946e+08   0.000000e+00   8.640814e+05    100s
+   49826    5.3916284e+08   0.000000e+00   4.296141e+05    105s
+Concurrent spin time: 0.01s
+
+Solved with dual simplex
+
+Root relaxation: objective 3.772416e+08, 71241 iterations, 104.92 seconds (14.16 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+*    0     0               0    3.772416e+08 3.7724e+08  0.00%     -  109s
+
+Explored 1 nodes (71241 simplex iterations) in 109.35 seconds (15.95 work units)
+Thread count was 8 (of 64 available processors)
+
+Solution count 2: 3.77242e+08 3.77242e+08 
+
+Optimal solution found (tolerance 1.00e-02)
+Best objective 3.772415892901e+08, best bound 3.772415892901e+08, gap 0.0000%
+
+User-callback calls 16035, time in user-callback 0.08 sec

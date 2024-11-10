@@ -8,7 +8,6 @@ using CSV
 import XLSX
 import JSON
 
-
 gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-2, "Threads" => 8) 
 gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-2, "Threads" => 8) 
 gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 0, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-3, "Threads" => 8) 
@@ -18,12 +17,12 @@ gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "Fe
 # number_of_demand_scenarios => Number of demand scenarios. Integer number. We pair each demand scenario (N) with capacity scenarios (M). We obtain NxM scenarios in total.
 # total_capacity_scenarios => Number of capacity scenarios. Integer number. We pair each demand scenario (N) with capacity scenarios (M). We obtain NxM scenarios in total.
 # number_of_trials => to run the experiment multiple times. Integer number
-# initial_inventory_rate => base value is 1, which is OBE since we are running modified starts
+# initial_inventory_rate => base value is 1, which represents half year demand (inventory level) for each vaccine. If selected as 2, it gives around one full year demand (inventory level) for each vaccine
 # scaled_capacity => base value is 1. For the scaled_capacity effect, 1.5 should be input.
 # allowable_capacity_increase_number => Default value is 5 meaning that a producer can increase its capacity by 50% (5x10%) in a year. It can be selected as allowable_capacity_increase_number ∈ {1,2,3,4,5}
 
 # tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, false)
-function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,number_of_demand_scenarios,total_capacity_scenarios,number_of_trials,initial_inventory_rate,scaled_capacity,allowable_capacity_increase_number, cap_inc_bool = false)
+function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, number_of_demand_scenarios, total_capacity_scenarios, number_of_trials, initial_inventory_rate, scaled_capacity, allowable_capacity_increase_number, cap_inc_bool = false)
 
     L_shaped_output = Dict()
     Scenarios_used = Dict()
@@ -637,13 +636,13 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
             
                 if model_type == "L-shaped"
                     current_directory = @__DIR__
-                    source = string(current_directory, "/results/L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
+                    source = string(current_directory, "/results/L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,"_min_unvax.json")
                     f = open(source, "w")
                     JSON.print(f, L_shaped_output)
                     close(f)
                 elseif model_type == "DE_after_L-shaped"
                     current_directory = @__DIR__
-                    source = string(current_directory, "/results/DE_L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
+                    source = string(current_directory, "/results/DE_L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,"_min_unvax.json")
                     f = open(source, "w")
                     JSON.print(f, L_shaped_output)
                     close(f)
@@ -972,7 +971,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                     sensitivity_output["inv_range_category"] = inv_range_category
         
                     current_directory = @__DIR__
-                    source = string(current_directory, "/results/DE_L_results_T_", tmax, "_delta_", max_tender_length, "_scen_", number_of_demand_scenarios * total_capacity_scenarios, "_trial_", trial, "_inv_", initial_inventory_rate, "_cap._", scaled_capacity, "_cap.inc._", allowable_capacity_increase_number, "_sensitivity_original.json")
+                    source = string(current_directory, "/results/DE_L_results_T_", tmax, "_delta_", max_tender_length, "_scen_", number_of_demand_scenarios * total_capacity_scenarios, "_trial_", trial, "_inv_", initial_inventory_rate, "_cap._", scaled_capacity, "_cap.inc._", allowable_capacity_increase_number, "_sensitivity_min_unvax.json")
                     f = open(source, "w")
                     JSON.print(f, sensitivity_output)
                     close(f)
@@ -1004,12 +1003,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
         
                 ################################################### OBJECTIVE FUNCTION AND CONSTRAINTS ####################################################
                 if capacity_extension_decision
-                    @objective(model, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
-                                           + sum(p_ω[ω] * r[v, p, t] * X[v, p, t, ω] / delta[t] for v in V, p in P_v[v], t in T, ω in Ω)
-                                           + sum(p_ω[ω] * pi * S[a, t, ω] / delta[t] for a in A, t in T, ω in Ω)
-                                           + sum(p_ω[ω] * h[v] * r_avg[v, t] * I[v, t, ω]  / delta[t] for v in V, t in T, ω in Ω)
-                                           + sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T)
-                                           + sum(inf_penalty * X_inf[p, t, ω] / delta[t] for p in P, t in T, ω in Ω)
+                    @objective(model, Min, sum(p_ω[ω] * S[a, t, ω] for a in A, t in T, ω in Ω) + sum(inf_penalty * X_inf[p, t, ω] / delta[t] for p in P, t in T, ω in Ω)
                     )
                 else
                     @objective(model, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
@@ -1451,9 +1445,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                 @variable(Subproblem, X_tilde[v in V, p in P_v[v], (t,tau) in F_time_set] >= 0)
                 @variable(Subproblem, K[v in V, p in P_v[v], (t,tau) in F_time_set] >= 0)
         
-                @objective(Subproblem, Min, sum(r[v, p, t] * X[v, p, t] / delta[t] for v in V, p in P_v[v], t in T)
-                                            + sum(pi * S[a, t] / delta[t] for a in A, t in T)
-                                            + sum(h[v] * r_avg[v, t] * I[v, t] / delta[t] for v in V, t in T)
+                @objective(Subproblem, Min, sum(S[a, t] / delta[t] for a in A, t in T)
                                             + sum(inf_penalty * X_inf[p, t] / delta[t] for p in P, t in T)
                 )
         
@@ -1608,14 +1600,10 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
         
             ################################################### MASTER PROBLEM ####################################################
         
-            @objective(Masterproblem, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
-                                            + sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T)
-                                           + sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
+            @objective(Masterproblem, Min, sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
         
                                            + p_ω_test[partial_scenario] * (
-                                           + sum(r[v,p,t] * X[v,p,t,ω] / delta[t] for v in V, p in P_v[v], t in T, ω in Ω_test_partial_1)
-                                           + sum(pi * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
-                                           + sum(h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
+                                           + sum(S[a,t,ω] for a in A, t in T, ω in Ω_test_partial_1)
                                            + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
                                            )
             )
@@ -2126,4 +2114,4 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
     end
 end
 
-tender_stochastic_sensitivity(10,5,5,7,1,1,1,0, false)
+tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, false)
