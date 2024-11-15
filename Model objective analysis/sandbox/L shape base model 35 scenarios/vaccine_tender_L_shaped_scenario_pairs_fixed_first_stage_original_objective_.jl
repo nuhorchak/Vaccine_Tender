@@ -22,7 +22,7 @@ gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "Fe
 # allowable_capacity_increase_number => Default value is 5 meaning that a producer can increase its capacity by 50% (5x10%) in a year. It can be selected as allowable_capacity_increase_number ∈ {1,2,3,4,5}
 
 # tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, false)
-function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, number_of_demand_scenarios, total_capacity_scenarios, number_of_trials, initial_inventory_rate, scaled_capacity, allowable_capacity_increase_number, cap_inc_bool = false)
+function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,number_of_demand_scenarios,total_capacity_scenarios,number_of_trials,initial_inventory_rate,scaled_capacity,allowable_capacity_increase_number, cap_inc_bool = false)
 
     L_shaped_output = Dict()
     Scenarios_used = Dict()
@@ -412,6 +412,8 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
             filename = "data/Starting_point.xlsx"
             relative_path = joinpath(current_directory, filename)
             starting_points_file = XLSX.readxlsx(relative_path)
+
+            #if I define the start, can I fix it later?
             
             starting_points_F_raw = starting_points_file["F_start"]
             total_row_F = length(starting_points_F_raw[:, 1])
@@ -636,13 +638,13 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
             
                 if model_type == "L-shaped"
                     current_directory = @__DIR__
-                    source = string(current_directory, "/results/L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,"_min_unvax.json")
+                    source = string(current_directory, "/results/L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
                     f = open(source, "w")
                     JSON.print(f, L_shaped_output)
                     close(f)
                 elseif model_type == "DE_after_L-shaped"
                     current_directory = @__DIR__
-                    source = string(current_directory, "/results/DE_L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,"_min_unvax.json")
+                    source = string(current_directory, "/results/DE_L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
                     f = open(source, "w")
                     JSON.print(f, L_shaped_output)
                     close(f)
@@ -971,7 +973,7 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
                     sensitivity_output["inv_range_category"] = inv_range_category
         
                     current_directory = @__DIR__
-                    source = string(current_directory, "/results/DE_L_results_T_", tmax, "_delta_", max_tender_length, "_scen_", number_of_demand_scenarios * total_capacity_scenarios, "_trial_", trial, "_inv_", initial_inventory_rate, "_cap._", scaled_capacity, "_cap.inc._", allowable_capacity_increase_number, "_sensitivity_min_unvax.json")
+                    source = string(current_directory, "/results/DE_L_results_T_", tmax, "_delta_", max_tender_length, "_scen_", number_of_demand_scenarios * total_capacity_scenarios, "_trial_", trial, "_inv_", initial_inventory_rate, "_cap._", scaled_capacity, "_cap.inc._", allowable_capacity_increase_number, "_sensitivity_original.json")
                     f = open(source, "w")
                     JSON.print(f, sensitivity_output)
                     close(f)
@@ -1003,7 +1005,12 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
         
                 ################################################### OBJECTIVE FUNCTION AND CONSTRAINTS ####################################################
                 if capacity_extension_decision
-                    @objective(model, Min, sum(p_ω[ω] * S[a, t, ω] for a in A, t in T, ω in Ω) + sum(inf_penalty * X_inf[p, t, ω] / delta[t] for p in P, t in T, ω in Ω)
+                    @objective(model, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
+                                           + sum(p_ω[ω] * r[v, p, t] * X[v, p, t, ω] / delta[t] for v in V, p in P_v[v], t in T, ω in Ω)
+                                           + sum(p_ω[ω] * pi * S[a, t, ω] / delta[t] for a in A, t in T, ω in Ω)
+                                           + sum(p_ω[ω] * h[v] * r_avg[v, t] * I[v, t, ω]  / delta[t] for v in V, t in T, ω in Ω)
+                                           + sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T)
+                                           + sum(inf_penalty * X_inf[p, t, ω] / delta[t] for p in P, t in T, ω in Ω)
                     )
                 else
                     @objective(model, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
@@ -1445,7 +1452,9 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
                 @variable(Subproblem, X_tilde[v in V, p in P_v[v], (t,tau) in F_time_set] >= 0)
                 @variable(Subproblem, K[v in V, p in P_v[v], (t,tau) in F_time_set] >= 0)
         
-                @objective(Subproblem, Min, sum(S[a, t] / delta[t] for a in A, t in T)
+                @objective(Subproblem, Min, sum(r[v, p, t] * X[v, p, t] / delta[t] for v in V, p in P_v[v], t in T)
+                                            + sum(pi * S[a, t] / delta[t] for a in A, t in T)
+                                            + sum(h[v] * r_avg[v, t] * I[v, t] / delta[t] for v in V, t in T)
                                             + sum(inf_penalty * X_inf[p, t] / delta[t] for p in P, t in T)
                 )
         
@@ -1599,11 +1608,85 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
             @variable(Masterproblem, X_inf[p in P, t in T, ω in Ω_test_partial_1] >= 0)
         
             ################################################### MASTER PROBLEM ####################################################
+
+    
+            ################################################### FIX VARIABLES ####################################################
+
+            #check the model with old and new results
+
+            #read in first model run results to get variables
+            current_directory = @__DIR__
+            filename = "DE_L_results_T_10_delta_5_scen_35_trial_1_inv_1_cap._1_cap.inc._1.json"
+            relative_path = joinpath(current_directory, filename)
+            # println(relative_path)
+            data = JSON.parsefile(relative_path)
+
+            # FIX VARIABLES F, Y, W, L, Q
+            # FIX First Stage Y Variables
+            for (p, time) in data["Y"]
+                for (t, val) in time
+                    value = val  # Directly use the value from the loop
+                    new_t = parse(Int, t)  # Convert `t` to an integer once
+                    fix(Y[p, new_t], value)  # Fix the variable
+                end
+            end
+
+            # FIX First Stage Q Variables
+            # Pre-extract Q data once
+            Q_data = get(data, "Q", Dict())
+
+            # Fix First Stage Q Variables
+            for v in V
+                v_data = get(Q_data, v, Dict())  # Access v-level data once
+                for p in P_v[v]
+                    p_data = get(v_data, p, Dict())  # Access p-level data once
+                    for (t, tau) in F_time_set
+                        value = get(get(p_data, string(t), Dict()), string(tau), 0)
+                        fix(Q[v, p, (t, tau)], value; force=true)
+                    end
+                end
+            end
+
+            # FIX First Stage W Variables
+            W_data = get(data, "W", Dict())  # Extract "W" data once
+
+            for p in P
+                p_data = get(W_data, p, Dict())  # Access p-level data once
+                for (t, tau) in F_time_set
+                    value = get(get(p_data, string(t), Dict()), string(tau), 0)
+                    fix(W[p, (t, tau)], value)
+                end
+            end
+
+            # FIX First Stage F Variables
+            F_data = get(data, "F", Dict())  # Extract "F" data once
+
+            for a in A
+                a_data = get(F_data, a, Dict())  # Access a-level data once
+                for (t, tau) in F_time_set
+                    value = get(get(a_data, string(t), Dict()), string(tau), 0)
+                    fix(F[a, (t, tau)], value)
+                end
+            end
+
+            # FIX First Stage L Variables
+            F_data = get(data, "L", Dict())  # Extract "L" data once
+            for p in P
+                p_data = get(F_data, p, Dict())  # Access a-level data once
+                for t in T
+                    value = get(p_data, string(t), 0)
+                    fix(L[p, t], value; force=true)
+                end
+            end
         
-            @objective(Masterproblem, Min, sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
+            @objective(Masterproblem, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
+                                            + sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T)
+                                           + sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
         
                                            + p_ω_test[partial_scenario] * (
-                                           + sum(S[a,t,ω] for a in A, t in T, ω in Ω_test_partial_1)
+                                           + sum(r[v,p,t] * X[v,p,t,ω] / delta[t] for v in V, p in P_v[v], t in T, ω in Ω_test_partial_1)
+                                           + sum(pi * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
+                                           + sum(h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
                                            + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
                                            )
             )
@@ -1870,6 +1953,8 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
             #     )
             # end
             
+            write_to_file(Masterproblem, "Masterproblem_test_fix.lp")
+
             # L-shaped method starts
             while iter <= iter_max
                 println("iter: $iter")
@@ -2114,4 +2199,4 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
     end
 end
 
-tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, false)
+tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, true)

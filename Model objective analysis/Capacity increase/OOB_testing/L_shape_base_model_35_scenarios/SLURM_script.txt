@@ -19,4 +19,4 @@ module load julia/1.10.2
 julia -e 'using Pkg; Pkg.add(["JuMP", "Gurobi", "Plots", "DataFrames", "CSV", "XLSX", "JSON", "Dualization"])'
 
 # Run the Julia script using srun
-srun --export=ALL julia vaccine_tender_L_shaped_scenario_pairs_original_objective.jl
+srun --export=ALL julia vaccine_tender_L_shaped_scenario_pairs_fixed_first_stage_original_objective.jl
