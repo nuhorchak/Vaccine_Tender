@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=vaccine_tender_min_missed_dose_fixed_first_stage
+#SBATCH --job-name=vaccine_tender_base_fixed_first_stage
 #SBATCH --ntasks=1 
 #SBATCH --partition=cloud72
 #SBATCH --nodes=1
 #SBATCH --tasks-per-node=1
 #SBATCH --time=72:00:00
-#SBATCH --output min_missed_dose_fixed_first_stage_%j.txt  
+#SBATCH --output base_fixed_first_stage_%j.txt  
 #SBATCH --error model_output_%j.err
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=uhorchak@uark.edu
@@ -19,4 +19,4 @@ module load julia/1.10.2
 julia -e 'using Pkg; Pkg.add(["JuMP", "Gurobi", "Plots", "DataFrames", "CSV", "XLSX", "JSON", "Dualization"])'
 
 # Run the Julia script using srun
-srun --export=ALL julia vaccine_tender_L_shaped_scenario_pairs_fixed_first_stage_sensitivity_min_unvax.jl
+srun --export=ALL julia vaccine_tender_L_shaped_scenario_pairs_original_objective.jl

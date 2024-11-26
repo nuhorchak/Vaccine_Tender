@@ -981,7 +981,6 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
             function deterministic_equivalent(p_ω,Ω,F_bar,W_bar,Y_bar,L_bar)
         
                 model = Model(gurobi_solver_DE)
-                JuMP.set_optimizer_attribute(model, "Seed", 1)
         
                 @variable(model, F[a in A, (t, tau) in F_time_set], Bin)
                 @variable(model, Q[v in V, p in P_v[v], (t, tau) in F_time_set] >= 0)
@@ -1004,7 +1003,7 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
         
                 ################################################### OBJECTIVE FUNCTION AND CONSTRAINTS ####################################################
                 if capacity_extension_decision
-                    @objective(model, Min, sum(p_ω[ω] * pi * S[a, t, ω] / delta[t] for a in A, t in T, ω in Ω) + sum(inf_penalty * X_inf[p, t, ω] / delta[t] for p in P, t in T, ω in Ω)
+                    @objective(model, Min, sum(p_ω[ω] * S[a, t, ω] for a in A, t in T, ω in Ω) + sum(inf_penalty * X_inf[p, t, ω] / delta[t] for p in P, t in T, ω in Ω)
                     )
                 else
                     @objective(model, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
@@ -1437,7 +1436,6 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
         
                 Subproblem = JuMP.Model()
                 JuMP.set_optimizer(Subproblem, gurobi_solver_no_presolve)
-                JuMP.set_optimizer_attribute(Subproblem, "Seed", 1)
         
                 @variable(Subproblem, X[v in V, p in P_v[v], t in T] >= 0)
                 @variable(Subproblem, I[v in V, t in T_initial] >= 0)
@@ -1447,7 +1445,7 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
                 @variable(Subproblem, X_tilde[v in V, p in P_v[v], (t,tau) in F_time_set] >= 0)
                 @variable(Subproblem, K[v in V, p in P_v[v], (t,tau) in F_time_set] >= 0)
         
-                @objective(Subproblem, Min, sum(pi * S[a, t] / delta[t] for a in A, t in T)
+                @objective(Subproblem, Min, sum(S[a, t] / delta[t] for a in A, t in T)
                                             + sum(inf_penalty * X_inf[p, t] / delta[t] for p in P, t in T)
                 )
         
@@ -1575,7 +1573,6 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
             ######### Initiate the Master problem #########
             Masterproblem = JuMP.Model()
             JuMP.set_optimizer(Masterproblem, gurobi_solver)
-            JuMP.set_optimizer_attribute(Masterproblem, "Seed", 1)
         
             @variable(Masterproblem, 0.0 <= F[a in A, (t, tau) in F_time_set] <= 1.0)
             # @variable(Masterproblem, F[a in A, (t, tau) in F_time_set], Bin)
@@ -2117,4 +2114,4 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
     end
 end
 
-tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, true)
+tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, false)
