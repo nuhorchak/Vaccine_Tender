@@ -1604,9 +1604,8 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
             ################################################### MASTER PROBLEM ####################################################
         
             @objective(Masterproblem, Min, sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
-        
                                            + p_ω_test[partial_scenario] * (
-                                           + sum(S[a,t,ω] for a in A, t in T, ω in Ω_test_partial_1)
+                                           + sum(pi * S[a,t,ω] /delta[t] for a in A, t in T, ω in Ω_test_partial_1)
                                            + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
                                            )
             )
@@ -2094,6 +2093,7 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
                     I_de = Dict()
                     S_de = Dict()
                     Vc_de = Dict()
+                    X_inf = Dict()
 
                     F_de = JuMP.value.(deterministic_equivalent_model[:F])
                     Y_de = JuMP.value.(deterministic_equivalent_model[:Y])
@@ -2104,9 +2104,10 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
                     I_de = JuMP.value.(deterministic_equivalent_model[:I])
                     Vc_de = JuMP.value.(deterministic_equivalent_model[:Vc])
                     S_de = JuMP.value.(deterministic_equivalent_model[:S])
+                    X_Inf = Jump.value(Masterproblem[:X_inf])
 
                     model_type = "DE_after_L-shaped"
-                    save_L_shaped_results(F_de,Y_de,W_de,L_de,Q_de,X_de,I_de,Vc_de,S_de,model_type)
+                    save_L_shaped_results(F_de,Y_de,W_de,L_de,Q_de,X_de,I_de,Vc_de,S_de,X_Inf,model_type)
 
                     break
                 end
