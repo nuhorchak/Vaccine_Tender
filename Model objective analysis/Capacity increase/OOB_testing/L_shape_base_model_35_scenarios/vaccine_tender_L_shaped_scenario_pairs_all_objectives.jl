@@ -8,6 +8,7 @@ using CSV
 import XLSX
 import JSON
 
+
 gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-2, "Threads" => 8) 
 gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-2, "Threads" => 8) 
 gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 0, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-3, "Threads" => 8) 
@@ -17,12 +18,14 @@ gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "Fe
 # number_of_demand_scenarios => Number of demand scenarios. Integer number. We pair each demand scenario (N) with capacity scenarios (M). We obtain NxM scenarios in total.
 # total_capacity_scenarios => Number of capacity scenarios. Integer number. We pair each demand scenario (N) with capacity scenarios (M). We obtain NxM scenarios in total.
 # number_of_trials => to run the experiment multiple times. Integer number
-# initial_inventory_rate => base value is 1, which represents half year demand (inventory level) for each vaccine. If selected as 2, it gives around one full year demand (inventory level) for each vaccine
+# initial_inventory_rate => base value is 1, which is OBE since we are running modified starts
 # scaled_capacity => base value is 1. For the scaled_capacity effect, 1.5 should be input.
 # allowable_capacity_increase_number => Default value is 5 meaning that a producer can increase its capacity by 50% (5x10%) in a year. It can be selected as allowable_capacity_increase_number ∈ {1,2,3,4,5}
+# capacity_extension_decision => boolean, true if capacity increases are allowed
+# base_model => boolean, true is base model is used, false if min_unvax model is used
 
 # tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, false)
-function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, number_of_demand_scenarios, total_capacity_scenarios, number_of_trials, initial_inventory_rate, scaled_capacity, allowable_capacity_increase_number, cap_inc_bool = false)
+function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,number_of_demand_scenarios,total_capacity_scenarios,number_of_trials,initial_inventory_rate,scaled_capacity,allowable_capacity_increase_number, capacity_extension_decision = true, base_model = true)
 
     L_shaped_output = Dict()
     Scenarios_used = Dict()
@@ -34,7 +37,6 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
         source = string(current_directory, "/results/log_DE_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",number_of_demand_scenarios*total_capacity_scenarios,"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
         if true
             overlap_decision = true
-            capacity_extension_decision = cap_inc_bool
             # max_tender_length = 5
             # number_of_demand_scenarios = 3
         
@@ -636,13 +638,13 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
             
                 if model_type == "L-shaped"
                     current_directory = @__DIR__
-                    source = string(current_directory, "/results/L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,"_min_unvax.json")
+                    source = string(current_directory, "/results/L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
                     f = open(source, "w")
                     JSON.print(f, L_shaped_output)
                     close(f)
                 elseif model_type == "DE_after_L-shaped"
                     current_directory = @__DIR__
-                    source = string(current_directory, "/results/DE_L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,"_min_unvax.json")
+                    source = string(current_directory, "/results/DE_L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
                     f = open(source, "w")
                     JSON.print(f, L_shaped_output)
                     close(f)
@@ -971,7 +973,7 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
                     sensitivity_output["inv_range_category"] = inv_range_category
         
                     current_directory = @__DIR__
-                    source = string(current_directory, "/results/DE_L_results_T_", tmax, "_delta_", max_tender_length, "_scen_", number_of_demand_scenarios * total_capacity_scenarios, "_trial_", trial, "_inv_", initial_inventory_rate, "_cap._", scaled_capacity, "_cap.inc._", allowable_capacity_increase_number, "_sensitivity_min_unvax.json")
+                    source = string(current_directory, "/results/DE_L_results_T_", tmax, "_delta_", max_tender_length, "_scen_", number_of_demand_scenarios * total_capacity_scenarios, "_trial_", trial, "_inv_", initial_inventory_rate, "_cap._", scaled_capacity, "_cap.inc._", allowable_capacity_increase_number, "_sensitivity_original.json")
                     f = open(source, "w")
                     JSON.print(f, sensitivity_output)
                     close(f)
@@ -1002,16 +1004,33 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
                 @variable(model, X_inf[p in P, t in T, ω in Ω] >= 0)
         
                 ################################################### OBJECTIVE FUNCTION AND CONSTRAINTS ####################################################
-                if capacity_extension_decision
-                    @objective(model, sum(p_ω[ω] * pi * S[a, t, ω] / delta[t] for a in A, t in T, ω in Ω) + sum(inf_penalty * X_inf[p, t, ω] / delta[t] for p in P, t in T, ω in Ω)
-                    )
-                else
+                if base_model && !capacity_extension_decision #base model, no capacity extension
+                    println("Condition: Base model and no capacity extension")
                     @objective(model, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
-                                           + sum(p_ω[ω] * r[v, p, t] * X[v, p, t, ω] / delta[t] for v in V, p in P_v[v], t in T, ω in Ω)
-                                           + sum(p_ω[ω] * pi * S[a, t, ω] / delta[t] for a in A, t in T, ω in Ω)
-                                           + sum(p_ω[ω] * h[v] * r_avg[v, t] * I[v, t, ω] / delta[t] for v in V, t in T, ω in Ω)
-                                           + sum(inf_penalty * X_inf[p, t, ω] / delta[t] for p in P, t in T, ω in Ω)
-                    )
+                    + sum(p_ω[ω] * r[v, p, t] * X[v, p, t, ω] / delta[t] for v in V, p in P_v[v], t in T, ω in Ω)
+                    + sum(p_ω[ω] * pi * S[a, t, ω] / delta[t] for a in A, t in T, ω in Ω)
+                    + sum(p_ω[ω] * h[v] * r_avg[v, t] * I[v, t, ω] / delta[t] for v in V, t in T, ω in Ω)
+                    + sum(inf_penalty * X_inf[p, t, ω] / delta[t] for p in P, t in T, ω in Ω)
+                )
+                elseif base_model && capacity_extension_decision #base model, capacity extension
+                    println("Condition: Base model with capacity extension")
+                    @objective(model, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
+                    + sum(p_ω[ω] * r[v, p, t] * X[v, p, t, ω] / delta[t] for v in V, p in P_v[v], t in T, ω in Ω)
+                    + sum(p_ω[ω] * pi * S[a, t, ω] / delta[t] for a in A, t in T, ω in Ω)
+                    + sum(p_ω[ω] * h[v] * r_avg[v, t] * I[v, t, ω]  / delta[t] for v in V, t in T, ω in Ω)
+                    + sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T)
+                    + sum(inf_penalty * X_inf[p, t, ω] / delta[t] for p in P, t in T, ω in Ω)
+                )
+                elseif capacity_extension_decision && !base_model #min unvax model, capacity extension
+                    println("Condition: Min Unvax Model and Capacity extension")
+                    @objective(model, Min, sum(p_ω[ω] * pi * S[a, t, ω] / delta[t] for a in A, t in T, ω in Ω)
+                    + sum(inf_penalty * X_inf[p, t, ω] / delta[t] for p in P, t in T, ω in Ω)
+                )
+                else #min unvax model, no capacity extension
+                    println("Condition: Min Unvax Model and no capacity extension")
+                    @objective(model, Min, sum(p_ω[ω] * pi * S[a, t, ω] / delta[t] for a in A, t in T, ω in Ω)
+                    + sum(inf_penalty * X_inf[p, t, ω] / delta[t] for p in P, t in T, ω in Ω)
+                )
                 end
         
                 # Constraint (2)
@@ -1445,9 +1464,25 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
                 @variable(Subproblem, X_tilde[v in V, p in P_v[v], (t,tau) in F_time_set] >= 0)
                 @variable(Subproblem, K[v in V, p in P_v[v], (t,tau) in F_time_set] >= 0)
         
-                @objective(Subproblem, Min, sum(pi * S[a, t] / delta[t] for a in A, t in T)
-                                            + sum(inf_penalty * X_inf[p, t] / delta[t] for p in P, t in T)
-                )
+                # @objective(Subproblem, Min, sum(r[v, p, t] * X[v, p, t] / delta[t] for v in V, p in P_v[v], t in T)
+                #                             + sum(pi * S[a, t] / delta[t] for a in A, t in T)
+                #                             + sum(h[v] * r_avg[v, t] * I[v, t] / delta[t] for v in V, t in T)
+                #                             + sum(inf_penalty * X_inf[p, t] / delta[t] for p in P, t in T)
+                # )
+                
+                if base_model  #base model
+                    println("Condition: Base model")
+                    @objective(Subproblem, Min, sum(r[v, p, t] * X[v, p, t] / delta[t] for v in V, p in P_v[v], t in T)
+                    + sum(pi * S[a, t] / delta[t] for a in A, t in T)
+                    + sum(h[v] * r_avg[v, t] * I[v, t] / delta[t] for v in V, t in T)
+                    + sum(inf_penalty * X_inf[p, t] / delta[t] for p in P, t in T)
+                    )
+                else #min unvax model
+                    println("Condition: Min Unvax Model")
+                    @objective(Subproblem, Min, sum(pi * S[a, t] / delta[t] for a in A, t in T)
+                    + sum(inf_penalty * X_inf[p, t] / delta[t] for p in P, t in T)
+                    )
+                end
         
                 cons_8_1 = []
                 cons_8_2 = []
@@ -1599,82 +1634,60 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
             @variable(Masterproblem, X_inf[p in P, t in T, ω in Ω_test_partial_1] >= 0)
         
             ################################################### MASTER PROBLEM ####################################################
-
-            ################################################### FIX VARIABLES ####################################################
-
-            #check the model with old and new results
-
-            #read in first model run results to get variables
-            current_directory = @__DIR__
-            filename = "min_unvax_base.json"
-            relative_path = joinpath(current_directory, filename)
-            # println(relative_path)
-            data = JSON.parsefile(relative_path)
-
-            # FIX VARIABLES F, Y, W, L, Q
-            # FIX First Stage Y Variables
-            for (p, time) in data["Y"]
-                for (t, val) in time
-                    value = val  # Directly use the value from the loop
-                    new_t = parse(Int, t)  # Convert `t` to an integer once
-                    fix(Y[p, new_t], value; force=true)  # Fix the variable
-                end
-            end
-
-            # FIX First Stage Q Variables
-            # Pre-extract Q data once
-            Q_data = get(data, "Q", Dict())
-
-            # Fix First Stage Q Variables
-            for v in V
-                v_data = get(Q_data, v, Dict())  # Access v-level data once
-                for p in P_v[v]
-                    p_data = get(v_data, p, Dict())  # Access p-level data once
-                    for (t, tau) in F_time_set
-                        value = get(get(p_data, string(t), Dict()), string(tau), 0)
-                        fix(Q[v, p, (t, tau)], value; force=true)
-                    end
-                end
-            end
-
-            # FIX First Stage W Variables
-            W_data = get(data, "W", Dict())  # Extract "W" data once
-
-            for p in P
-                p_data = get(W_data, p, Dict())  # Access p-level data once
-                for (t, tau) in F_time_set
-                    value = get(get(p_data, string(t), Dict()), string(tau), 0)
-                    fix(W[p, (t, tau)], value; force=true)
-                end
-            end
-
-            # FIX First Stage F Variables
-            F_data = get(data, "F", Dict())  # Extract "F" data once
-
-            for a in A
-                a_data = get(F_data, a, Dict())  # Access a-level data once
-                for (t, tau) in F_time_set
-                    value = get(get(a_data, string(t), Dict()), string(tau), 0)
-                    fix(F[a, (t, tau)], value; force=true)
-                end
-            end
-
-            # FIX First Stage L Variables
-            F_data = get(data, "L", Dict())  # Extract "L" data once
-            for p in P
-                p_data = get(F_data, p, Dict())  # Access a-level data once
-                for t in T
-                    value = get(p_data, string(t), 0)
-                    fix(L[p, t], value; force=true)
-                end
-            end
         
-            @objective(Masterproblem, Min, sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
-                                           + p_ω_test[partial_scenario] * (
-                                           + sum(pi * S[a,t,ω] /delta[t] for a in A, t in T, ω in Ω_test_partial_1)
-                                           + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
-                                           )
-            )
+            # @objective(Masterproblem, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
+            #                                 + sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T)
+            #                                + sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
+        
+            #                                + p_ω_test[partial_scenario] * (
+            #                                + sum(r[v,p,t] * X[v,p,t,ω] / delta[t] for v in V, p in P_v[v], t in T, ω in Ω_test_partial_1)
+            #                                + sum(pi * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
+            #                                + sum(h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
+            #                                + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
+            #                                )
+            # )
+
+            if base_model && !capacity_extension_decision #base model, no capacity extension
+                println("Condition: Base model and no capacity extension")
+                @objective(Masterproblem, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
+                + sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
+                
+                + p_ω_test[partial_scenario] * (
+                + sum(r[v,p,t] * X[v,p,t,ω] / delta[t] for v in V, p in P_v[v], t in T, ω in Ω_test_partial_1)
+                + sum(pi * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
+                + sum(h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
+                + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
+                )
+                )
+            elseif base_model && capacity_extension_decision #base model, capacity extension
+                println("Condition: Base model with capacity extension")
+                @objective(Masterproblem, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
+                + sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T)
+                + sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
+                
+                + p_ω_test[partial_scenario] * (
+                + sum(r[v,p,t] * X[v,p,t,ω] / delta[t] for v in V, p in P_v[v], t in T, ω in Ω_test_partial_1)
+                + sum(pi * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
+                + sum(h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
+                + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
+                )
+                )
+            elseif capacity_extension_decision && !base_model #min unvax model, capacity extension
+                println("Condition: Min Unvax Model and Capacity extension")
+                @objective(Masterproblem, Min, sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
+                + p_ω_test[partial_scenario] * (sum(pi * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
+                + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
+                )
+                )
+            else #min unvax model, no capacity extension
+                println("Condition: Min Unvax Model and no capacity extension")
+                @objective(Masterproblem, Min, sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
+                + p_ω_test[partial_scenario] * (sum(pi * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
+                + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
+                )
+                )
+            end
+
             # Constraint (2)
             for a in A
                 for t in T
@@ -2182,4 +2195,4 @@ function tender_stochastic_sensitivity(max_horizon_length, max_tender_length, nu
     end
 end
 
-tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, false)
+tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, true, false)
