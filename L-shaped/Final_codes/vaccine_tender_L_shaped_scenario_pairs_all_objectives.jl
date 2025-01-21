@@ -9,9 +9,9 @@ import XLSX
 import JSON
 
 
-gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-2, "Threads" => 8) 
-gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-2, "Threads" => 8) 
-gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 0, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-3, "Threads" => 8) 
+gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-6, "Threads" => 8) 
+gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-6, "Threads" => 8) 
+gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 0, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-6, "Threads" => 8) 
 
 # max_horizon_length => represents T => Integer number 
 # max_tender_length => Δ ∈ {3,5,7}
@@ -2225,6 +2225,8 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                     model_type = "DE_after_L-shaped"
                     save_L_shaped_results(F_de,Y_de,W_de,L_de,Q_de,X_de,I_de,Vc_de,S_de,model_type)
 
+                    
+
                     break
                 end
         
@@ -2234,4 +2236,4 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
     end
 end
 
-tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, true, false, true)
+tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, true, true, true)

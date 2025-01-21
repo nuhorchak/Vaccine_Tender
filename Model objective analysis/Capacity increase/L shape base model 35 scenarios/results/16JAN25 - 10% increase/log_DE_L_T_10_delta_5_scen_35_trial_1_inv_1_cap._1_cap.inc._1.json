@@ -1,0 +1,129 @@
+
+Gurobi 11.0.2 (linux64) logging started Wed 15 Jan 2025 03:09:37 PM CST
+
+Set parameter LogFile to value "/scrfs/storage/uhorchak/home/model/base_testing/L_shape_base_model_35_scenarios/results/log_DE_L_T_10_delta_5_scen_35_trial_1_inv_1_cap._1_cap.inc._1.json"
+
+Gurobi 11.0.2 (linux64) logging started Wed 15 Jan 2025 03:09:37 PM CST
+
+Set parameter LogFile to value "/scrfs/storage/uhorchak/home/model/base_testing/L_shape_base_model_35_scenarios/results/log_DE_L_T_10_delta_5_scen_35_trial_1_inv_1_cap._1_cap.inc._1.json"
+Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "CentOS Linux 7 (Core)")
+
+CPU model: Intel(R) Xeon(R) Gold 6130 CPU @ 2.10GHz, instruction set [SSE2|AVX|AVX2|AVX512]
+Thread count: 32 physical cores, 32 logical processors, using up to 32 threads
+
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Optimize a model with 375083 rows, 182755 columns and 1024763 nonzeros
+Model fingerprint: 0x73b0546e
+Variable types: 181375 continuous, 1380 integer (1230 binary)
+Coefficient statistics:
+  Matrix range     [3e-02, 3e+06]
+  Objective range  [1e-07, 1e+05]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 3e+06]
+Presolve removed 169564 rows and 90501 columns
+Presolve time: 4.84s
+Presolved: 205519 rows, 92254 columns, 623529 nonzeros
+Variable types: 92147 continuous, 107 integer (100 binary)
+
+Deterministic concurrent LP optimizer: primal simplex, dual simplex, and barrier
+Showing barrier log only...
+
+Root barrier log...
+
+Elapsed ordering time = 8s
+Elapsed ordering time = 10s
+Elapsed ordering time = 15s
+Elapsed ordering time = 20s
+Ordering time: 91.65s
+
+Barrier statistics:
+ Dense cols : 71
+ AA' NZ     : 2.754e+06
+ Factor NZ  : 7.715e+07 (roughly 700 MB of memory)
+ Factor Ops : 1.183e+11 (roughly 7 seconds per iteration)
+ Threads    : 29
+
+                  Objective                Residual
+Iter       Primal          Dual         Primal    Dual     Compl     Time
+   0   5.68166521e+16 -1.08655847e+15  1.30e+11 1.46e-11  9.67e+14   126s
+   1   5.68166521e+16 -1.08655847e+15  1.30e+11 1.46e-11  9.67e+14   139s
+   2   5.68166521e+16 -1.08657453e+16  1.30e+11 1.02e-10  9.67e+15   162s
+   3   5.68166521e+16 -1.08657453e+16  1.30e+11 1.02e-10  9.67e+15   174s
+   4   5.68166521e+16 -1.08657453e+16  1.30e+11 1.02e-10  9.67e+15   186s
+   5   5.68166521e+16 -1.08657453e+16  1.30e+11 1.02e-10  9.67e+15   199s
+
+Barrier performed 5 iterations in 198.79 seconds (8.07 work units)
+Numerical trouble encountered
+
+Model may be infeasible or unbounded.  Consider using the
+homogeneous algorithm (through parameter 'BarHomogeneous')
+
+Waiting for other threads to finish...         272s
+Waiting for other threads to finish...         335s
+Waiting for other threads to finish...         399s
+Waiting for other threads to finish...         463s
+Waiting for other threads to finish...         527s
+Waiting for other threads to finish...         590s
+Concurrent spin time: 0.00s
+
+Solved with dual simplex
+
+Root relaxation: objective 1.803660e+08, 185285 iterations, 619.85 seconds (125.02 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 1.8037e+08    0   34          - 1.8037e+08      -     -  629s
+H    0     0                    3.558904e+10 1.8037e+08  99.5%     -  680s
+     0     0 1.8050e+08    0   22 3.5589e+10 1.8050e+08  99.5%     -  681s
+     0     0 1.8050e+08    0   22 3.5589e+10 1.8050e+08  99.5%     -  683s
+     0     0 1.8050e+08    0   22 3.5589e+10 1.8050e+08  99.5%     -  683s
+     0     0 1.8050e+08    0   22 3.5589e+10 1.8050e+08  99.5%     -  687s
+     0     0 1.8050e+08    0   22 3.5589e+10 1.8050e+08  99.5%     -  689s
+     0     0 1.8050e+08    0   22 3.5589e+10 1.8050e+08  99.5%     -  692s
+     0     0 1.8050e+08    0   22 3.5589e+10 1.8050e+08  99.5%     -  693s
+     0     0 1.8050e+08    0   22 3.5589e+10 1.8050e+08  99.5%     -  693s
+     0     0 1.8050e+08    0   22 3.5589e+10 1.8050e+08  99.5%     -  696s
+     0     0 1.8050e+08    0   22 3.5589e+10 1.8050e+08  99.5%     -  697s
+     0     0 1.8050e+08    0   22 3.5589e+10 1.8050e+08  99.5%     -  699s
+     0     0 1.8050e+08    0   22 3.5589e+10 1.8050e+08  99.5%     -  701s
+     0     0 1.8050e+08    0   22 3.5589e+10 1.8050e+08  99.5%     -  702s
+     0     0 1.8050e+08    0   22 3.5589e+10 1.8050e+08  99.5%     -  705s
+     0     0 1.8050e+08    0   22 3.5589e+10 1.8050e+08  99.5%     -  708s
+H    0     0                    1.819409e+08 1.8050e+08  0.79%     -  880s
+     0     2 1.8050e+08    0   22 1.8194e+08 1.8050e+08  0.79%     -  918s
+     1     4 1.8068e+08    1   20 1.8194e+08 1.8050e+08  0.79% 13062  964s
+     3     8 1.8068e+08    2   13 1.8194e+08 1.8052e+08  0.78%  5853 1027s
+     7    16 1.8068e+08    3   11 1.8194e+08 1.8052e+08  0.78%  6807 1187s
+    15    28 1.8179e+08    4    3 1.8194e+08 1.8068e+08  0.69% 33948 5711s
+*   31    37               5    1.817927e+08 1.8072e+08  0.59% 107515 5804s
+*   32    37               5    1.817890e+08 1.8072e+08  0.59% 104163 5804s
+*   53    37               5    1.816404e+08 1.8072e+08  0.51% 63576 5804s
+    59    40 1.8076e+08    6    2 1.8164e+08 1.8072e+08  0.51% 57702 6373s
+*   61    40               6    1.807743e+08 1.8072e+08  0.03% 56151 6373s
+*   81    40               6    1.807724e+08 1.8076e+08  0.01% 48054 6373s
+    91     0     cutoff    7      1.8077e+08 1.8076e+08  0.01% 44541 6476s
+
+Cutting planes:
+  Learned: 5
+  Gomory: 5
+  Lift-and-project: 3
+  Cover: 14
+  Implied bound: 267
+  Clique: 12
+  MIR: 276
+  Flow cover: 1234
+  RLT: 209
+  Relax-and-lift: 30
+  BQP: 1
+  PSD: 2
+
+Explored 112 nodes (4248072 simplex iterations) in 6481.90 seconds (1347.74 work units)
+Thread count was 32 (of 32 available processors)
+
+Solution count 8: 1.80772e+08 1.80772e+08 1.80774e+08 ... 3.5589e+10
+
+Optimal solution found (tolerance 1.00e-06)
+Best objective 1.807723814931e+08, best bound 1.807723814931e+08, gap 0.0000%
+
+User-callback calls 1309189, time in user-callback 1.17 sec
