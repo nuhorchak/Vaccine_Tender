@@ -22,10 +22,11 @@ gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "Fe
 # scaled_capacity => base value is 1. For the scaled_capacity effect, 1.5 should be input.
 # allowable_capacity_increase_number => Default value is 5 meaning that a producer can increase its capacity by 50% (5x10%) in a year. It can be selected as allowable_capacity_increase_number ∈ {1,2,3,4,5}
 # capacity_extension_decision => boolean, true if capacity increases are allowed
-# base_model => boolean, true is base model is used, false if min_unvax model is used
+# UNICEF_MODEL => boolean, true is UNICEF_MODEL is used, false if min_unvax model is used
 
 # tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, false)
-function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,number_of_demand_scenarios,total_capacity_scenarios,number_of_trials,initial_inventory_rate,scaled_capacity,allowable_capacity_increase_number, capacity_extension_decision = true, base_model = false, testing = true)
+function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,number_of_demand_scenarios,total_capacity_scenarios,number_of_trials,initial_inventory_rate,scaled_capacity,allowable_capacity_increase_number, 
+    capacity_extension_decision = true, UNICEF_MODEL = true, SOCIAL_BENEFIT_MODEL = false, MAX_PROFIT_MODEL = false, testing = false)
 
     L_shaped_output = Dict()
     Scenarios_used = Dict()
@@ -1025,7 +1026,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                 @variable(model, X_inf[p in P, t in T, ω in Ω] >= 0)
         
                 ################################################### OBJECTIVE FUNCTION AND CONSTRAINTS ####################################################
-                if base_model && !capacity_extension_decision #base model, no capacity extension
+                if UNICEF_MODEL && !capacity_extension_decision #base model, no capacity extension
                     println("Condition: Base model and no capacity extension")
                     @objective(model, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
                     + sum(p_ω[ω] * r[v, p, t] * X[v, p, t, ω] / delta[t] for v in V, p in P_v[v], t in T, ω in Ω)
@@ -1033,7 +1034,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                     + sum(p_ω[ω] * h[v] * r_avg[v, t] * I[v, t, ω] / delta[t] for v in V, t in T, ω in Ω)
                     + sum(inf_penalty * X_inf[p, t, ω] / delta[t] for p in P, t in T, ω in Ω)
                 )
-                elseif base_model && capacity_extension_decision #base model, capacity extension
+                elseif UNICEF_MODEL && capacity_extension_decision #base model, capacity extension
                     println("Condition: Base model with capacity extension")
                     @objective(model, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
                     + sum(p_ω[ω] * r[v, p, t] * X[v, p, t, ω] / delta[t] for v in V, p in P_v[v], t in T, ω in Ω)
@@ -1047,7 +1048,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                     @objective(model, Min, sum(p_ω[ω] * h[v] * r_avg[v, t] * I[v, t, ω]  / delta[t] for v in V, t in T, ω in Ω)
                     + sum(inf_penalty * X_inf[p, t, ω] / delta[t] for p in P, t in T, ω in Ω)
                 )
-                elseif capacity_extension_decision && !base_model #min unvax model, capacity extension
+                elseif capacity_extension_decision && UNICEF_MODEL #min unvax model, capacity extension
                     println("Condition: Min Unvax Model and Capacity extension")
                     @objective(model, Min, sum(p_ω[ω] * pi * S[a, t, ω] / delta[t] for a in A, t in T, ω in Ω)
                     + sum(inf_penalty * X_inf[p, t, ω] / delta[t] for p in P, t in T, ω in Ω)
@@ -1496,7 +1497,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                 #                             + sum(inf_penalty * X_inf[p, t] / delta[t] for p in P, t in T)
                 # )
                 
-                if base_model  #base model
+                if UNICEF_MODEL  #base model
                     println("Condition: Base model")
                     @objective(Subproblem, Min, sum(r[v, p, t] * X[v, p, t] / delta[t] for v in V, p in P_v[v], t in T)
                     + sum(pi * S[a, t] / delta[t] for a in A, t in T)
@@ -1663,22 +1664,19 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
             @variable(Masterproblem, Vc[v in V, t in T, ω in Ω_test_partial_1] >= 0)
             @variable(Masterproblem, S[a in A, t in T_initial, ω in Ω_test_partial_1] >= 0)
             @variable(Masterproblem, X_inf[p in P, t in T, ω in Ω_test_partial_1] >= 0)
+            #add Z, fix Q with m for segments
         
             ################################################### MASTER PROBLEM ####################################################
-        
-            # @objective(Masterproblem, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
-            #                                 + sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T)
-            #                                + sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
-        
-            #                                + p_ω_test[partial_scenario] * (
-            #                                + sum(r[v,p,t] * X[v,p,t,ω] / delta[t] for v in V, p in P_v[v], t in T, ω in Ω_test_partial_1)
-            #                                + sum(pi * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
-            #                                + sum(h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
-            #                                + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
-            #                                )
-            # )
 
-            if base_model && !capacity_extension_decision #base model, no capacity extension
+            #CONDITIONS: ALL use capacity extension
+
+            # UNICEF model - base model used, calculated from the perspective of UNICEF-GAVI
+
+            #social benefit - mods to OBJ funs (MP and SP), calcualted to minimize missed doses
+
+            #max profit - mods to OBJ funs (MP and SP), calcualted from the perspective of producers (et. al)
+
+            if UNICEF_MODEL && !capacity_extension_decision #base model, no capacity extension
                 println("Condition: Base model and no capacity extension")
                 @objective(Masterproblem, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
                 + sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
@@ -1690,7 +1688,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                 + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
                 )
                 )
-            elseif base_model && capacity_extension_decision #base model, capacity extension
+            elseif UNICEF_MODEL && capacity_extension_decision #base model, capacity extension
                 println("Condition: Base model with capacity extension")
                 @objective(Masterproblem, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
                 + sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T)
@@ -1711,7 +1709,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                 + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
                 )
                 )
-            elseif capacity_extension_decision && !base_model #min unvax model, capacity extension
+            elseif capacity_extension_decision && UNICEF_MODEL #min unvax model, capacity extension
                 println("Condition: Min Unvax Model and Capacity extension")
                 @objective(Masterproblem, Min, sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
                 + p_ω_test[partial_scenario] * (sum(pi * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
@@ -1789,17 +1787,6 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                 end
             end
         
-            # Constraint (7)
-            # for p in P
-            #     for t in T
-            #         for tau in T
-            #             if (t, tau) in F_time_set
-            #                 @constraint(Masterproblem, sum(Q[v, p, (t, tau)] for v in V_p[p]) <= W[p, (t, tau)] * sum((s_real[p] + sum(s_real[p] * κ * L[p, k] for k in 1:l)) for l in t:tau))
-            #             end
-            #         end
-            #     end
-            # end
-        
             # Constraint (7) - McCormick
             for p in P
                 for t in T
@@ -1819,17 +1806,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                     end
                 end
             end
-        
-            #Constraint (Valid Inequality 2)
-            # for p in P
-            #     for t in T
-            #         for tau in T
-            #             if (t, tau) in F_time_set
-            #                 @constraint(Masterproblem, sum(Q[v, p, (t, tau)] for v in V_p[p]) <= sum((Y[p,l] * s_real[p]) for l in t:tau))
-            #             end
-            #         end
-            #     end
-            # end
+
         
             # Constraint (8) - McCormick_1
             for ω in Ω_test_partial_1
@@ -1849,15 +1826,6 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                     end
                 end
             end
-        
-            # Constraint (9)
-            # for ω in Ω_test_partial_1
-            #     for p in P
-            #         for t in T
-            #             @constraint(Masterproblem, sum(X[v,p,t,ω] for v in V_p[p]) <= s_real[p]*Y[p,t])
-            #         end
-            #     end
-            # end
         
             # Constraint (9) McCormick
             for p in P
@@ -1947,48 +1915,6 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
             ub_vector = []
             lb_and_ub_vectors = Dict()
             opt_cut_list = Vector{Any}()
-        
-            # add initial cuts before starting L-shaped method
-            
-            # for ω_train in Ω_train
-            #     dual_subproblem_temp = Dict()
-            #     F_warm_temp = F_warm[ω_train]
-            #     W_warm_temp = W_warm[ω_train]
-            #     Y_warm_temp = Y_warm[ω_train]
-            #     Q_warm_temp = Q_warm[ω_train]
-            #     L_warm_temp = L_warm[ω_train]
-            #     for ω in Ω_test_partial_2
-            #         Subproblem, cons_8_1, cons_8_2, cons_8_3, cons_8_4, cons_8_5, cons_9, cons_10, cons_11, cons_12 = sub_problem(F_warm_temp, W_warm_temp, Y_warm_temp, Q_warm_temp, L_warm_temp, ω)
-            #         optimize!(Subproblem)
-            
-            #         constr8_1 = JuMP.dual.(cons_8_1)
-            #         constr8_2 = JuMP.dual.(cons_8_2)
-            #         constr8_3 = JuMP.dual.(cons_8_3)
-            #         constr8_4 = JuMP.dual.(cons_8_4)
-            #         constr8_5 = JuMP.dual.(cons_8_5)
-            #         constr9 = JuMP.dual.(cons_9)
-            #         constr10 = JuMP.dual.(cons_10)
-            #         constr11 = JuMP.dual.(cons_11)
-            #         constr12 = JuMP.dual.(cons_12)
-            
-            #         dual_vector_omega = [constr8_1, constr8_2, constr8_3, constr8_4, constr8_5, constr9, constr10, constr11, constr12]
-            #         dual_subproblem_temp[ω] = dual_vector_omega
-            #     end
-            #     Masterproblem = master_problem(dual_subproblem_temp)
-            # end
-        
-            # JuMP.optimize!(Masterproblem)
-        
-            # cons_report = Dict()
-            # function constraint_report(c::ConstraintRef, cons_name)
-            #     return (
-            #         # name = name(c),
-            #         # value = value(c),
-            #         # rhs = normalized_rhs(c),
-            #         # slack = normalized_rhs(c) - value(c),
-            #         cons_report[cons_name] = normalized_rhs(c) - value(c)
-            #     )
-            # end
             
             # L-shaped method starts
             while iter <= iter_max
@@ -2236,4 +2162,4 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
     end
 end
 
-tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, true, true, true)
+tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, true, true, false, false, false)
