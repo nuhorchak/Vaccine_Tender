@@ -19,6 +19,7 @@ include(joinpath(functions_directory, "sub_problem.jl"))
 include(joinpath(functions_directory, "save_L_Shape_results.jl"))
 include(joinpath(functions_directory, "deterministic_equivalent.jl"))
 include(joinpath(functions_directory, "select_random_scenarios.jl"))
+include(joinpath(functions_directory, "generate_dual_cuts.jl"))
 
 
 gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-6, "Threads" => 8) 
@@ -34,11 +35,13 @@ gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "Fe
 # scaled_capacity => base value is 1. For the scaled_capacity effect, 1.5 should be input.
 # allowable_capacity_increase_number => Default value is 5 meaning that a producer can increase its capacity by 50% (5x10%) in a year. It can be selected as allowable_capacity_increase_number ∈ {1,2,3,4,5}
 # capacity_extension_decision => boolean, true if capacity increases are allowed
-# UNICEF_MODEL => boolean, true is UNICEF_MODEL is used, false if min_unvax model is used
+# UNICEF_MODEL => boolean, true is UNICEF_MODEL is used
+# SOCIAL_BENEFIT_MODEL => boolean, true is UNICEF_MODEL is used
+# MAX_PROFIT_MODEL => boolean, true is UNICEF_MODEL is used
 
-# tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, false)
+
 function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,number_of_demand_scenarios,total_capacity_scenarios,number_of_trials,initial_inventory_rate,scaled_capacity,allowable_capacity_increase_number, 
-    capacity_extension_decision = true, UNICEF_MODEL = true, SOCIAL_BENEFIT_MODEL = false, MAX_PROFIT_MODEL = false, testing = false)
+    capacity_extension_decision = true, UNICEF_MODEL = true, SOCIAL_BENEFIT_MODEL = false, MAX_PROFIT_MODEL = false)
 
     L_shaped_output = Dict()
     Scenarios_used = Dict()
@@ -372,103 +375,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
         
             
             cuts_dict = Dict()
-            function master_problem(dual_subproblem)
-        
-                if length(dual_subproblem) > 0
-        
-                    cons_omega_dict = Dict()
-        
-                    for ω in Ω_test_partial_2
-                        cons8_1_b_By_omega = []
-                        cons8_2_b_By_omega = []
-                        cons8_3_b_By_omega = []
-                        cons8_4_b_By_omega = []
-                        cons8_5_b_By_omega = []
-                        cons9_b_By_omega = []
-                        cons10_b_By_omega = []
-                        cons11_b_By_omega = []
-                        cons12_b_By_omega = []
-                        cons13_b_By_omega = []
-                        cons14_b_By_omega = []
-        
-                        # Constraint (8)
-                        for v in V
-                            for p in P_v[v]
-                                for t in T
-                                    for tau in T
-                                        if (t, tau) in F_time_set
-                                            push!(cons8_1_b_By_omega, 0.0)
-                                            push!(cons8_2_b_By_omega, -Q[v,p,(t,tau)])
-                                            push!(cons8_3_b_By_omega, X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] - X_tilde_upper[v,p,(t,tau)])
-                                            push!(cons8_4_b_By_omega, 0.0)
-                                            push!(cons8_5_b_By_omega, X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
-                                        end
-                                    end
-                                end
-                            end
-                        end
-        
-                        # Constraint (9)
-                        for p in P
-                            for t in T
-                                c = Y[p,t]*s_real_tilde[p, t, ω] + K_ddot[p,t]
-                                push!(cons9_b_By_omega, c)
-                            end
-                        end
-        
-                        # Constraint (10)
-                        for v in V
-                            for t in T
-                                if t >= tmin
-                                    c = 0.0
-                                    push!(cons10_b_By_omega, c)
-                                end
-                            end
-                        end
-        
-                        # Constraint (11)
-                        for a in A
-                            for t in T
-                                if t >= tmin
-                                    c = -d_real_tilde[a, t, ω]
-                                    push!(cons11_b_By_omega, c)
-                                end
-                            end
-                        end
-        
-                        # Constraint (12)
-                        for p in P
-                            for t in T
-                                c = Y[p, t] * sum((1 + l[v, p]) * f_profit[v, p, t] for v in V_p[p])
-                                push!(cons12_b_By_omega, c)
-                            end
-                        end
-        
-                        # Constraint (13)
-                        for i in 1:length(starting_points_vect_I)
-                            amount = starting_points_vect_I[i][2]
-                            push!(cons13_b_By_omega, amount)
-                        end
-                
-                        # Constraint (14)
-                        for i in 1:length(starting_points_vect_S)
-                            amount = starting_points_vect_S[i][2]
-                            push!(cons14_b_By_omega, amount)
-                        end
-        
-                        b_By_omega = [cons8_1_b_By_omega, cons8_2_b_By_omega, cons8_3_b_By_omega, cons8_4_b_By_omega, cons8_5_b_By_omega, cons9_b_By_omega, cons10_b_By_omega, cons11_b_By_omega, cons12_b_By_omega, cons13_b_By_omega, cons14_b_By_omega]
-                        cons_omega_dict[ω] = b_By_omega
-                        # optimality cut 
-                        theta_rhs = 0.0
-                        for i in 1:length(cons_omega_dict[ω])
-                            theta_rhs += (transpose(cons_omega_dict[ω][i]) * dual_subproblem[ω][i])
-                        end
-                        @constraint(Masterproblem, theta[ω] >= theta_rhs)
-                    end
-                end
-        
-                return Masterproblem
-            end
+
         
             start_time = time()
         
@@ -532,14 +439,6 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                 + p_ω_test[partial_scenario] * (
                 + sum(r[v,p,t] * X[v,p,t,ω] / delta[t] for v in V, p in P_v[v], t in T, ω in Ω_test_partial_1)
                 + sum(pi * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
-                + sum(h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
-                + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
-                )
-                )
-            elseif testing
-                println("Condition: Testing")
-                @objective(Masterproblem, Min, sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
-                + p_ω_test[partial_scenario] * (
                 + sum(h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
                 + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
                 )
@@ -754,7 +653,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
             # L-shaped method starts
             while iter <= iter_max
                 println("iter: $iter")
-                Masterproblem = master_problem(dual_subproblem)
+                Masterproblem = generate_cuts_from_dual(dual_subproblem)
                 JuMP.optimize!(Masterproblem)
         
                 if length(opt_cut_list) > 2
