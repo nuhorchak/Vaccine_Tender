@@ -62,8 +62,8 @@ function tender_stochastic_sensitivity(
             ################################################### INITIALIZE NECESSARY PARAMS ###################################################
             #load vaccine dict data
             A, V, A_v, P, P_v, V_a, V_p, P_a, A_p, capacity_category, vaccine_category, antigen_category = create_vaccine_data()
-            T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta = process_production_and_cost_data(data_dir, unit, scaled_capacity, max_horizon_length, max_tender_length, P, V, P_v, V_p, allowable_capacity_increase_number)
-            Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2 = process_scenario_data(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number)
+            T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, inf_penalty = process_production_and_cost_data(data_dir, unit, scaled_capacity, max_horizon_length, max_tender_length, P, V, P_v, V_p, allowable_capacity_increase_number)
+            Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2, partial_scenario, s_real_tilde, d_real_tilde, random_scenarios = process_scenario_data(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number)
             X_tilde_lower, X_tilde_upper, L_ddot_lower, L_ddot_upper, L_hat_lower, L_hat_upper, L_check_lower, L_check_upper = create_bounds(V, P, P_v, T, F_time_set, s_real, κ, L_upper_number)
             
             starting_points_vect_F, starting_points_vect_I, starting_points_vect_S = load_starting_points(data_dir, initial_inventory_rate, unit)
@@ -73,9 +73,11 @@ function tender_stochastic_sensitivity(
         
             ################################################### INITIALIZE MASTER PROBLEM ###################################################
             Masterproblem = master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_number, 
-                Ω_test_partial_2, Ω_test_partial_1, T_initial, starting_points_vect_I, 
-                starting_points_vect_S, starting_points_vect_F, UNICEF_MODEL, 
-                capacity_extension_decision, Γ, g, pi, delta, p_ω_test, r, gurobi_solver)
+                                            Ω_test_partial_2, Ω_test_partial_1, T_initial, starting_points_vect_I, 
+                                            starting_points_vect_S, starting_points_vect_F, UNICEF_MODEL, 
+                                            capacity_extension_decision, Γ, g, pi, delta, p_ω_test, r, h, r_avg, inf_penalty, 
+                                            partial_scenario, P_a, gurobi_solver, κ, s_real, L_hat_upper, L_check_upper, V_p, 
+                                            X_tilde_upper, A_p, s_real_tilde, d_real_tilde, 1, f_profit, V_a, L_ddot_upper, l)
         
             LB = 0
             UB = 1e30 #high number to start large gap for L-shaped method (which uses infinity)
@@ -95,7 +97,9 @@ function tender_stochastic_sensitivity(
             # L-shaped method starts
             while iter <= iter_max
                 println("iter: $iter")
-                Masterproblem = generate_cuts_from_dual(dual_subproblem)
+                Masterproblem = generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial_2, V, P_v, T, F_time_set, 
+                X_tilde_upper, P, s_real_tilde, 1, A, d_real_tilde, l, f_profit, V_p, 
+                starting_points_vect_I, starting_points_vect_S)
                 JuMP.optimize!(Masterproblem)
         
                 if length(opt_cut_list) > 2
@@ -220,7 +224,10 @@ function tender_stochastic_sensitivity(
                 dual_subproblem = Dict()
                 for ω in Ω_test_partial_2
                     # println("scenario: $ω")
-                    Subproblem, cons_8_1, cons_8_2, cons_8_3, cons_8_4, cons_8_5, cons_9, cons_10, cons_11, cons_12, cons_13, cons_14 = sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω, pi, f_profit, delta, gurobi_solver_no_presolve)
+                    Subproblem, cons_8_1, cons_8_2, cons_8_3, cons_8_4, cons_8_5, 
+                    cons_9, cons_10, cons_11, cons_12, cons_13, cons_14 = sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω, pi, f_profit, delta, r_avg, gurobi_solver_no_presolve,
+                                                                            V, P_v, T, T_initial, A, P, F_time_set, 1, V_p, X_tilde_upper, s_real_tilde, d_real_tilde, V_a, starting_points_vect_I, 
+                                                                            starting_points_vect_S, r, h, l, inf_penalty, UNICEF_MODEL)
                     optimize!(Subproblem)
         
                     X_sub[ω] = JuMP.value.(Subproblem[:X])
@@ -265,7 +272,7 @@ function tender_stochastic_sensitivity(
                 lb_and_ub_vectors["run_time"] = time_elapsed
                 current_directory = @__DIR__
     
-                source = string(current_directory, "/results/T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
+                source = string(current_directory, "/results/T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
                 f = open(source, "w")
                 JSON.print(f, lb_and_ub_vectors)
                 close(f)
@@ -277,14 +284,19 @@ function tender_stochastic_sensitivity(
         
                 if (UB - LB) / UB < relaxation_tol
                     model_type = "L-shaped"
-                    save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_sub,I_sub,Vc_sub,S_sub,model_type)
+                    save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_sub,I_sub,Vc_sub,S_sub,model_type) #need to fix this to take in more paramters to work
                     println("L_shaped method converged in $time_elapsed seconds after $iter iterations")
 
                     current_directory = @__DIR__
                     scenarios = length(Ω_test)
-                    source = string(current_directory, "/results/log_DE_L_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
+                    source = string(current_directory, "/results/log_DE_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
                     
-                    deterministic_equivalent_model = deterministic_equivalent(p_ω_test,Ω_test,F_bar,W_bar,Y_bar,L_barg, pi, Γ, gurobi_solver_DE)
+                    deterministic_equivalent_model = deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, pi, Γ, gurobi_solver_DE,
+                    A, F_time_set, V, P_v, T, T_initial, P, P_a, starting_points_vect_F, starting_points_vect_I, 
+                    starting_points_vect_S, capacity_extension_decision, UNICEF_MODEL, L_lower_number, L_upper_number,
+                    κ, s_real, L_hat_upper, L_check_upper, d_real_tilde, X_tilde_upper, s_real_tilde, tmin, 
+                    r, r_avg, h, inf_penalty, V_p, l, f_profit, V_a)
+
                     set_optimizer_attribute(deterministic_equivalent_model, "LogFile", source)
                     optimize!(deterministic_equivalent_model)
                 

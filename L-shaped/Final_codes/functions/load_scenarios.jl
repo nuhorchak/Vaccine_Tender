@@ -118,5 +118,5 @@ function process_scenario_data(
         JSON.print(f, Scenarios_used)
     end
 
-    return Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2
+    return Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2, partial_scenario, s_real_tilde, d_real_tilde, random_scenarios
 end

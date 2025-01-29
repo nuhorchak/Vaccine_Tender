@@ -29,7 +29,16 @@
 
 
 
-function generate_cuts_from_dual(dual_subproblem)
+function generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial_2, V, P_v, T, F_time_set, 
+    X_tilde_upper, P, s_real_tilde, tmin, A, d_real_tilde, l, f_profit, V_p, 
+    starting_points_vect_I, starting_points_vect_S)
+
+    Q = Masterproblem[:Q]
+    W = Masterproblem[:W]
+    Y = Masterproblem[:Y]
+    K_ddot = Masterproblem[:K_ddot]
+    theta = Masterproblem[:theta]
+
         
     if length(dual_subproblem) > 0
 
@@ -55,7 +64,7 @@ function generate_cuts_from_dual(dual_subproblem)
                         for tau in T
                             if (t, tau) in F_time_set
                                 push!(cons8_1_b_By_omega, 0.0)
-                                push!(cons8_2_b_By_omega, -Q[v,p,(t,tau)])
+                                push!(cons8_2_b_By_omega, -Q[v,p,(t,tau)]) #I need to access the variable from master problem
                                 push!(cons8_3_b_By_omega, X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] - X_tilde_upper[v,p,(t,tau)])
                                 push!(cons8_4_b_By_omega, 0.0)
                                 push!(cons8_5_b_By_omega, X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])

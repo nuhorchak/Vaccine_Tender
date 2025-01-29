@@ -35,6 +35,8 @@ function process_production_and_cost_data(
     L_upper_number = allowable_capacity_increase_number
     delta = [(1+0.03)^t for t in 1:tmax]
 
+    inf_penalty = 100
+
     # Read production capacity data
     capacity_file_path = joinpath(data_dir, "production_capacity_scenarios.xlsx")
     capacity_file = XLSX.readxlsx(capacity_file_path)
@@ -140,5 +142,5 @@ function process_production_and_cost_data(
         end
     end
 
-    return T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta
+    return T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, inf_penalty
 end

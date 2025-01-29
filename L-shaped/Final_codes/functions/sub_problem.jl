@@ -42,7 +42,10 @@ Defines the sub-problem for the optimization model, including variables, constra
 """
 
 
-function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω, pi, f_profit, delta, gurobi_solver_no_presolve)
+function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω, pi, f_profit, delta, r_avg, gurobi_solver_no_presolve,
+    V, P_v, T, T_initial, A, P, F_time_set, tmin, V_p, X_tilde_upper, s_real_tilde, d_real_tilde, V_a, starting_points_vect_I, 
+    starting_points_vect_S, r, h, l, inf_penalty, UNICEF_MODEL)
+
 
     Subproblem = JuMP.Model()
     JuMP.set_optimizer(Subproblem, gurobi_solver_no_presolve)
