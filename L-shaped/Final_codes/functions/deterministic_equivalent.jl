@@ -4,23 +4,23 @@ deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar)
 Defines the deterministic equivalent model for a stochastic optimization problem. The model includes decision variables, objective function, and constraints, with specific conditions for capacity extension and vaccination strategies.
 
 # Arguments
-- `p_ω`: A dictionary representing the probability of each scenario \(\omega \in \Omega\).
+- `p_ω`: A dictionary representing the probability of each scenario (omega in Omega).
 - `Ω`: The set of scenarios.
-- `F_bar`: A dictionary of fixed binary variables \(F_{at\tau}\), representing tender coverage for antigen \(a\) over periods \(t\) to \(\tau\).
-- `W_bar`: A dictionary of fixed binary variables \(W_{pt\tau}\), indicating producer \(p\)'s commitment for periods \(t\) to \(\tau\).
-- `Y_bar`: A dictionary of fixed binary variables \(Y_{pt}\), specifying whether producer \(p\) produces in period \(t\).
-- `L_bar`: A dictionary of fixed integer variables \(L_{pt}\), representing capacity extensions for producer \(p\) in period \(t\).
+- `F_bar`: A dictionary of fixed binary variables (F_at_tau), representing tender coverage for antigen (a) over periods (t) to (tau).
+- `W_bar`: A dictionary of fixed binary variables (W_pt_tau), indicating producer (p)'s commitment for periods (t) to (tau).
+- `Y_bar`: A dictionary of fixed binary variables (Y_pt), specifying whether producer (p) produces in period (t).
+- `L_bar`: A dictionary of fixed integer variables (L_pt), representing capacity extensions for producer (p) in period (t).
 
 # Outputs
 - `model`: A JuMP model for the deterministic equivalent problem.
 
 # Key Components
 1. **Variables**:
-   - \(F\), \(W\), \(Y\): Decision variables related to tender, commitments, and production.
-   - \(Q\), \(X\), \(X_{\text{tilde}}\), \(K\): Variables representing procurement, delivery, and intermediate calculations.
-   - \(I\), \(Vc\), \(S\): Variables for inventory, vaccine administration, and missed doses.
-   - \(L\), \(L_{\text{hat}}\), \(L_{\text{check}}\): Capacity extension variables.
-   - \(X_{\text{inf}}\): Auxiliary variables for infeasibilities.
+   - (F), (W), (Y): Decision variables related to tender, commitments, and production.
+   - (Q), (X), (X_tilde), (K): Variables representing procurement, delivery, and intermediate calculations.
+   - (I), (Vc), (S): Variables for inventory, vaccine administration, and missed doses.
+   - (L), (L_hat), (L_check): Capacity extension variables.
+   - (X_inf): Auxiliary variables for infeasibilities.
 
 2. **Objective Function**:
    - Varies based on conditions:
@@ -30,7 +30,7 @@ Defines the deterministic equivalent model for a stochastic optimization problem
 
 3. **Constraints**:
    - (2)-(12): Cover tender coverage, overlap avoidance, capacity limits, inventory balance, unmet demand, and production feasibility.
-   - Initial constraints ensure consistency with the fixed variables (\(F_{\text{bar}}\), \(W_{\text{bar}}\), \(Y_{\text{bar}}\), \(L_{\text{bar}}\)).
+   - Initial constraints ensure consistency with the fixed variables (F_bar, W_bar, Y_bar, L_bar).
 
 4. **Conditions**:
    - The model adapts based on whether capacity extension decisions are included and whether the objective focuses on social benefit or profit maximization.
@@ -38,12 +38,11 @@ Defines the deterministic equivalent model for a stochastic optimization problem
 # Notes
 - Uses the Gurobi solver via JuMP.
 - Requires pre-defined inputs like demand scenarios, capacities, and parameters.
-- Ensure all necessary variables (\(p_ω\), \(\Omega\), etc.) are properly initialized before calling the function.
+- Ensure all necessary variables (p_ω, Ω, etc.) are properly initialized before calling the function.
 """
 
 
-
-function deterministic_equivalent(p_ω,Ω,F_bar,W_bar,Y_bar,L_bar)
+function deterministic_equivalent(p_ω,Ω,F_bar,W_bar,Y_bar,L_bar, g, pi, Γ, gurobi_solver_DE)
         
     model = Model(gurobi_solver_DE)
 

@@ -4,13 +4,13 @@ sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω)
 Defines the sub-problem for the optimization model, including variables, constraints, and objective functions.
 
 # Arguments
-- `F_bar`: A dictionary containing binary variables \(F_{at\tau}\), indicating tender coverage for antigen \(a\) over periods \(t\) through \(\tau\).
-- `W_bar`: A dictionary with binary variables \(W_{pt\tau}\), representing producer \(p\)'s commitments for periods \(t\) through \(\tau\).
-- `Y_bar`: A dictionary with binary variables \(Y_{pt}\), indicating whether producer \(p\) produces in period \(t\).
-- `Q_bar`: A dictionary containing variables \(Q_{vpt\tau m}\), representing procurement commitments for vaccine \(v\) by producer \(p\) over periods \(t\) through \(\tau\) in discount segment \(m\).
-- `L_bar`: A dictionary representing integer variables \(L_{pt}\), which indicate capacity extension for producer \(p\) in period \(t\).
-- `L_ddot_bar`: A dictionary capturing additional capacity-related constraints for \(L\).
-- `K_ddot_bar`: A dictionary for capacity scaling related to \(K\).
+- `F_bar`: A dictionary containing binary variables (F_at_tau), indicating tender coverage for antigen (a) over periods (t) through (tau).
+- `W_bar`: A dictionary with binary variables (W_pt_tau), representing producer (p)'s commitments for periods (t) through (tau).
+- `Y_bar`: A dictionary with binary variables (Y_pt), indicating whether producer (p) produces in period (t).
+- `Q_bar`: A dictionary containing variables (Q_vpt_tau_m), representing procurement commitments for vaccine (v) by producer (p) over periods (t) through (tau) in discount segment (m).
+- `L_bar`: A dictionary representing integer variables (L_pt), which indicate capacity extension for producer (p) in period (t).
+- `L_ddot_bar`: A dictionary capturing additional capacity-related constraints for (L).
+- `K_ddot_bar`: A dictionary for capacity scaling related to (K).
 - `ω`: A specific scenario index for scenario-dependent parameters.
 
 # Outputs
@@ -19,12 +19,12 @@ Defines the sub-problem for the optimization model, including variables, constra
 
 # Key Components
 1. **Variables**:
-   - \(X\): Doses of vaccines delivered by producers.
-   - \(I\): Inventory levels of vaccines.
-   - \(Vc\): Vaccines administered.
-   - \(S\): Missed doses of antigens.
-   - \(X_{\text{inf}}\): Auxiliary variables for infeasibilities.
-   - \(X_{\text{tilde}}\), \(K\): Intermediate variables for McCormick-related reformulations.
+   - (X): Doses of vaccines delivered by producers.
+   - (I): Inventory levels of vaccines.
+   - (Vc): Vaccines administered.
+   - (S): Missed doses of antigens.
+   - (X_inf): Auxiliary variables for infeasibilities.
+   - (X_tilde), (K): Intermediate variables for McCormick-related reformulations.
 
 2. **Objective Function**:
    - Varies based on the model type:
@@ -41,7 +41,8 @@ Defines the sub-problem for the optimization model, including variables, constra
 - Ensure the required parameters and dictionaries are pre-defined before calling the function.
 """
 
-function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω)
+
+function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω, pi, f_profit, delta, gurobi_solver_no_presolve)
 
     Subproblem = JuMP.Model()
     JuMP.set_optimizer(Subproblem, gurobi_solver_no_presolve)

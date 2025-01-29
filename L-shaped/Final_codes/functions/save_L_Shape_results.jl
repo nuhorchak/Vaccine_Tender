@@ -4,21 +4,22 @@ save_L_shaped_results(F_bar, Y_bar, W_bar, L_bar, Q_bar, X_de, I_de, Vc_de, S_de
 Saves the results of the L-shaped optimization model to a structured output file.
 
 # Arguments
-- `F_bar`: A dictionary containing binary variables \(F_{at\tau}\), indicating whether a tender covers the demand for antigen \(a\) for periods \(t\) through \(\tau\).
-- `Y_bar`: A dictionary containing binary variables \(Y_{pt}\), specifying whether manufacturer \(p\) produces in period \(t\).
-- `W_bar`: A dictionary containing binary variables \(W_{pt\tau}\), indicating if producer \(p\) has made commitments for periods \(t\) through \(\tau\).
-- `L_bar`: A dictionary containing integer variables \(L_{pt}\), representing capacity extension for producer \(p\) in period \(t\).
-- `Q_bar`: A dictionary containing variables \(Q_{vpt\tau m}\), representing procurement commitments for vaccine \(v\) by producer \(p\) for periods \(t\) through \(\tau\), at discount segment \(m\).
-- `X_de`: A dictionary containing \(X_{vpt\omega}\), the doses of vaccine \(v\) delivered by producer \(p\) in period \(t\) for scenario \(\omega\).
-- `I_de`: A dictionary containing \(I_{vt\omega}\), the stock level for vaccine \(v\) at the beginning of period \(t\) (including period 0) for scenario \(\omega\).
-- `Vc_de`: A dictionary containing \(V_{vt\omega}\), the number of doses administered with vaccine \(v\) in period \(t\) for scenario \(\omega\).
-- `S_de`: A dictionary containing \(S_{at\omega}\), the number of missed doses for antigen \(a\) in period \(t\) (including period 0) for scenario \(\omega\).
-- `model_type`: A string indicating the model type (`"L-shaped"` or `"DE_after_L-shaped"`).
+- `F_bar`: A dictionary containing binary variables (F_at_tau), indicating whether a tender covers the demand for antigen (a) for periods (t) through (tau).
+- `Y_bar`: A dictionary containing binary variables (Y_pt), specifying whether manufacturer (p) produces in period (t).
+- `W_bar`: A dictionary containing binary variables (W_pt_tau), indicating if producer (p) has made commitments for periods (t) through (tau).
+- `L_bar`: A dictionary containing integer variables (L_pt), representing capacity extension for producer (p) in period (t).
+- `Q_bar`: A dictionary containing variables (Q_vpt_tau_m), representing procurement commitments for vaccine (v) by producer (p) for periods (t) through (tau), at discount segment (m).
+- `X_de`: A dictionary containing (X_vpt_omega), the doses of vaccine (v) delivered by producer (p) in period (t) for scenario (omega).
+- `I_de`: A dictionary containing (I_vt_omega), the stock level for vaccine (v) at the beginning of period (t) (including period 0) for scenario (omega).
+- `Vc_de`: A dictionary containing (V_vt_omega), the number of doses administered with vaccine (v) in period (t) for scenario (omega).
+- `S_de`: A dictionary containing (S_at_omega), the number of missed doses for antigen (a) in period (t) (including period 0) for scenario (omega).
+- `model_type`: A string indicating the model type ("L-shaped" or "DE_after_L-shaped").
 
 # Outputs
-- Writes results to JSON files in the `results/` directory. The structure and file names vary based on `model_type`.
+- Writes results to JSON files in the `results` directory. The structure and file names vary based on `model_type`.
 - Captures sensitivity metrics, including average tender lengths, capacity increases, and demand fulfillment metrics.
 """
+
 
 # add Z variable to this to check discount pricing
 function save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_de,I_de,Vc_de,S_de,model_type)

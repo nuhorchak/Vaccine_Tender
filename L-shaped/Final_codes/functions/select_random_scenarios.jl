@@ -1,6 +1,6 @@
 import Random
 
-function select_random_scenarios(a::Int, b::Int, n::Int)
+function select_random_scenarios(a::Int, b::Int, n::Int, total_capacity_scenarios::Int)
     numbers = collect(a:b)
     shuffled_numbers = shuffle(numbers)
     selected_numbers = shuffled_numbers[1:n]

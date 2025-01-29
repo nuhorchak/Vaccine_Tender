@@ -1,90 +1,144 @@
-using JSON
-using XLSX
+"""
+    process_production_and_cost_data(data_dir::String, unit::Int, scaled_capacity::Float64, max_horizon_length::Int, max_tender_length::Int, P::Vector, V::Vector, P_v::Dict, V_p::Dict, allowable_capacity_increase_number::Int)
 
-function initialize_parameters(max_horizon_length, max_tender_length, scaled_capacity, allowable_capacity_increase_number, 
-                               initial_inventory_rate, total_capacity_scenarios, number_of_demand_scenarios, trial)
+Processes production capacity, vaccine pricing, and cost-related data from Excel files and generates relevant parameters and dictionaries.
 
-    ################################################### INDICES ####################################################
-    A = ["Measles", "Mumps", "Rubella", "Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib", "Polio", "HPV", "Rotavirus", "PCV"]
-    V = ["M", "MR", "MMR", "TT", "HepB", "Hib", "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "Penta", "Hexa", "HPV", "Rotavirus", "PCV"]
-    A_v = Dict("M" => ["Measles"], "MR" => ["Measles", "Rubella"], "MMR" => ["Measles", "Mumps", "Rubella"], 
-               "TT" => ["Tetanus"], "HepB" => ["Hepatitis_B"], "Hib" => ["Hib"], "IPV" => ["Polio"],
-               "OPV" => ["Polio"], "DT" => ["Diphtheria", "Tetanus"], "Td" => ["Diphtheria", "Tetanus"], 
-               "DTwP" => ["Diphtheria", "Tetanus", "Pertussis"], "DTwP-Hib" => ["Diphtheria", "Tetanus", "Pertussis", "Hib"], 
-               "Penta" => ["Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib"],
-               "Hexa" => ["Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib", "Polio"], 
-               "HPV" => ["HPV"], "Rotavirus" => ["Rotavirus"], "PCV" => ["PCV"])
-    P = ["AJ_Vaccines", "BB_NCIPD", "China_National", "Bharat_Biotech", "Bilthoven", "Biological_E", "GSK", 
-         "Haffkine_Bio", "LG_Chem", "Merck_Sharp", "Panacea_Biotec", "PT_Bio", "Sanofi", "Serum_Institute", "Pfizer"]
+# Arguments:
+- `data_dir::String`: Directory containing the data files (`production_capacity_scenarios.xlsx`, `Vaccine_price_data.xlsx`).
+- `unit::Int`: Scaling factor for unit conversions.
+- `scaled_capacity::Float64`: Scaling factor for production capacities.
+- `max_horizon_length::Int`: Maximum time horizon length (tmax).
+- `max_tender_length::Int`: Maximum tender length (Δ).
+- `P::Vector`: Vector of producers.
+- `V::Vector`: Vector of vaccines.
+- `P_v::Dict`: Dictionary mapping vaccines to their producers.
+- `V_p::Dict`: Dictionary mapping producers to their vaccines.
+- `allowable_capacity_increase_number::Int`: Number of allowable capacity increases.
 
-    P_v = Dict("M" => ["Serum_Institute", "PT_Bio"], "MR" => ["Serum_Institute", "Biological_E"], 
-               "MMR" => ["Serum_Institute", "GSK"], "TT"=> ["Serum_Institute", "PT_Bio", "BB_NCIPD", "Biological_E"],
-               "HepB" => ["Serum_Institute", "LG_Chem"], "Hib" => ["Serum_Institute"], 
-               "IPV" => ["LG_Chem", "AJ_Vaccines", "Bilthoven", "Sanofi"], 
-               "OPV" => ["Serum_Institute", "PT_Bio", "GSK", "Sanofi", "Panacea_Biotec", "China_National", 
-                         "Bharat_Biotech", "Haffkine_Bio"], 
-               "DT" => ["PT_Bio", "BB_NCIPD"], "Td" => ["Serum_Institute", "PT_Bio", "BB_NCIPD", "Biological_E"], 
-               "DTwP" => ["Serum_Institute", "Biological_E"], "DTwP-Hib" => ["Serum_Institute"], 
-               "Penta" => ["Serum_Institute", "PT_Bio", "Biological_E", "LG_Chem", "Panacea_Biotec"], 
-               "Hexa" => ["Sanofi"], "HPV" => ["GSK", "Merck_Sharp", "China_National"], 
-               "Rotavirus" => ["Serum_Institute", "GSK", "Bharat_Biotech"], 
-               "PCV" => ["Serum_Institute", "GSK", "Pfizer"])
+# Returns:
+- Various dictionaries (`s_real`, `r`, `r_avg`, `r_producer_avg`, `g`, `h`, `l`, `f_profit`, `Γ`) and sets (`T`, `T_initial`, `Δ`, `F_time_set`) used for simulation and optimization.
 
-    # Generate reverse mappings
-    V_a = Dict(a => [v for v in keys(A_v) if a in A_v[v]] for a in A)
-    V_p = Dict(p => [v for v in keys(P_v) if p in P_v[v]] for p in P)
-    P_a = Dict(a => unique(reduce(vcat, [P_v[v] for v in V_a[a]])) for a in A)
-    A_p = Dict(p => [a for a in keys(P_a) if p in P_a[a]] for p in P)
+"""
+function process_production_and_cost_data(
+    data_dir::String, unit::Int, scaled_capacity::Int, max_horizon_length::Int, max_tender_length::Int, 
+    P::Vector, V::Vector, P_v::Dict, V_p::Dict, allowable_capacity_increase_number::Int
+)
+    # Time-related sets
+    tmin = 1
+    tmax = max_horizon_length
+    T = [t for t in tmin:tmax]
+    T_initial = [t for t in tmin-1:tmax]
+    Δ = [i for i in 1:max_tender_length]
 
-    # Categorization and additional parameters
-    capacity_category = Dict("Small" => ["AJ_Vaccines", "Panacea_Biotec", "Bilthoven", "China_National"], 
-                             "Medium" => ["Sanofi", "Pfizer", "Haffkine_Bio", "Bharat_Biotech", "Merck_Sharp", "PT_Bio", 
-                                          "LG_Chem", "BB_NCIPD"], 
-                             "Large" => ["Serum_Institute", "GSK", "Biological_E"])
-    vaccine_category = Dict("MMR-based" => ["M", "MR", "MMR"], 
-                            "Td-based" => ["TT", "HepB", "Hib", "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "Penta", "Hexa"], 
-                            "Single" => ["HPV", "Rotavirus", "PCV"])
-    antigen_category = Dict("MMR-based" => ["Measles", "Mumps", "Rubella"], 
-                            "Td-based" => ["Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib", "Polio"], 
-                            "Single" => ["HPV", "Rotavirus", "PCV"])
+    κ = 0.10
+    L_lower_number = 0
+    L_upper_number = allowable_capacity_increase_number
+    delta = [(1+0.03)^t for t in 1:tmax]
 
+    # Read production capacity data
+    capacity_file_path = joinpath(data_dir, "production_capacity_scenarios.xlsx")
+    capacity_file = XLSX.readxlsx(capacity_file_path)
+    s_real_raw = capacity_file["base_capacity"]
 
-    # Scenario-related data
-    current_directory = @__DIR__
-    filename = "data/scenario_pair_probabilities_new.json"
-    scenario_pair_probs = JSON.parsefile(joinpath(current_directory, filename))
-    total_scenarios = length(scenario_pair_probs)
+    total_supply_row = length(P) + 1
+    total_supply_col = 2
+    s_real = Dict()
 
-    function select_random_scenarios(a::Int, b::Int, n::Int)
-        shuffled_numbers = shuffle(a:b)
-        return [((i - 1) * total_capacity_scenarios + j) for i in shuffled_numbers[1:n] for j in 1:total_capacity_scenarios]
+    for row in 2:total_supply_row
+        producer = s_real_raw[row, 1]
+        for col in 2:total_supply_col
+            year = s_real_raw[1, col]
+            s_real[producer] = round(s_real_raw[row, col] * scaled_capacity / unit, digits=0)
+        end
     end
 
-    random_scenarios = select_random_scenarios(1, ceil(Int, total_scenarios / total_capacity_scenarios), number_of_demand_scenarios)
+    # Read vaccine price data
+    vaccine_price_file_path = joinpath(data_dir, "Vaccine_price_data.xlsx")
+    vaccine_price_file = XLSX.readxlsx(vaccine_price_file_path)
 
-    # Load scenario pairs
-    filename2 = "data/scenario_pairs_new.json"
-    scenario_pairs = JSON.parsefile(joinpath(current_directory, filename2))
+    r = Dict()
+    for v in V
+        vaccine_price_raw = vaccine_price_file[string(v, " Pricing")]
+        for row in 2:length(P_v[v])+1
+            producer = vaccine_price_raw[row, 1]
+            for col in 2:length(T)+1
+                year = vaccine_price_raw[1, col]
+                r[v, producer, year] = vaccine_price_raw[row, col]
+            end
+        end
+    end
 
-    # Return a dictionary of all initialized parameters
-    return Dict(
-        :A => A,
-        :V => V,
-        :A_v => A_v,
-        :P => P,
-        :P_v => P_v,
-        :V_a => V_a,
-        :V_p => V_p,
-        :P_a => P_a,
-        :A_p => A_p,
-        :capacity_category => capacity_category,
-        :vaccine_category => vaccine_category,
-        :antigen_category => antigen_category,
-        :T => T,
-        :T_initial => T_initial,
-        :Δ => Δ,
-        :scenario_pair_probs => scenario_pair_probs,
-        :random_scenarios => random_scenarios,
-        :scenario_pairs => scenario_pairs
-    )
+    # Average vaccine prices per year
+    r_avg = Dict()
+    for v in V
+        for t in T
+            total = 0.0
+            for p in P_v[v]
+                total += r[v, p, t]
+            end
+            average = total / length(P_v[v])
+            r_avg[v, t] = average
+        end
+    end
+
+    # Average vaccine prices per producer
+    r_producer_avg = Dict()
+    for p in P
+        total = 0.0
+        for v in V_p[p]
+            for t in T
+                total += r[v, p, t]
+            end
+        end
+        average = total / (length(V_p[p]) * length(T))
+        r_producer_avg[p] = average
+    end
+
+    # Tender cost
+    g = Dict()
+    for t in T
+        g[t] = 1e8 / unit
+    end
+
+    # Inventory holding cost
+    h = Dict()
+    for v in V
+        h[v] = 0.01
+    end
+
+    # Return on investment
+    l = Dict()
+    for v in V
+        for p in P
+            l[v, p] = 0.1
+        end
+    end
+
+    # Profit function
+    f_profit = Dict()
+    for p in P
+        for v in V_p[p]
+            for t in T
+                f_profit[v, p, t] = s_real[p] / length(V_p[p]) * r_producer_avg[p] / 2
+            end
+        end
+    end
+
+    # Cost of capacity expansion
+    Γ = Dict()
+    for p in P
+        Γ[p] = 1e8 / unit
+    end
+
+    # Time set for tender
+    F_time_set = []
+    for t in T
+        for tau in T
+            if tau >= t && (tau - t + 1) in Δ
+                push!(F_time_set, (t, tau))
+            end
+        end
+    end
+
+    return T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta
 end
