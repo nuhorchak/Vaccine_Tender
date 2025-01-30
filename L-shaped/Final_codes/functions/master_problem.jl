@@ -34,7 +34,7 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
     starting_points_vect_S, starting_points_vect_F, UNICEF_MODEL, 
     capacity_extension_decision, Γ, g, pi, delta, p_ω_test, r, h, r_avg, inf_penalty, 
     partial_scenario, P_a, gurobi_solver, κ, s_real, L_hat_upper, L_check_upper, V_p, 
-    X_tilde_upper, A_p, s_real_tilde, d_real_tilde, tmin, f_profit, V_a, L_ddot_upper, l)
+    X_tilde_upper, A_p, s_real_tilde, d_real_tilde, tmin, f_profit, V_a, L_ddot_upper, l, overlap_decision)
 
     # Initialize the Master problem
     ######### Initiate the Master problem #########
