@@ -1,8 +1,7 @@
 # **HCVM Optimization Model**
 
 This project is automatically tested using GitHub Actions.
-![CI](https://github.com/nuhorchak/Vaccine_Tender/actions/workflows/julia-ci.yml/badge.svg)
-[![Coverage Status](https://codecov.io/gh/nuhorchak/Vaccine_Tender/branch/main/graph/badge.svg)](https://codecov.io/gh/nuhorchak/Vaccine_Tender)
+![CI](ci-badge.svg)
 ![Julia Version](https://img.shields.io/badge/julia-1.6%2B-blue)
 
 
