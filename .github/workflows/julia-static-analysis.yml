@@ -24,10 +24,10 @@ jobs:
       - name: Install Dependencies
         run: julia -e 'using Pkg; Pkg.instantiate()'
 
-      - name: Run StaticLint.jl
+      - name: Run Jolin.jl for Static Analysis
         run: |
-          julia -e 'using Pkg; Pkg.add("StaticLint"); using StaticLint'
-          julia -e 'using StaticLint; StaticLint.lint_package()'
+          julia -e 'using Pkg; Pkg.add("Jolin"); using Jolin'
+          julia -e 'Jolin.lint_project()'
 
       - name: Run Aqua.jl (Optional)
         run: |
@@ -50,4 +50,26 @@ jobs:
         run: julia -e 'using Pkg; Pkg.add("CompatHelper"); using CompatHelper'
 
       - name: Run CompatHelper
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         run: julia -e 'using CompatHelper; CompatHelper.main()'
+
+  update-badge:
+    name: Generate CI Badge
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Fetch CI Badge
+        run: |
+          curl -o ci-badge.svg -H "Authorization: token ${{ secrets.GH_PAT }}" \
+          https://github.com/USERNAME/REPO_NAME/actions/workflows/julia-static-analysis.yml/badge.svg
+
+      - name: Commit and Push Badge
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add ci-badge.svg
+          git commit -m "Update CI badge" || echo "No changes to commit"
+          git push origin main || echo "No changes to push"
