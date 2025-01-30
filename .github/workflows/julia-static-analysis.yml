@@ -51,11 +51,3 @@ jobs:
 
       - name: Run CompatHelper
         run: julia -e 'using CompatHelper; CompatHelper.main()'
-
-- name: Generate CI Badge
-  run: |
-    curl -o ci-badge.svg -H "Authorization: token ${{ secrets.GH_PAT }}" \
-      https://github.com/USERNAME/REPO_NAME/actions/workflows/julia-ci.yml/badge.svg
-    git add ci-badge.svg
-    git commit -m "Update CI badge" || echo "No changes to commit"
-    git push origin main || echo "No changes to push"
