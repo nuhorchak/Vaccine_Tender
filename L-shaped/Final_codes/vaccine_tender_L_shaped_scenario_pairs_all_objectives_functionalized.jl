@@ -284,7 +284,15 @@ function tender_stochastic_sensitivity(
         
                 if (UB - LB) / UB < relaxation_tol
                     model_type = "L-shaped"
-                    save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_sub,I_sub,Vc_sub,S_sub,model_type) #need to fix this to take in more paramters to work
+                    save_L_shaped_results(
+                        F_bar, Y_bar, W_bar, L_bar, Q_bar, X_de, I_de, Vc_de, S_de, model_type, 
+                        A, T, T_initial, P, P_v, V, V_p, Ω_test, F_time_set, random_scenarios, 
+                        capacity_category, antigen_category, vaccine_category, tmax, 
+                        max_tender_length, trial, initial_inventory_rate, scaled_capacity, 
+                        allowable_capacity_increase_number, number_of_demand_scenarios, 
+                        total_capacity_scenarios, p_ω_test, κ, s_real, s_real_tilde, 
+                        L_shaped_output, sensitivity_output
+)
                     println("L_shaped method converged in $time_elapsed seconds after $iter iterations")
 
                     current_directory = @__DIR__
@@ -328,7 +336,14 @@ function tender_stochastic_sensitivity(
                     S_de = JuMP.value.(deterministic_equivalent_model[:S])
 
                     model_type = "DE_after_L-shaped"
-                    save_L_shaped_results(F_de,Y_de,W_de,L_de,Q_de,X_de,I_de,Vc_de,S_de,model_type)
+                    save_L_shaped_results(
+                        F_bar, Y_bar, W_bar, L_bar, Q_bar, X_de, I_de, Vc_de, S_de, model_type, 
+                        A, T, T_initial, P, P_v, V, V_p, Ω_test, F_time_set, random_scenarios, 
+                        capacity_category, antigen_category, vaccine_category, tmax, 
+                        max_tender_length, trial, initial_inventory_rate, scaled_capacity, 
+                        allowable_capacity_increase_number, number_of_demand_scenarios, 
+                        total_capacity_scenarios, p_ω_test, κ, s_real, s_real_tilde, 
+                        L_shaped_output, sensitivity_output)
 
                     
 

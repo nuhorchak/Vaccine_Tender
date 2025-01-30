@@ -1,16 +1,16 @@
 """
-save_L_shaped_results(F_bar, Y_bar, W_bar, L_bar, Q_bar, X_de, I_de, Vc_de, S_de, model_type)
+save_L_shaped_results(F, Y, W, L, Q, X, I, Vc_de, S_de, model_type)
 
 Saves the results of the L-shaped optimization model to a structured output file.
 
 # Arguments
-- `F_bar`: A dictionary containing binary variables (F_at_tau), indicating whether a tender covers the demand for antigen (a) for periods (t) through (tau).
-- `Y_bar`: A dictionary containing binary variables (Y_pt), specifying whether manufacturer (p) produces in period (t).
-- `W_bar`: A dictionary containing binary variables (W_pt_tau), indicating if producer (p) has made commitments for periods (t) through (tau).
-- `L_bar`: A dictionary containing integer variables (L_pt), representing capacity extension for producer (p) in period (t).
-- `Q_bar`: A dictionary containing variables (Q_vpt_tau_m), representing procurement commitments for vaccine (v) by producer (p) for periods (t) through (tau), at discount segment (m).
-- `X_de`: A dictionary containing (X_vpt_omega), the doses of vaccine (v) delivered by producer (p) in period (t) for scenario (omega).
-- `I_de`: A dictionary containing (I_vt_omega), the stock level for vaccine (v) at the beginning of period (t) (including period 0) for scenario (omega).
+- `F`: A dictionary containing binary variables (F_at_tau), indicating whether a tender covers the demand for antigen (a) for periods (t) through (tau).
+- `Y`: A dictionary containing binary variables (Y_pt), specifying whether manufacturer (p) produces in period (t).
+- `W`: A dictionary containing binary variables (W_pt_tau), indicating if producer (p) has made commitments for periods (t) through (tau).
+- `L`: A dictionary containing integer variables (L_pt), representing capacity extension for producer (p) in period (t).
+- `Q`: A dictionary containing variables (Q_vpt_tau_m), representing procurement commitments for vaccine (v) by producer (p) for periods (t) through (tau), at discount segment (m).
+- `X`: A dictionary containing (X_vpt_omega), the doses of vaccine (v) delivered by producer (p) in period (t) for scenario (omega).
+- `I`: A dictionary containing (I_vt_omega), the stock level for vaccine (v) at the beginning of period (t) (including period 0) for scenario (omega).
 - `Vc_de`: A dictionary containing (V_vt_omega), the number of doses administered with vaccine (v) in period (t) for scenario (omega).
 - `S_de`: A dictionary containing (S_at_omega), the number of missed doses for antigen (a) in period (t) (including period 0) for scenario (omega).
 - `model_type`: A string indicating the model type ("L-shaped" or "DE_after_L-shaped").
@@ -22,7 +22,46 @@ Saves the results of the L-shaped optimization model to a structured output file
 
 
 # add Z variable to this to check discount pricing
-function save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_de,I_de,Vc_de,S_de,model_type)
+function save_L_shaped_results(
+    F::Dict{Tuple, Int}, 
+    Y::Dict{Tuple, Int}, 
+    W::Dict{Tuple, Int}, 
+    L::Dict{Tuple, Int}, 
+    Q::Dict{Tuple, Float64}, 
+    X::Dict{Any, Dict{Tuple, Float64}}, 
+    I::Dict{Any, Dict{Tuple, Float64}}, 
+    Vc::Dict{Any, Dict{Tuple, Float64}}, 
+    S::Dict{Any, Dict{Tuple, Float64}}, 
+    model_type::String, 
+    A::Vector{Any}, 
+    T::Vector{Any}, 
+    T_initial::Vector{Any}, 
+    P::Vector{Any}, 
+    P_v::Dict{Any, Vector{Any}}, 
+    V::Vector{Any}, 
+    V_p::Dict{Any, Vector{Any}}, 
+    Ω_test::Vector{Any}, 
+    F_time_set::Set{Tuple}, 
+    random_scenarios::Vector{Any}, 
+    capacity_category::Dict{Any, Any}, 
+    antigen_category::Dict{Any, Any}, 
+    vaccine_category::Dict{Any, Any}, 
+    tmax::Int, 
+    max_tender_length::Int, 
+    trial::Int, 
+    initial_inventory_rate::Float64, 
+    scaled_capacity::Float64, 
+    allowable_capacity_increase_number::Int, 
+    number_of_demand_scenarios::Int, 
+    total_capacity_scenarios::Int, 
+    p_ω_test::Dict{Any, Float64}, 
+    κ::Float64, 
+    s_real::Dict{Any, Float64}, 
+    s_real_tilde::Dict{Any, Dict{Any, Float64}}
+)
+
+L_shaped_output = Dict()
+
     F_results = Dict()
     for a in A
         temp_1 = Dict()
@@ -30,7 +69,7 @@ function save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_de,I_de,Vc_de,S_d
             temp_2 = Dict()
             for tau in T
                 if (t,tau) in F_time_set
-                    temp_2[tau] = F_bar[a,(t,tau)]
+                    temp_2[tau] = F[a,(t,tau)]
                 end
             end
             temp_1[t] = temp_2
@@ -42,7 +81,7 @@ function save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_de,I_de,Vc_de,S_d
     for p in P
         temp_1 = Dict()
         for t in T
-            temp_1[t] = Y_bar[p,t]
+            temp_1[t] = Y[p,t]
         end
         Y_results[p] = temp_1
     end
@@ -54,7 +93,7 @@ function save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_de,I_de,Vc_de,S_d
             temp_2 = Dict()
             for tau in T
                 if (t,tau) in F_time_set
-                    temp_2[tau] = W_bar[p,(t,tau)]
+                    temp_2[tau] = W[p,(t,tau)]
                 end
             end
             temp_1[t] = temp_2
@@ -66,7 +105,7 @@ function save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_de,I_de,Vc_de,S_d
     for p in P
         temp_1 = Dict()
         for t in T
-            temp_1[t] = L_bar[p,t]
+            temp_1[t] = L[p,t]
         end
         L_results[p] = temp_1
     end
@@ -80,7 +119,7 @@ function save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_de,I_de,Vc_de,S_d
                 temp_3 = Dict()
                 for tau in T
                     if (t,tau) in F_time_set
-                        temp_3[tau] = Q_bar[v,p,(t,tau)]
+                        temp_3[tau] = Q[v,p,(t,tau)]
                     end
                 end
                 temp_2[t] = temp_3
@@ -99,7 +138,7 @@ function save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_de,I_de,Vc_de,S_d
                 for t in T
                     temp_3 = Dict()
                     for ω in Ω_test
-                        temp_3[ω] = X_de[ω][v,p,t]
+                        temp_3[ω] = X[ω][v,p,t]
                     end
                     temp_2[t] = temp_3
                 end
@@ -114,7 +153,7 @@ function save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_de,I_de,Vc_de,S_d
             for t in T_initial
                 temp_2 = Dict()
                 for ω in Ω_test
-                    temp_2[ω] = I_de[ω][v,t]
+                    temp_2[ω] = I[ω][v,t]
                 end
                 temp_1[t] = temp_2
             end
@@ -146,7 +185,7 @@ function save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_de,I_de,Vc_de,S_d
             end
             S_results[a] = temp_1
         end
-    elseif model_type == "DE_after_L-shaped"
+    elseif model_type == "DE_after_L-shaped" #we can remove the IF statement, by passing in the correct variables in the main function
         X_results = Dict()
         for v in V
             temp_1 = Dict()
@@ -155,7 +194,7 @@ function save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_de,I_de,Vc_de,S_d
                 for t in T
                     temp_3 = Dict()
                     for ω in Ω_test
-                        temp_3[ω] = X_de[v,p,t,ω]
+                        temp_3[ω] = X[v,p,t,ω]
                     end
                     temp_2[t] = temp_3
                 end
@@ -170,7 +209,7 @@ function save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_de,I_de,Vc_de,S_d
             for t in T_initial
                 temp_2 = Dict()
                 for ω in Ω_test
-                    temp_2[ω] = I_de[v,t,ω]
+                    temp_2[ω] = I[v,t,ω]
                 end
                 temp_1[t] = temp_2
             end
@@ -236,8 +275,8 @@ function save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_de,I_de,Vc_de,S_d
             for t in T
                 for tau in T
                     if (t, tau) in F_time_set
-                        if F_bar[a, (t, tau)] == 1
-                            total_tender_length += (tau-t+1) * F_bar[a, (t, tau)]
+                        if F[a, (t, tau)] == 1
+                            total_tender_length += (tau-t+1) * F[a, (t, tau)]
                             count += 1
                         end
                     end
@@ -261,7 +300,7 @@ function save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_de,I_de,Vc_de,S_d
         for p in P
             temp_cap_inc = 0.0
             for t in T
-                temp_cap_inc += L_bar[p,t]
+                temp_cap_inc += L[p,t]
             end
             total_cap_increase[p] = temp_cap_inc*10
         end
@@ -307,13 +346,13 @@ function save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_de,I_de,Vc_de,S_d
                 temp_total_X = 0.0
                 for v in V_p[p]
                     for t in T
-                        temp_total_X += X_de[v,p,t,ω]
+                        temp_total_X += X[v,p,t,ω]
                     end
                 end
                 temp_avg_X = temp_total_X / length(T)
                 temp_period_cap = 0.0
                 for t in T
-                    temp_period_cap += s_real_tilde[p, t, ω] + sum(κ * s_real[p] * L_bar[p, l] for l in 1:t)
+                    temp_period_cap += s_real_tilde[p, t, ω] + sum(κ * s_real[p] * L[p, l] for l in 1:t)
                 end
                 temp_avg_period_cap = temp_period_cap / length(T)
                 temp_p_dict_2[ω] = temp_avg_X / temp_avg_period_cap
@@ -332,7 +371,7 @@ function save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_de,I_de,Vc_de,S_d
                     for v in V_p[p]
                         if v in vaccine_category[category]
                             for t in T
-                                temp_category_total_X += X_de[v,p,t,ω]
+                                temp_category_total_X += X[v,p,t,ω]
                             end
                         end
                     end
@@ -476,7 +515,7 @@ function save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_de,I_de,Vc_de,S_d
             for ω in Ω_test
                 temp_total_I = 0.0
                 for t in T
-                    temp_total_I += I_de[v,t,ω]
+                    temp_total_I += I[v,t,ω]
                 end
                 temp_avg_I = temp_total_I / length(T)
                 temp_v_dict[ω] = temp_avg_I
