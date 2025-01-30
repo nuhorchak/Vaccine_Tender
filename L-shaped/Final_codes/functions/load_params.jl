@@ -142,6 +142,23 @@ function process_production_and_cost_data(
         end
     end
 
+# Define the lambda values to cycle through
+lambda_values_list = [0.05, 0.1, 0.2]
 
-    return T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, inf_penalty
+# Initialize a dictionary to store lambda values
+lambda_m = Dict()
+
+# Loop through v, p, t, and assign lambda for each m
+for v in V
+    for p in P
+        for t in T
+            for m in 1:length(lambda_values_list)
+                lambda_m[v, p, t, m] = lambda_values_list[m]
+            end
+        end
+    end
+end
+
+
+    return T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, inf_penalty, lambda_m
 end

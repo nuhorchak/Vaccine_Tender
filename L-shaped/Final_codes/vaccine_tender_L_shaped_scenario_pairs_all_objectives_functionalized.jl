@@ -13,6 +13,8 @@ functions_directory = joinpath(current_directory, "functions")
 data_dir = joinpath(current_directory, "data")
 results_dir = joinpath(current_directory, "results")
 
+#lambda_m done; add z, update formulation; check McCormack for second stage; access model vars in sub problem and cuts; update model objectives; update constraints in each model
+
 # Include all the function files
 include(joinpath(functions_directory, "create_check_params.jl"))
 include(joinpath(functions_directory, "deterministic_equivalent.jl"))
