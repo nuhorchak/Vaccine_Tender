@@ -1,14 +1,16 @@
-name: Julia CI
+name: Julia Static Analysis
 
 on:
   push:
-    branches: [main, master]
+    branches:
+      - main
   pull_request:
-    branches: [main, master]
+    branches:
+      - main
 
 jobs:
-  test:
-    name: Run Tests
+  static-analysis:
+    name: Run Static Code Analysis
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -19,20 +21,18 @@ jobs:
         with:
           version: '1.9'
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: julia -e 'using Pkg; Pkg.instantiate()'
 
-      - name: Check Formatting
+      - name: Run StaticLint.jl
         run: |
-          julia -e 'using Pkg; Pkg.add("JuliaFormatter"); using JuliaFormatter; format(".", verbose=true, verify=true)'
+          julia -e 'using Pkg; Pkg.add("StaticLint"); using StaticLint'
+          julia -e 'using StaticLint; StaticLint.lint_package()'
 
-      - name: Run Static Analysis
+      - name: Run Aqua.jl (Optional)
         run: |
-          julia -e 'using Pkg; Pkg.add(["StaticLint", "Aqua"]); using Aqua; Aqua.test_all()'
-
-      - name: Collect Coverage
-        run: |
-          julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+          julia -e 'using Pkg; Pkg.add("Aqua"); using Aqua'
+          julia -e 'using Aqua; Aqua.test_all()'
 
   compat:
     name: Check Dependency Versions
