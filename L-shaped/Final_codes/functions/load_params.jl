@@ -142,5 +142,6 @@ function process_production_and_cost_data(
         end
     end
 
+
     return T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, inf_penalty
 end

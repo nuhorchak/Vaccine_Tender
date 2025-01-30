@@ -5,7 +5,7 @@ Defines the deterministic equivalent model for a stochastic optimization problem
 
 # Arguments
 - `p_ω`: A dictionary representing the probability of each scenario (omega in Omega).
-- `Ω`: The set of scenarios.
+- `Ω`: The set of scenarios. (use random_scenarios)
 - `F_bar`: A dictionary of fixed binary variables (F_at_tau), representing tender coverage for antigen (a) over periods (t) to (tau).
 - `W_bar`: A dictionary of fixed binary variables (W_pt_tau), indicating producer (p)'s commitment for periods (t) to (tau).
 - `Y_bar`: A dictionary of fixed binary variables (Y_pt), specifying whether producer (p) produces in period (t).
@@ -37,16 +37,14 @@ Defines the deterministic equivalent model for a stochastic optimization problem
 
 # Notes
 - Uses the Gurobi solver via JuMP.
-- Requires pre-defined inputs like demand scenarios, capacities, and parameters.
-- Ensure all necessary variables (p_ω, Ω, etc.) are properly initialized before calling the function.
 """
 
 
 function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, pi, Γ, gurobi_solver_DE,
-    A, F_time_set, V, P_v, T, T_initial, P, P_a, starting_points_vect_F, starting_points_vect_I, 
+    A, A_p, F_time_set, V, P_v, T, T_initial, P, P_a, starting_points_vect_F, starting_points_vect_I, 
     starting_points_vect_S, capacity_extension_decision, UNICEF_MODEL, L_lower_number, L_upper_number,
     κ, s_real, L_hat_upper, L_check_upper, d_real_tilde, X_tilde_upper, s_real_tilde, tmin, 
-    r, r_avg, h, inf_penalty, V_p, l, f_profit, V_a)
+    r, r_avg, h, inf_penalty, V_p, l, f_profit, V_a, delta, L_ddot_upper, overlap_decision)
 
         
     model = Model(gurobi_solver_DE)

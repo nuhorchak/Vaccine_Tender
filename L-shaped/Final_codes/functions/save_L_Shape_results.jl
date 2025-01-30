@@ -1,5 +1,5 @@
 """
-save_L_shaped_results(F, Y, W, L, Q, X, I, Vc_de, S_de, model_type)
+save_L_shaped_results(F, Y, W, L, Q, X, I, Vc, S, model_type)
 
 Saves the results of the L-shaped optimization model to a structured output file.
 
@@ -11,8 +11,8 @@ Saves the results of the L-shaped optimization model to a structured output file
 - `Q`: A dictionary containing variables (Q_vpt_tau_m), representing procurement commitments for vaccine (v) by producer (p) for periods (t) through (tau), at discount segment (m).
 - `X`: A dictionary containing (X_vpt_omega), the doses of vaccine (v) delivered by producer (p) in period (t) for scenario (omega).
 - `I`: A dictionary containing (I_vt_omega), the stock level for vaccine (v) at the beginning of period (t) (including period 0) for scenario (omega).
-- `Vc_de`: A dictionary containing (V_vt_omega), the number of doses administered with vaccine (v) in period (t) for scenario (omega).
-- `S_de`: A dictionary containing (S_at_omega), the number of missed doses for antigen (a) in period (t) (including period 0) for scenario (omega).
+- `Vc`: A dictionary containing (V_vt_omega), the number of doses administered with vaccine (v) in period (t) for scenario (omega).
+- `S`: A dictionary containing (S_at_omega), the number of missed doses for antigen (a) in period (t) (including period 0) for scenario (omega).
 - `model_type`: A string indicating the model type ("L-shaped" or "DE_after_L-shaped").
 
 # Outputs
@@ -23,41 +23,42 @@ Saves the results of the L-shaped optimization model to a structured output file
 
 # add Z variable to this to check discount pricing
 function save_L_shaped_results(
-    F::Dict{Tuple, Int}, 
-    Y::Dict{Tuple, Int}, 
-    W::Dict{Tuple, Int}, 
-    L::Dict{Tuple, Int}, 
-    Q::Dict{Tuple, Float64}, 
-    X::Dict{Any, Dict{Tuple, Float64}}, 
-    I::Dict{Any, Dict{Tuple, Float64}}, 
-    Vc::Dict{Any, Dict{Tuple, Float64}}, 
-    S::Dict{Any, Dict{Tuple, Float64}}, 
+    F, 
+    Y, 
+    W, 
+    L, 
+    Q,
+    X, 
+    I, 
+    Vc, 
+    S, 
     model_type::String, 
-    A::Vector{Any}, 
-    T::Vector{Any}, 
-    T_initial::Vector{Any}, 
-    P::Vector{Any}, 
-    P_v::Dict{Any, Vector{Any}}, 
-    V::Vector{Any}, 
-    V_p::Dict{Any, Vector{Any}}, 
-    Ω_test::Vector{Any}, 
-    F_time_set::Set{Tuple}, 
-    random_scenarios::Vector{Any}, 
-    capacity_category::Dict{Any, Any}, 
-    antigen_category::Dict{Any, Any}, 
-    vaccine_category::Dict{Any, Any}, 
-    tmax::Int, 
+    A::Vector, 
+    T, 
+    T_initial, 
+    P::Vector, 
+    P_v::Dict, 
+    V::Vector, 
+    V_p::Dict, 
+    Ω_test, #(defined as equal to random_scenarios in original main; pass in random_scenarios)
+    F_time_set, 
+    random_scenarios, 
+    capacity_category, 
+    antigen_category, 
+    vaccine_category, 
+    tmax::Int, #(defined as max_horizon_length in main, the longest time span possible for planning)
     max_tender_length::Int, 
     trial::Int, 
-    initial_inventory_rate::Float64, 
-    scaled_capacity::Float64, 
+    initial_inventory_rate::Int, 
+    scaled_capacity::Int, 
     allowable_capacity_increase_number::Int, 
     number_of_demand_scenarios::Int, 
     total_capacity_scenarios::Int, 
-    p_ω_test::Dict{Any, Float64}, 
+    p_ω_test, 
     κ::Float64, 
-    s_real::Dict{Any, Float64}, 
-    s_real_tilde::Dict{Any, Dict{Any, Float64}}
+    s_real, 
+    s_real_tilde, 
+    results_dir
 )
 
 L_shaped_output = Dict()
@@ -166,7 +167,7 @@ L_shaped_output = Dict()
             for t in T
                 temp_2 = Dict()
                 for ω in Ω_test
-                    temp_2[ω] = Vc_de[ω][v,t]
+                    temp_2[ω] = Vc[ω][v,t]
                 end
                 temp_1[t] = temp_2
             end
@@ -179,7 +180,7 @@ L_shaped_output = Dict()
             for t in T_initial
                 temp_2 = Dict()
                 for ω in Ω_test
-                    temp_2[ω] = S_de[ω][a,t]
+                    temp_2[ω] = S[ω][a,t]
                 end
                 temp_1[t] = temp_2
             end
@@ -222,7 +223,7 @@ L_shaped_output = Dict()
             for t in T
                 temp_2 = Dict()
                 for ω in Ω_test
-                    temp_2[ω] = Vc_de[v,t,ω]
+                    temp_2[ω] = Vc[v,t,ω]
                 end
                 temp_1[t] = temp_2
             end
@@ -235,7 +236,7 @@ L_shaped_output = Dict()
             for t in T_initial
                 temp_2 = Dict()
                 for ω in Ω_test
-                    temp_2[ω] = S_de[a,t,ω]
+                    temp_2[ω] = S[a,t,ω]
                 end
                 temp_1[t] = temp_2
             end
@@ -255,14 +256,12 @@ L_shaped_output = Dict()
     L_shaped_output["S"] = S_results
 
     if model_type == "L-shaped"
-        current_directory = @__DIR__
-        source = string(current_directory, "/results/L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
+        source = string(results_dir, "/L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
         f = open(source, "w")
         JSON.print(f, L_shaped_output)
         close(f)
     elseif model_type == "DE_after_L-shaped"
-        current_directory = @__DIR__
-        source = string(current_directory, "/results/DE_L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
+        source = string(results_dir, "/DE_L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
         f = open(source, "w")
         JSON.print(f, L_shaped_output)
         close(f)
@@ -426,7 +425,7 @@ L_shaped_output = Dict()
             for ω in Ω_test
                 temp_total_S = 0.0
                 for t in T
-                    temp_total_S += S_de[a,t,ω]
+                    temp_total_S += S[a,t,ω]
                 end
                 temp_avg_S = temp_total_S / length(T)
                 temp_a_dict[ω] = temp_avg_S
@@ -591,7 +590,7 @@ L_shaped_output = Dict()
         sensitivity_output["inv_range_category"] = inv_range_category
 
         current_directory = @__DIR__
-        source = string(current_directory, "/results/DE_L_results_T_", tmax, "_delta_", max_tender_length, "_scen_", number_of_demand_scenarios * total_capacity_scenarios, "_trial_", trial, "_inv_", initial_inventory_rate, "_cap._", scaled_capacity, "_cap.inc._", allowable_capacity_increase_number, "_sensitivity_original.json")
+        source = string(results_dir, "/DE_L_results_T_", tmax, "_delta_", max_tender_length, "_scen_", number_of_demand_scenarios * total_capacity_scenarios, "_trial_", trial, "_inv_", initial_inventory_rate, "_cap._", scaled_capacity, "_cap.inc._", allowable_capacity_increase_number, "_sensitivity_original.json")
         f = open(source, "w")
         JSON.print(f, sensitivity_output)
         close(f)
