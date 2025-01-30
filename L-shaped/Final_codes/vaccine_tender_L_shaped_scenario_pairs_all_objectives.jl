@@ -361,6 +361,8 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                     end
                 end
             end
+
+            #define discount segments
         
             κ = 0.10
             L_lower_number = 0
@@ -465,6 +467,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                 push!(starting_points_vect_S, (antigen,amount))
             end
 
+            # add Z variable to this to check discount pricing
             function save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_de,I_de,Vc_de,S_de,model_type)
                 F_results = Dict()
                 for a in A
@@ -1024,8 +1027,17 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                 @variable(model, K_hat[p in P, (t, tau) in F_time_set] >= 0)
                 @variable(model, K_check[p in P, (t, tau) in F_time_set] >= 0)
                 @variable(model, X_inf[p in P, t in T, ω in Ω] >= 0)
+                #add Z variable
         
                 ################################################### OBJECTIVE FUNCTION AND CONSTRAINTS ####################################################
+
+                #CONDITIONS: ALL use capacity extension
+
+                # UNICEF model - base model used, calculated from the perspective of UNICEF-GAVI
+
+                #social benefit - mods to OBJ funs (MP and SP), calcualted to minimize missed doses
+
+                #max profit - mods to OBJ funs (MP and SP), calcualted from the perspective of producers (et. al)
                 if UNICEF_MODEL && !capacity_extension_decision #base model, no capacity extension
                     println("Condition: Base model and no capacity extension")
                     @objective(model, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
@@ -1150,16 +1162,6 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                 end
         
                 if capacity_extension_decision
-                    # Constraint (7)
-                    # for p in P
-                    #     for t in T
-                    #         for tau in T
-                    #             if (t, tau) in F_time_set
-                    #                 @constraint(model, sum(Q[v, p, (t, tau)] for v in V_p[p]) <= W[p, (t, tau)] * sum((s_real[p] + sum(κ*s_real[p] * L[p, k] for k in 1:l)) for l in t:tau))
-                    #             end
-                    #         end
-                    #     end
-                    # end
                     for p in P
                         for t in T
                             for tau in T
@@ -1330,54 +1332,7 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
         
                 return model
             end
-            
-            # F_warm = Dict()
-            # Y_warm = Dict()
-            # W_warm = Dict()
-            # Q_warm = Dict()
-            # L_warm = Dict()
         
-            # for ω in Ω_train
-            #     p_ω_temp = Dict()
-            #     p_ω_temp[ω] = 1.0
-            #     Ω_temp = [ω]
-            #     # println(Ω_temp)
-            #     deterministic_equivalent_model_temp = deterministic_equivalent(p_ω_temp,Ω_temp)
-            #     optimize!(deterministic_equivalent_model_temp)
-        
-            #     F_warm_temp = JuMP.value.(deterministic_equivalent_model_temp[:F])
-            #     Y_warm_temp = JuMP.value.(deterministic_equivalent_model_temp[:Y])
-            #     W_warm_temp = JuMP.value.(deterministic_equivalent_model_temp[:W])
-            #     Q_warm_temp = JuMP.value.(deterministic_equivalent_model_temp[:Q])
-            #     L_warm_temp = JuMP.value.(deterministic_equivalent_model_temp[:L])
-        
-            #     deterministic_equivalent_obj_temp = JuMP.objective_value(deterministic_equivalent_model_temp)
-            #     println("ω: $ω")
-            #     println("deterministic_equivalent_obj_temp: $deterministic_equivalent_obj_temp")
-        
-            #     # prevents rounding issues for F
-            #     for a in A
-            #         for t in T
-            #             for tau in T
-            #                 if (t, tau) in F_time_set
-            #                     F_warm_temp[a,(t,tau)] = round(F_warm_temp[a,(t,tau)], digits = 0)
-            #                 end
-            #             end
-            #         end
-            #     end
-        
-            #     for p in P
-            #         for t in T
-            #             L_warm_temp[p,t] = round(L_warm_temp[p,t], digits = 0)
-            #         end
-            #     end
-        
-            #     F_warm[ω] = F_warm_temp
-            #     Y_warm[ω] = Y_warm_temp
-            #     W_warm[ω] = W_warm_temp
-            #     Q_warm[ω] = Q_warm_temp
-            #     L_warm[ω] = L_warm_temp
-            # end
             
             cuts_dict = Dict()
             function master_problem(dual_subproblem)
@@ -1478,6 +1433,9 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                 return Masterproblem
             end
         
+            #move function to its own file.
+            #re-do sub problem to not include mccormack
+            #re-do sub problem to use the primal, not dual
             function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω)
         
                 Subproblem = JuMP.Model()
@@ -1491,11 +1449,13 @@ function tender_stochastic_sensitivity(max_horizon_length,max_tender_length,numb
                 @variable(Subproblem, X_tilde[v in V, p in P_v[v], (t,tau) in F_time_set] >= 0)
                 @variable(Subproblem, K[v in V, p in P_v[v], (t,tau) in F_time_set] >= 0)
         
-                # @objective(Subproblem, Min, sum(r[v, p, t] * X[v, p, t] / delta[t] for v in V, p in P_v[v], t in T)
-                #                             + sum(pi * S[a, t] / delta[t] for a in A, t in T)
-                #                             + sum(h[v] * r_avg[v, t] * I[v, t] / delta[t] for v in V, t in T)
-                #                             + sum(inf_penalty * X_inf[p, t] / delta[t] for p in P, t in T)
-                # )
+                # CONDITIONS: ALL use capacity extension
+
+                # UNICEF model - base model used, calculated from the perspective of UNICEF-GAVI
+
+                # social benefit - mods to OBJ funs (MP and SP), calcualted to minimize missed doses
+
+                # max profit - mods to OBJ funs (MP and SP), calcualted from the perspective of producers (et. al)
                 
                 if UNICEF_MODEL  #base model
                     println("Condition: Base model")
