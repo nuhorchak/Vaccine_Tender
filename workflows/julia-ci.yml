@@ -1,0 +1,56 @@
+name: Julia CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Julia
+        uses: julia-actions/setup-julia@v1
+        with:
+          version: '1.9'
+
+      - name: Install dependencies
+        run: julia -e 'using Pkg; Pkg.instantiate()'
+
+      - name: Check Formatting
+        run: |
+          julia -e 'using Pkg; Pkg.add("JuliaFormatter"); using JuliaFormatter; format(".", verbose=true, verify=true)'
+
+      - name: Run Static Analysis
+        run: |
+          julia -e 'using Pkg; Pkg.add(["StaticLint", "Aqua"]); using Aqua; Aqua.test_all()'
+
+      - name: Run Tests
+        run: julia -e 'using Pkg; Pkg.test()'
+
+      - name: Collect Coverage
+        run: |
+          julia -e 'using Pkg; Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())'
+
+  compat:
+    name: Check Dependency Versions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Julia
+        uses: julia-actions/setup-julia@v1
+        with:
+          version: '1.9'
+
+      - name: Install CompatHelper
+        run: julia -e 'using Pkg; Pkg.add("CompatHelper"); using CompatHelper'
+
+      - name: Run CompatHelper
+        run: julia -e 'using CompatHelper; CompatHelper.main()'
