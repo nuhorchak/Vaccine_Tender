@@ -1,5 +1,13 @@
 # **HCVM Optimization Model**
 
+This project is automatically tested using GitHub Actions.
+![CI](https://github.com/nuhorchak/Vaccine_Tender/actions/workflows/julia-ci.yml/badge.svg)
+[![Coverage Status](https://codecov.io/gh/nuhorchak/Vaccine_Tender/branch/main/graph/badge.svg)](https://codecov.io/gh/USERNAME/REPO_NAME)
+![License](https://img.shields.io/github/license/nuhorchak/Vaccine_Tender)
+![Julia Version](https://img.shields.io/badge/julia-1.6%2B-blue)
+
+
+
 This repository contains the implementation of an **L-Shaped decomposition model** for optimizing vaccine tenders. Below is an overview of the key files and their functions.
 
 ## **Repository Structure**
