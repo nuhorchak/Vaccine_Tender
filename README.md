@@ -1,28 +1,48 @@
-# HCVM - Hypothetically Coordinated Vaccine Market
+# **HCVM Optimization Model**
 
-HCVM optimization model:
+This repository contains the implementation of an **L-Shaped decomposition model** for optimizing vaccine tenders. Below is an overview of the key files and their functions.
 
-L-Shaped/Final_codes: Main model file vaccine_tender_L_shaped_scenario_pairs_all_objectives_functionalized.jl
+## **Repository Structure**
 
-L-Shaped/Final_codes/functions: Functions used in main model
-- create_check_params.jl: helper function, creates params used in McCormack relaxation
+### **Main Model**
+- 📂 **`L-Shaped/Final_codes/`**  
+  - **`vaccine_tender_L_shaped_scenario_pairs_all_objectives_functionalized.jl`** – The main model file implementing the L-Shaped decomposition.
 
-- deterministic_equivalent.jl: deterministic equivalent model
+### **Core Functions**
+- 📂 **`L-Shaped/Final_codes/functions/`**  
+  - Contains modular functions used within the main model.
 
-- generate_dual_cuts.jl: helper function, used to generate cuts for L-Shaped model
+### **Model Components**
+- 🏗 **`deterministic_equivalent.jl`** – Implements the deterministic equivalent model.  
+- 🔀 **`master_problem.jl`** – Defines the master problem in the two-stage stochastic model.  
+- 🔁 **`sub_problem.jl`** – Defines the sub-problem in the two-stage stochastic model.  
+- ✂️ **`generate_dual_cuts.jl`** – Helper function for generating cuts for the L-Shaped method.  
 
-- load_model_starting_points.jl: helper function to load initial conditions
+### **Helper Functions**
+- ⚙️ **`create_check_params.jl`** – Generates parameters used in McCormick relaxation.  
+- 🎯 **`load_model_starting_points.jl`** – Loads initial conditions for the model.  
+- 📊 **`load_params.jl`** – Loads necessary model parameters.  
+- 🌎 **`load_scenarios.jl`** – Loads scenario data for the stochastic model.  
+- 🎲 **`select_random_scenarios.jl`** – Randomly selects scenarios if not explicitly specified.  
+- 💉 **`setup_vax_info.jl`** – Loads vaccine lists and associated dictionaries.  
+- 💾 **`save_L_Shape_results.jl`** – Saves results into corresponding files.  
 
-- load_params.jl: helper function to load model parameters
+---
 
-- load_scenarios.jl: helper function to load model scenarios
+## **Usage**
+To run the model, execute the main script:  
+```julia
+include("L-Shaped/Final_codes/vaccine_tender_L_shaped_scenario_pairs_all_objectives_functionalized.jl")
+```
+Ensure that all required dependencies and parameters are properly set up before execution.
 
-- master_problem.jl: master problem for two stage stochastic model
+---
 
-- save_L_Shape_results.jl: helper function to save results into corresponding files
+## **Contributing**
+Feel free to open issues or submit pull requests for improvements, bug fixes, or additional features.
 
-- select_random_scenarios.jl: helper function to randomly select scenarios, if not all scenarios are specified in main function call
+---
 
-- setup_vax_info.jl: helper function to load vaccine lists and dicts
+## **License**
+[MIT License](LICENSE) – Open for modification and use with attribution.
 
-- sub_problem.jl: sub problem for two stage stochastic model
