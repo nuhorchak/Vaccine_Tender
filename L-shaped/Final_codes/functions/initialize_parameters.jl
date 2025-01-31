@@ -19,9 +19,9 @@ Processes production capacity, vaccine pricing, and cost-related data from Excel
 - Various dictionaries (`s_real`, `r`, `r_avg`, `r_producer_avg`, `g`, `h`, `l`, `f_profit`, `Γ`) and sets (`T`, `T_initial`, `Δ`, `F_time_set`) used for simulation and optimization.
 
 """
-function process_production_and_cost_data(
+function initialize_parameters(
     data_dir::String, unit::Int, scaled_capacity::Int, max_horizon_length::Int, max_tender_length::Int, 
-    P::Vector, V::Vector, P_v::Dict, V_p::Dict, allowable_capacity_increase_number::Int
+    P::Vector, V::Vector, P_v::Dict, V_p::Dict, allowable_capacity_increase_number::Int, m_segments::Vector
 )
     # Time-related sets
     tmin = 1
@@ -142,8 +142,7 @@ function process_production_and_cost_data(
         end
     end
 
-# Define the lambda values to cycle through
-lambda_values_list = [0.05, 0.1, 0.2]
+
 
 # Initialize a dictionary to store lambda values
 lambda_m = Dict()
@@ -152,8 +151,8 @@ lambda_m = Dict()
 for v in V
     for p in P
         for t in T
-            for m in 1:length(lambda_values_list)
-                lambda_m[v, p, t, m] = lambda_values_list[m]
+            for m in eachindex(m_segments)
+                lambda_m[v, p, t, m] = m_segments[m]
             end
         end
     end

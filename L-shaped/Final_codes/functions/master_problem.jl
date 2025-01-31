@@ -34,7 +34,7 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
     starting_points_vect_S, starting_points_vect_F, UNICEF_MODEL, 
     capacity_extension_decision, Γ, g, pi, delta, p_ω_test, r, h, r_avg, inf_penalty, 
     partial_scenario, P_a, gurobi_solver, κ, s_real, L_hat_upper, L_check_upper, V_p, 
-    X_tilde_upper, A_p, s_real_tilde, d_real_tilde, tmin, f_profit, V_a, L_ddot_upper, l, overlap_decision, lambda_m)
+    X_tilde_upper, A_p, s_real_tilde, d_real_tilde, tmin, f_profit, V_a, L_ddot_upper, l, overlap_decision, m, lambda_m)
 
     # Initialize the Master problem
     ######### Initiate the Master problem #########
@@ -43,7 +43,7 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
 
     @variable(Masterproblem, 0.0 <= F[a in A, (t, tau) in F_time_set] <= 1.0)
     # @variable(Masterproblem, F[a in A, (t, tau) in F_time_set], Bin)
-    @variable(Masterproblem, Q[v in V, p in P_v[v], (t, tau) in F_time_set] >= 0)
+    @variable(Masterproblem, Q[v in V, p in P_v[v], (t, tau) in F_time_set, m in 1:length(m_segments)] >= 0)
     @variable(Masterproblem, 0.0 <= Y[p in P, t in T] <= 1.0)
     @variable(Masterproblem, 0.0 <= W[p in P, (t, tau) in F_time_set] <= 1.0)
     @variable(Masterproblem, L_lower_number <= L[p in P, t in T] <= L_upper_number)
@@ -64,7 +64,7 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
     @variable(Masterproblem, Vc[v in V, t in T, ω in Ω_test_partial_1] >= 0)
     @variable(Masterproblem, S[a in A, t in T_initial, ω in Ω_test_partial_1] >= 0)
     @variable(Masterproblem, X_inf[p in P, t in T, ω in Ω_test_partial_1] >= 0)
-    #add Z, fix Q with m for segments
+    @variable(Masterproblem, Z[v in V, p in P, t in T, m in eachindex(m_segments)] >= 0)
 
     ################################################### MASTER PROBLEM ####################################################
 
@@ -72,9 +72,31 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
 
     # UNICEF model - base model used, calculated from the perspective of UNICEF-GAVI
 
-    #social benefit - mods to OBJ funs (MP and SP), calcualted to minimize missed doses
+    # social benefit - mods to OBJ funs (MP and SP), calcualted to minimize missed doses
 
-    #max profit - mods to OBJ funs (MP and SP), calcualted from the perspective of producers (et. al)
+    # max profit - mods to OBJ funs (MP and SP), calcualted from the perspective of producers (et. al)
+
+    if UNICEF_MODEL && capacity_extension_decision
+        println("UNICEF-GAVI model with capacity extension/discounts")
+        @objective(Masterproblem, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F) +
+        sum(r_avg[v,t]*(1-lambda_m[v,p,t,m])*sum(Q[v,p,t,tau,m] for t in tau) / delta[t] for v in P_v, for p in P, for (t, tau) in F_time_set)
+        + sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
+        
+        + p_ω_test[partial_scenario] * (
+        + sum(r[v,p,t] * X[v,p,t,ω] / delta[t] for v in V, p in P_v[v], t in T, ω in Ω_test_partial_1)
+        + sum(pi * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
+        + sum(h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
+        + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
+        )
+        )
+
+    elseif social_benefit && capacity_extension_decision
+        println("Social benefit model with capacity extension/discounts")
+
+    else max_profit && capacity_extension_decision
+        println("UNICEF-GAVI model with capacity extension/discounts")
+
+    end
 
     if UNICEF_MODEL && !capacity_extension_decision #base model, no capacity extension
         println("Condition: Base model and no capacity extension")

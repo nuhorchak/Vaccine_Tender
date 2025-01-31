@@ -23,7 +23,7 @@ Generates bounds for variables used in optimization based on the provided inputs
 - `L_check_lower::Dict`: Lower bounds for cumulative capacity increases over all past periods.
 - `L_check_upper::Dict`: Upper bounds for cumulative capacity increases over all past periods.
 """
-function create_bounds(V::Vector, P::Vector, P_v::Dict, T::Vector, F_time_set::Vector, s_real::Dict, κ::Float64, L_upper_number::Int)
+function create_check_params(V::Vector, P::Vector, P_v::Dict, T::Vector, F_time_set::Vector, s_real::Dict, κ::Float64, L_upper_number::Int)
     # Initialize dictionaries for bounds
     X_tilde_lower = Dict()
     X_tilde_upper = Dict()
