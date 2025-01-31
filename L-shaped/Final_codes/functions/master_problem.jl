@@ -79,65 +79,54 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
     if UNICEF_MODEL && capacity_extension_decision
         println("UNICEF-GAVI model with capacity extension/discounts")
         @objective(Masterproblem, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F) +
-        sum(r_avg[v,t]*(1-lambda_m[v,p,t,m])*sum(Q[v,p,t,tau,m] for t in tau) / delta[t] for v in P_v, for p in P, for (t, tau) in F_time_set)
+        sum(r_avg[v,t] * (1 - lambda_m[v,p,t,m]) * sum(Q[v,p,(t,tau),m] for tau in F_time_set[t]) / delta[t] for v in P_v, for p in P, for m in eachindex(m_segments), for t in keys(F_time_set)) +
         + sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
         
-        + p_ω_test[partial_scenario] * (
-        + sum(r[v,p,t] * X[v,p,t,ω] / delta[t] for v in V, p in P_v[v], t in T, ω in Ω_test_partial_1)
-        + sum(pi * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
-        + sum(h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
-        + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
-        )
+            + p_ω_test[partial_scenario] * (
+                sum(pi * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
+                + sum(h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
+                + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
+                )
         )
 
     elseif social_benefit && capacity_extension_decision
         println("Social benefit model with capacity extension/discounts")
+        @objective(Masterproblem, Min, sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
+        
+            + p_ω_test[partial_scenario] * (
+                sum(pi * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
+                + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
+                )
+        )
 
     else max_profit && capacity_extension_decision
         println("UNICEF-GAVI model with capacity extension/discounts")
+        @objective(Masterproblem, Min, sum(-r_avg[v,t]*(1-lambda_m[v,p,t,m])*X[v,p,t,ω] / delta[t] for v in P_v, for p in P, for t in T, for m in eachindex(m_segments)) +
+        sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
+        
+            + p_ω_test[partial_scenario] * (
+                sum(r_avg[v,t]*(1-lambda_m[v,p,t,m])*sum(Q[v,p,t,tau,m] for t in tau) / delta[t] for v in P_v, for p in P, for (t, tau) in F_time_set)
+                + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
+                )
+        )
 
     end
 
-    if UNICEF_MODEL && !capacity_extension_decision #base model, no capacity extension
-        println("Condition: Base model and no capacity extension")
-        @objective(Masterproblem, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
-        + sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
+
+    # elseif UNICEF_MODEL && capacity_extension_decision #base model, capacity extension
+    #     println("Condition: Base model with capacity extension")
+    #     @objective(Masterproblem, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
+    #     + sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T)
+    #     + sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
         
-        + p_ω_test[partial_scenario] * (
-        + sum(r[v,p,t] * X[v,p,t,ω] / delta[t] for v in V, p in P_v[v], t in T, ω in Ω_test_partial_1)
-        + sum(pi * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
-        + sum(h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
-        + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
-        )
-        )
-    elseif UNICEF_MODEL && capacity_extension_decision #base model, capacity extension
-        println("Condition: Base model with capacity extension")
-        @objective(Masterproblem, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F)
-        + sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T)
-        + sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
-        
-        + p_ω_test[partial_scenario] * (
-        + sum(r[v,p,t] * X[v,p,t,ω] / delta[t] for v in V, p in P_v[v], t in T, ω in Ω_test_partial_1)
-        + sum(pi * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
-        + sum(h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
-        + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
-        )
-        )
-    elseif capacity_extension_decision && UNICEF_MODEL #min unvax model, capacity extension
-        println("Condition: Min Unvax Model and Capacity extension")
-        @objective(Masterproblem, Min, sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
-        + p_ω_test[partial_scenario] * (sum(pi * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
-        + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
-        )
-        )
-    else #min unvax model, no capacity extension
-        println("Condition: Min Unvax Model and no capacity extension")
-        @objective(Masterproblem, Min, sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
-        + p_ω_test[partial_scenario] * (sum(pi * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
-        + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
-        )
-        )
-    end
+    #     + p_ω_test[partial_scenario] * (
+    #     + sum(r[v,p,t] * X[v,p,t,ω] / delta[t] for v in V, p in P_v[v], t in T, ω in Ω_test_partial_1)
+    #     + sum(pi * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
+    #     + sum(h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
+    #     + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
+    #     )
+    #     )
+
 
     # Constraint (2)
     for a in A
