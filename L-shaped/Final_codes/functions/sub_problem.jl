@@ -42,7 +42,7 @@ Defines the sub-problem for the optimization model, including variables, constra
 """
 
 
-function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω, pi, f_profit, delta, r_avg, gurobi_solver_no_presolve,
+function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω, beta, f_profit, delta, r_avg, gurobi_solver_no_presolve,
     V, P_v, T, T_initial, A, P, F_time_set, tmin, V_p, X_tilde_upper, s_real_tilde, d_real_tilde, V_a, starting_points_vect_I, 
     starting_points_vect_S, r, h, l, inf_penalty, UNICEF_MODEL)
 
@@ -69,13 +69,13 @@ function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, 
     if UNICEF_MODEL  #base model
         println("Condition: Base model")
         @objective(Subproblem, Min, sum(r[v, p, t] * X[v, p, t] / delta[t] for v in V, p in P_v[v], t in T)
-        + sum(pi * S[a, t] / delta[t] for a in A, t in T)
+        + sum(beta * S[a, t] / delta[t] for a in A, t in T)
         + sum(h[v] * r_avg[v, t] * I[v, t] / delta[t] for v in V, t in T)
         + sum(inf_penalty * X_inf[p, t] / delta[t] for p in P, t in T)
         )
     else #min unvax model
         println("Condition: Min Unvax Model")
-        @objective(Subproblem, Min, sum(pi * S[a, t] / delta[t] for a in A, t in T)
+        @objective(Subproblem, Min, sum(beta * S[a, t] / delta[t] for a in A, t in T)
         + sum(inf_penalty * X_inf[p, t] / delta[t] for p in P, t in T)
         )
     end

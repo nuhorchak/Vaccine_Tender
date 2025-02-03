@@ -64,7 +64,7 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
     @variable(Masterproblem, Vc[v in V, t in T, ω in Ω_test_partial_1] >= 0)
     @variable(Masterproblem, S[a in A, t in T_initial, ω in Ω_test_partial_1] >= 0)
     @variable(Masterproblem, X_inf[p in P, t in T, ω in Ω_test_partial_1] >= 0)
-    @variable(Masterproblem, Z[v in V, p in P, t in T, m in eachindex(m_segments)] >= 0)
+    @variable(Masterproblem, Z[v in V, p in P, t in T, m in eachindex(m_segments)] >= 0, Bin)
 
     ################################################### MASTER PROBLEM ####################################################
 
@@ -246,18 +246,19 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
     
     #sub problem constraints
 
-    # Constraint (14) - McCormick
+    # Constraint (14) - McCormick 
     for ω in Ω_test_partial_1
         for v in V
             for p in P_v[v]
                 for t in T
                     for tau in T
                         if (t,tau) in F_time_set
-                            @constraint(Masterproblem, X_tilde[v,p,(t,tau),ω] == sum(X[v,p,l,ω] for l in t:tau))
-                            @constraint(Masterproblem, sum(Q[v,p,(t,tau), m] for m in eachindex(m_segments)) >= K[v,p,(t,tau),ω])
-                            @constraint(Masterproblem, K[v,p,(t,tau),ω] >= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] + X_tilde[v,p,(t,tau),ω] - X_tilde_upper[v,p,(t,tau)])
-                            @constraint(Masterproblem, K[v,p,(t,tau),ω] <= X_tilde[v,p,(t,tau),ω])
-                            @constraint(Masterproblem, K[v,p,(t,tau),ω] <= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
+                            @constraint(Masterproblem, )
+                            # @constraint(Masterproblem, X_tilde[v,p,(t,tau),ω] == sum(X[v,p,l,ω] for l in t:tau))
+                            # @constraint(Masterproblem, sum(Q[v,p,(t,tau), m] for m in eachindex(m_segments)) >= K[v,p,(t,tau),ω])
+                            # @constraint(Masterproblem, K[v,p,(t,tau),ω] >= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] + X_tilde[v,p,(t,tau),ω] - X_tilde_upper[v,p,(t,tau)])
+                            # @constraint(Masterproblem, K[v,p,(t,tau),ω] <= X_tilde[v,p,(t,tau),ω])
+                            # @constraint(Masterproblem, K[v,p,(t,tau),ω] <= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
                         end
                     end
                 end
@@ -265,7 +266,7 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
         end
     end
 
-    # Constraint (15) McCormick
+    # Constraint (15) McCormick 
     for p in P
         for t in T
             @constraint(Masterproblem, L_ddot[p,t] == sum(κ*s_real[p] * L[p, l] for l in 1:t))

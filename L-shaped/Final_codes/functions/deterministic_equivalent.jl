@@ -67,7 +67,7 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
     @variable(model, K_hat[p in P, (t, tau) in F_time_set] >= 0)
     @variable(model, K_check[p in P, (t, tau) in F_time_set] >= 0)
     @variable(model, X_inf[p in P, t in T, ω in Ω] >= 0)
-    #add Z variable
+    @variable(Masterproblem, Z[v in V, p in P, t in T, m in eachindex(m_segments)] >= 0, Bin)
 
     ################################################### OBJECTIVE FUNCTION AND CONSTRAINTS ####################################################
 
@@ -115,20 +115,19 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
         end
     end
 
-    if overlap_decision
-        # Constraint (3)
-        for a in A
-            for t in T
-                for tau in T
-                    if tau >= t
-                        for t_prime in T
-                            for tau_prime in T
-                                if tau_prime >= t_prime
-                                    overlap_decision = (t == t_prime)
-                                    if overlap_decision == true
-                                        if ((t, tau) in F_time_set) && ((t_prime, tau_prime) in F_time_set) && ((t, tau) != (t_prime, tau_prime))
-                                            @constraint(model, F[a, (t, tau)] + F[a, (t_prime, tau_prime)] <= 1)
-                                        end
+    #removed overlap condition bool
+    # Constraint (3)
+    for a in A
+        for t in T
+            for tau in T
+                if tau >= t
+                    for t_prime in T
+                        for tau_prime in T
+                            if tau_prime >= t_prime
+                                overlap_decision = (t == t_prime)
+                                if overlap_decision == true
+                                    if ((t, tau) in F_time_set) && ((t_prime, tau_prime) in F_time_set) && ((t, tau) != (t_prime, tau_prime))
+                                        @constraint(model, F[a, (t, tau)] + F[a, (t_prime, tau_prime)] <= 1)
                                     end
                                 end
                             end
@@ -136,40 +135,15 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
                     end
                 end
             end
-        end
-        # Constraint (4) - updated
-        for a in A
-            for t in T
-                @constraint(model, sum(F[a, (l, k)] for (l, k) in F_time_set if t >= l && t <= k) >= 1)
-            end
-        end
-    else
-        # Constraint (3)
-        for a in A
-            for t in T
-                for tau in T
-                    if tau >= t
-                        for t_prime in T
-                            for tau_prime in T
-                                if tau_prime >= t_prime
-                                    overlap_decision = ((t_prime < t) && (tau_prime < t)) || ((t_prime > tau) && (tau_prime > tau)) || ((t == t_prime) && (tau == tau_prime))
-                                    if overlap_decision == false
-                                        if ((t, tau) in F_time_set) && ((t_prime, tau_prime) in F_time_set)
-                                            @constraint(model, F[a, (t, tau)] + F[a, (t_prime, tau_prime)] <= 1)
-                                        end
-                                    end
-                                end
-                            end
-                        end
-                    end
-                end
-            end
-        end
-        # Constraint (4)
-        for a in A
-            @constraint(model, sum((k - l + 1) * F[a, (l, k)] for (l, k) in F_time_set) >= tmax)
         end
     end
+    # Constraint (4) - updated
+    for a in A
+        for t in T
+            @constraint(model, sum(F[a, (l, k)] for (l, k) in F_time_set if t >= l && t <= k) >= 1)
+        end
+    end
+
 
     # Constraint (5)
     for p in P
@@ -193,82 +167,88 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
         end
     end
 
-    if capacity_extension_decision
-        for p in P
-            for t in T
-                for tau in T
-                    if (t, tau) in F_time_set
-                        @constraint(model, sum(Q[v, p, (t, tau)] for v in V_p[p]) <= W[p,(t,tau)]*sum(s_real[p] for l in t:tau) + K_hat[p,(t,tau)] + K_check[p,(t,tau)])
-                        @constraint(model, L_hat[p,(t,tau)] == sum((tau-l+1)*κ*s_real[p]*L[p,l] for l in t+1:tau))
-                        @constraint(model, K_hat[p,(t,tau)] >= L_hat[p,(t,tau)] + W[p,(t,tau)]*L_hat_upper[p,(t,tau)] - L_hat_upper[p,(t,tau)])
-                        @constraint(model, K_hat[p,(t,tau)] <= W[p,(t,tau)]*L_hat_upper[p,(t,tau)])
-                        @constraint(model, K_hat[p,(t,tau)] <= L_hat[p,(t,tau)])
+    # Constraint (7) - McCormick
+    # if capacity_extension_decision - removed, always considered
+    for p in P
+        for t in T
+            for tau in T
+                if (t, tau) in F_time_set
+                    @constraint(model, sum(Q[v, p, (t, tau), m] for v in V_p[p], for m in eachindex(m_segments)) <= W[p,(t,tau)]*sum(s_real[p] for l in t:tau) + K_hat[p,(t,tau)] + K_check[p,(t,tau)])
+                    @constraint(model, L_hat[p,(t,tau)] == sum((tau-l+1)*κ*s_real[p]*L[p,l] for l in t+1:tau))
+                    @constraint(model, K_hat[p,(t,tau)] >= L_hat[p,(t,tau)] + W[p,(t,tau)]*L_hat_upper[p,(t,tau)] - L_hat_upper[p,(t,tau)])
+                    @constraint(model, K_hat[p,(t,tau)] <= W[p,(t,tau)]*L_hat_upper[p,(t,tau)])
+                    @constraint(model, K_hat[p,(t,tau)] <= L_hat[p,(t,tau)])
 
-                        @constraint(model, L_check[p,(t,tau)] == sum((tau-t+1)*κ*s_real[p]*L[p,l] for l in 1:t))
-                        @constraint(model, K_check[p,(t,tau)] >= L_check[p,(t,tau)] + W[p,(t,tau)]*L_check_upper[p,(t,tau)] - L_check_upper[p,(t,tau)])
-                        @constraint(model, K_check[p,(t,tau)] <= W[p,(t,tau)]*L_check_upper[p,(t,tau)])
-                        @constraint(model, K_check[p,(t,tau)] <= L_check[p,(t,tau)])
-                    end
-                end
-            end
-        end
-        # Constraint (9)
-        # for ω in Ω
-        #     for p in P
-        #         for t in T
-        #             @constraint(model, sum(X[v, p, t, ω] for v in V_p[p]) <= Y[p, t] * (s_real_tilde[p, t, ω] + sum(κ*s_real[p] * L[p, l] for l in 1:t)))
-        #         end
-        #     end
-        # end
-        for p in P
-            for t in T
-                @constraint(model, L_ddot[p,t] == sum(κ*s_real[p] * L[p, l] for l in 1:t))
-                @constraint(model, K_ddot[p,t] >= L_ddot[p,t] + Y[p,t]*L_ddot_upper[p,t] - L_ddot_upper[p,t])
-                @constraint(model, K_ddot[p,t] <= Y[p,t]*L_ddot_upper[p,t])
-                @constraint(model, K_ddot[p,t] <= L_ddot[p,t])
-            end
-        end
-
-        for ω in Ω
-            for p in P
-                for t in T
-                    @constraint(model, sum(X[v,p,t,ω] for v in V_p[p]) <= Y[p,t]*s_real_tilde[p,t,ω] + K_ddot[p,t])
-                end
-            end
-        end
-    else
-        # Constraint (7)
-        for p in P
-            for t in T
-                for tau in T
-                    if (t, tau) in F_time_set
-                        @constraint(model, sum(Q[v, p, (t, tau)] for v in V_p[p]) <= W[p, (t, tau)] * sum(s_real[p] for l in t:tau))
-                    end
-                end
-            end
-        end
-        # Constraint (9)
-        for ω in Ω
-            for p in P
-                for t in T
-                    @constraint(model, sum(X[v, p, t, ω] for v in V_p[p]) <= s_real[p] * Y[p, t])
+                    @constraint(model, L_check[p,(t,tau)] == sum((tau-t+1)*κ*s_real[p]*L[p,l] for l in 1:t))
+                    @constraint(model, K_check[p,(t,tau)] >= L_check[p,(t,tau)] + W[p,(t,tau)]*L_check_upper[p,(t,tau)] - L_check_upper[p,(t,tau)])
+                    @constraint(model, K_check[p,(t,tau)] <= W[p,(t,tau)]*L_check_upper[p,(t,tau)])
+                    @constraint(model, K_check[p,(t,tau)] <= L_check[p,(t,tau)])
                 end
             end
         end
     end
 
-    # Constraint (8) - McCormick_1
-    for ω in Ω
+    # Constraint (8) 
+    if max_profit #ROI with prodiction capacity consideration for max profit
+        for p in p
+            for t in T
+                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - lambda_m[v,p,t,m]) * sum(Q[v, p, (t, tau), m] for (t1, tau) in F_time_set if t1 == t && tau >= t) for v in V_p, for m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] + Γ[p] * L[p, t]for v in V_p))
+            end
+        end
+    elseif UNICEF_MODEL #ROI without production capacity increases considered
+        for p in p
+            for t in T
+                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - lambda_m[v,p,t,m]) * sum(Q[v, p, (t, tau), m] for (t1, tau) in F_time_set if t1 == t && tau >= t) for v in V_p, for m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] for v in V_p))
+            end
+        end
+    end
+
+    # Constraint (9)
+    for v in V_p
+        for p in P
+            for t in T
+                for m in eachindex(m_segements)
+                    @constraint(Masterproblem, phi_lower[m] * Z[v,p,t,m] <= sum(Q[v,p,(t,tau),m] for (t1, tau) in F_time_set if t1 == t && tau >= t))
+                end
+            end
+        end
+    end
+    
+
+    # Constraint (10)
+    for v in V_p
+        for p in P
+            for t in T
+                for m in eachindex(m_segements)
+                    @constraint(Masterproblem, phi_upper[m] * Z[v,p,t,m] >= sum(Q[v,p,(t,tau),m] for (t1, tau) in F_time_set if t1 == t && tau >= t))
+                end
+            end
+        end
+    end
+
+    # Constraint (11)
+    for v in V_p
+        for p in P
+            for t in T
+                @constraint(Masterproblem, sum(Z[v,p,t,m] for m in eachindex(m_segments)) <= 1)
+            end
+        end
+    end
+
+    #sub problem constraints
+    
+    # Constraint (14) - McCormick
+    for ω in Ω_test_partial_1
         for v in V
             for p in P_v[v]
                 for t in T
                     for tau in T
-                        if (t, tau) in F_time_set
-                            @constraint(model, X_tilde[v, p, (t, tau), ω] == sum(X[v, p, l, ω] for l in t:tau))
-                            @constraint(model, Q[v, p, (t, tau)] >= K[v, p, (t, tau), ω])
-                            @constraint(model, K[v, p, (t, tau), ω] >= X_tilde_upper[v, p, (t, tau)] * W[p, (t, tau)] + X_tilde[v, p, (t, tau), ω] - X_tilde_upper[v, p, (t, tau)])
-                            @constraint(model, K[v, p, (t, tau), ω] <= X_tilde[v, p, (t, tau), ω])
-                            @constraint(model, K[v, p, (t, tau), ω] <= X_tilde_upper[v, p, (t, tau)] * W[p, (t, tau)])
+                        if (t,tau) in F_time_set
+                            @constraint(Masterproblem, X_tilde[v,p,(t,tau),ω] == sum(X[v,p,l,ω] for l in t:tau))
+                            @constraint(Masterproblem, sum(Q[v,p,(t,tau), m] for m in eachindex(m_segments)) >= K[v,p,(t,tau),ω])
+                            @constraint(Masterproblem, K[v,p,(t,tau),ω] >= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] + X_tilde[v,p,(t,tau),ω] - X_tilde_upper[v,p,(t,tau)])
+                            @constraint(Masterproblem, K[v,p,(t,tau),ω] <= X_tilde[v,p,(t,tau),ω])
+                            @constraint(Masterproblem, K[v,p,(t,tau),ω] <= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
                         end
                     end
                 end
@@ -276,7 +256,25 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
         end
     end
 
-    # Constraint (10)
+    # Constraint (15) McCormack
+    for p in P
+        for t in T
+            @constraint(model, L_ddot[p,t] == sum(κ*s_real[p] * L[p, l] for l in 1:t))
+            @constraint(model, K_ddot[p,t] >= L_ddot[p,t] + Y[p,t]*L_ddot_upper[p,t] - L_ddot_upper[p,t])
+            @constraint(model, K_ddot[p,t] <= Y[p,t]*L_ddot_upper[p,t])
+            @constraint(model, K_ddot[p,t] <= L_ddot[p,t])
+        end
+    end
+
+    for ω in Ω
+        for p in P
+            for t in T
+                @constraint(model, sum(X[v,p,t,ω] for v in V_p[p]) <= Y[p,t]*s_real_tilde[p,t,ω] + K_ddot[p,t])
+            end
+        end
+    end
+
+    # Constraint (16)
     for ω in Ω
         for v in V
             for t in T
@@ -287,7 +285,7 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
         end
     end
 
-    # Constraint (11)
+    # Constraint (17)
     for ω in Ω
         for a in A
             for t in T
@@ -298,14 +296,14 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
         end
     end
 
-    # Constraint (12)
-    for ω in Ω
-        for p in P
-            for t in T
-                @constraint(model, sum(r[v, p, t] * X[v, p, t, ω] for v in V_p[p]) + X_inf[p, t, ω] >= Y[p, t] * sum((1 + l[v, p]) * f_profit[v, p, t] for v in V_p[p]))
-            end
-        end
-    end
+    # # Constraint (18)
+    # for ω in Ω
+    #     for p in P
+    #         for t in T
+    #             @constraint(model, sum(r[v, p, t] * X[v, p, t, ω] for v in V_p[p]) + X_inf[p, t, ω] >= Y[p, t] * sum((1 + l[v, p]) * f_profit[v, p, t] for v in V_p[p]))
+    #         end
+    #     end
+    # end
 
     for i in 1:length(starting_points_vect_F)
         a = starting_points_vect_F[i][1]
