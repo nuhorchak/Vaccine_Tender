@@ -198,7 +198,7 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
     if max_profit #ROI with prodiction capacity consideration for max profit
         for p in p
             for t in T
-                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set ) for v in V_p, m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] + Γ[p] * L[p, t]for v in V_p))
+                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set ) for v in V_p, m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] + Γ[p] * L[p, t] for v in V_p))
             end
         end
     elseif UNICEF_MODEL #ROI without production capacity increases considered
