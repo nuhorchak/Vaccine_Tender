@@ -34,7 +34,7 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
     starting_points_vect_S, starting_points_vect_F, UNICEF_MODEL, 
     capacity_extension_decision, Γ, g, beta, delta, p_ω_test, r, h, r_avg, inf_penalty, 
     partial_scenario, P_a, gurobi_solver, κ, s_real, L_hat_upper, L_check_upper, V_p, 
-    X_tilde_upper, A_p, s_real_tilde, d_real_tilde, tmin, f_profit, V_a, L_ddot_upper, l, overlap_decision, m, lambda_m)
+    X_tilde_upper, A_p, s_real_tilde, d_real_tilde, tmin, f_profit, V_a, L_ddot_upper, l, overlap_decision, m, zeta_vm, phi_vm_lower, phi_vm_upper, social_benefit, max_profit)
 
     # Initialize the Master problem
     ######### Initiate the Master problem #########
@@ -63,8 +63,8 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
     @variable(Masterproblem, I[v in V, t in T_initial, ω in Ω_test_partial_1] >= 0)
     @variable(Masterproblem, Vc[v in V, t in T, ω in Ω_test_partial_1] >= 0)
     @variable(Masterproblem, S[a in A, t in T_initial, ω in Ω_test_partial_1] >= 0)
-    @variable(Masterproblem, X_inf[p in P, t in T, ω in Ω_test_partial_1] >= 0)
-    @variable(Masterproblem, Z[v in V, p in P, t in T, m in eachindex(m_segments)] >= 0, Bin)
+    # @variable(Masterproblem, X_inf[p in P, t in T, ω in Ω_test_partial_1] >= 0)
+    @variable(Masterproblem, Z[v in V, p in P_v[v], t in T, m in eachindex(m_segments)] >= 0)
 
     ################################################### MASTER PROBLEM ####################################################
 
@@ -79,13 +79,12 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
     if UNICEF_MODEL && capacity_extension_decision #objective function is incorrect
         println("UNICEF-GAVI model with capacity extension/discounts")
         @objective(Masterproblem, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F) +
-        sum(r_avg[v,t] * (1 - lambda_m[v,p,t,m]) * sum(Q[v,p,(t, tau),m] for (t1, tau) in F_time_set if t1 == t && tau >= t) / delta[t] for v in V_p, for p in P, for m in eachindex(m_segments)) +
+        sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v,p,(t, tau),m] for (t1, tau) in F_time_set if t1 == t && tau >= t) / delta[t] for v in V, for p in P_v[v], for m in eachindex(m_segments)) +
         + sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
         
             + p_ω_test[partial_scenario] * (
                 sum(beta * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
                 + sum(h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
-                + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
                 )
         )
 
@@ -95,20 +94,18 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
         
             + p_ω_test[partial_scenario] * (
                 sum(beta * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
-                + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
                 )
         )
 
     else max_profit && capacity_extension_decision
         println("UNICEF-GAVI model with capacity extension/discounts")
-        @objective(Masterproblem, Min, sum(-r_avg[v,t]*(1-lambda_m[v,p,t,m])*X[v,p,t,ω] / delta[t] for v in V_p, for p in P, for t in T, for m in eachindex(m_segments)) +
+        @objective(Masterproblem, Min, sum(-r_avg[v,t]*(1-zeta_vm[v,m])*X[v,p,t,ω] / delta[t] for v in V, for p in P_v[v], for t in T, for m in eachindex(m_segments)) +
         sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T) +
         sum(f_profit[v,p,t]* Y[p,t] / delta[t] for v in V_p, for p in P) +
         sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
         
             + p_ω_test[partial_scenario] * (
-                sum(r_avg[v,t]*(1-lambda_m[v,p,t,m])*sum(X[v,p,t,tau,ω] for (t, tau) in F_time_set) / delta[t] for v in P_v, for p in P, for m in eachindex(m_segments))
-                + sum(inf_penalty * X_inf[p,t,ω] / delta[t] for p in P, t in T, ω in Ω_test_partial_1)
+                sum(r_avg[v,t]*(1-zeta_vm[v,m])*sum(X[v,p,t,tau,ω] for (t, tau) in F_time_set) / delta[t] for v in V, for p in P_v[v], for m in eachindex(m_segments))
                 )
         )
 
@@ -201,13 +198,13 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
     if max_profit #ROI with prodiction capacity consideration for max profit
         for p in p
             for t in T
-                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - lambda_m[v,p,t,m]) * sum(Q[v, p, (t, tau), m] for (t1, tau) in F_time_set if t1 == t && tau >= t) for v in V_p, for m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] + Γ[p] * L[p, t]for v in V_p))
+                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set ) for v in V_p, for m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] + Γ[p] * L[p, t]for v in V_p))
             end
         end
     elseif UNICEF_MODEL #ROI without production capacity increases considered
         for p in p
             for t in T
-                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - lambda_m[v,p,t,m]) * sum(Q[v, p, (t, tau), m] for (t1, tau) in F_time_set if t1 == t && tau >= t) for v in V_p, for m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] for v in V_p))
+                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set ) for v in V_p, for m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] for v in V_p))
             end
         end
     end
@@ -217,7 +214,7 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
         for p in P
             for t in T
                 for m in eachindex(m_segements)
-                    @constraint(Masterproblem, phi_lower[m] * Z[v,p,t,m] <= sum(Q[v,p,(t,tau),m] for (t1, tau) in F_time_set if t1 == t && tau >= t))
+                    @constraint(Masterproblem, phi_vm_lower[v,m] * Z[v,p,t,m] <= sum(Q[v,p,(t,tau),m] for (t1, tau) in F_time_set if t1 == t && tau >= t))
                 end
             end
         end
@@ -229,7 +226,7 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
         for p in P
             for t in T
                 for m in eachindex(m_segements)
-                    @constraint(Masterproblem, phi_upper[m] * Z[v,p,t,m] >= sum(Q[v,p,(t,tau),m] for (t1, tau) in F_time_set if t1 == t && tau >= t))
+                    @constraint(Masterproblem, phi_vm_upper[v,m] * Z[v,p,t,m] >= sum(Q[v,p,(t,tau),m] for (t1, tau) in F_time_set if t1 == t && tau >= t))
                 end
             end
         end
@@ -253,12 +250,11 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
                 for t in T
                     for tau in T
                         if (t,tau) in F_time_set
-                            @constraint(Masterproblem, )
-                            # @constraint(Masterproblem, X_tilde[v,p,(t,tau),ω] == sum(X[v,p,l,ω] for l in t:tau))
-                            # @constraint(Masterproblem, sum(Q[v,p,(t,tau), m] for m in eachindex(m_segments)) >= K[v,p,(t,tau),ω])
-                            # @constraint(Masterproblem, K[v,p,(t,tau),ω] >= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] + X_tilde[v,p,(t,tau),ω] - X_tilde_upper[v,p,(t,tau)])
-                            # @constraint(Masterproblem, K[v,p,(t,tau),ω] <= X_tilde[v,p,(t,tau),ω])
-                            # @constraint(Masterproblem, K[v,p,(t,tau),ω] <= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
+                            @constraint(Masterproblem, X_tilde[v,p,(t,tau),ω] == sum(X[v,p,l,ω] for l in t:tau))
+                            @constraint(Masterproblem, sum(Q[v,p,(t,tau), m] for m in eachindex(m_segments)) >= K[v,p,(t,tau),ω])
+                            @constraint(Masterproblem, K[v,p,(t,tau),ω] >= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] + X_tilde[v,p,(t,tau),ω] - X_tilde_upper[v,p,(t,tau)])
+                            @constraint(Masterproblem, K[v,p,(t,tau),ω] <= X_tilde[v,p,(t,tau),ω])
+                            @constraint(Masterproblem, K[v,p,(t,tau),ω] <= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
                         end
                     end
                 end

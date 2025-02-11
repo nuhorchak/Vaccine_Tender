@@ -1,4 +1,4 @@
-using JuMP
+ using JuMP
 using Gurobi
 using Random
 using Dualization
@@ -43,14 +43,12 @@ function tender_stochastic_sensitivity(
     allowable_capacity_increase_number::Int,
     overlap_decision::Bool = true,
     capacity_extension_decision::Bool = true,
-    UNICEF_MODEL::Bool = true
-    #, SOCIAL_BENEFIT_MODEL::Bool = false, MAX_PROFIT_MODEL::Bool = false
+    UNICEF_MODEL::Bool = true,
+    SOCIAL_BENEFIT_MODEL::Bool = false,
+    MAX_PROFIT_MODEL::Bool = false
 )
     # value to scale coefficients for faster computation
     unit = 1000
-
-    # Define the m values to cycle through for Q, Z, lambda_m
-    m_segments = [0.05, 0.1, 0.2]
 
     for trial in 1:number_of_trials
         println("trial: $trial")
@@ -60,7 +58,7 @@ function tender_stochastic_sensitivity(
         ################################################### INITIALIZE NECESSARY PARAMS ###################################################
         #load vaccine dict data
         A, V, A_v, P, P_v, V_a, V_p, P_a, A_p, capacity_category, vaccine_category, antigen_category = create_vaccine_data()
-        T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, inf_penalty, m, lambda_m = initialize_parameters(data_dir, unit, scaled_capacity, max_horizon_length, max_tender_length, P, V, P_v, V_p, allowable_capacity_increase_number, m_segments)
+        T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, inf_penalty, m, lambda_m, phi_vm_lower, phi_vm_upper = initialize_parameters(data_dir, unit, scaled_capacity, max_horizon_length, max_tender_length, P, V, P_v, V_p, allowable_capacity_increase_number, m_segments)
         Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2, partial_scenario, s_real_tilde, d_real_tilde, random_scenarios = process_scenario_data(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number)
         X_tilde_lower, X_tilde_upper, L_ddot_lower, L_ddot_upper, L_hat_lower, L_hat_upper, L_check_lower, L_check_upper = create_check_params(V, P, P_v, T, F_time_set, s_real, κ, L_upper_number)
         
@@ -75,7 +73,7 @@ function tender_stochastic_sensitivity(
                                         starting_points_vect_S, starting_points_vect_F, UNICEF_MODEL, 
                                         capacity_extension_decision, Γ, g, pi, delta, p_ω_test, r, h, r_avg, inf_penalty, 
                                         partial_scenario, P_a, gurobi_solver, κ, s_real, L_hat_upper, L_check_upper, V_p, 
-                                        X_tilde_upper, A_p, s_real_tilde, d_real_tilde, 1, f_profit, V_a, L_ddot_upper, l, overlap_decision, m, lambda_m)
+                                        X_tilde_upper, A_p, s_real_tilde, d_real_tilde, 1, f_profit, V_a, L_ddot_upper, l, overlap_decision, m, lambda_m, zeta_vm, phi_vm_lower, phi_vm_upper, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL)
     
         LB = 0
         UB = 1e30 #high number to start large gap for L-shaped method (which uses infinity)
@@ -164,6 +162,7 @@ function tender_stochastic_sensitivity(
             global Y_bar = JuMP.value.(Masterproblem[:Y])
             global Q_bar = JuMP.value.(Masterproblem[:Q])
             global L_bar = JuMP.value.(Masterproblem[:L])
+            # global Z_bar = Jump.value.(Masterproblem[:Z])
             global L_ddot_bar = JuMP.value.(Masterproblem[:L_ddot])
             global K_ddot_bar = JuMP.value.(Masterproblem[:K_ddot])
             global theta_bar = JuMP.value.(Masterproblem[:theta])
@@ -222,8 +221,8 @@ function tender_stochastic_sensitivity(
             dual_subproblem = Dict()
             for ω in Ω_test_partial_2
                 # println("scenario: $ω")
-                Subproblem, cons_8_1, cons_8_2, cons_8_3, cons_8_4, cons_8_5, 
-                cons_9, cons_10, cons_11, cons_12, cons_13, cons_14 = sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω, pi, f_profit, delta, r_avg, gurobi_solver_no_presolve,
+                Subproblem, cons_14_1, cons_14_2, cons_14_3, cons_14_4, cons_14_5, 
+                cons_15, cons_16, cons_17, cons_18, cons_19 = sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω, pi, f_profit, delta, r_avg, gurobi_solver_no_presolve,
                                                                         V, P_v, T, T_initial, A, P, F_time_set, 1, V_p, X_tilde_upper, s_real_tilde, d_real_tilde, V_a, starting_points_vect_I, 
                                                                         starting_points_vect_S, r, h, l, inf_penalty, UNICEF_MODEL)
                 optimize!(Subproblem)
@@ -233,19 +232,19 @@ function tender_stochastic_sensitivity(
                 S_sub[ω] = JuMP.value.(Subproblem[:S])
                 Vc_sub[ω] = JuMP.value.(Subproblem[:Vc])
     
-                constr8_1 = JuMP.dual.(cons_8_1)
-                constr8_2 = JuMP.dual.(cons_8_2)
-                constr8_3 = JuMP.dual.(cons_8_3)
-                constr8_4 = JuMP.dual.(cons_8_4)
-                constr8_5 = JuMP.dual.(cons_8_5)
-                constr9 = JuMP.dual.(cons_9)
-                constr10 = JuMP.dual.(cons_10)
-                constr11 = JuMP.dual.(cons_11)
-                constr12 = JuMP.dual.(cons_12)
-                constr13 = JuMP.dual.(cons_13)
-                constr14 = JuMP.dual.(cons_14)
+                constr14_1 = JuMP.dual.(cons_14_1)
+                constr14_2 = JuMP.dual.(cons_14_2)
+                constr14_3 = JuMP.dual.(cons_14_3)
+                constr14_4 = JuMP.dual.(cons_14_4)
+                constr14_5 = JuMP.dual.(cons_14_5)
+                constr15 = JuMP.dual.(cons_15)
+                constr16 = JuMP.dual.(cons_16)
+                constr17 = JuMP.dual.(cons_17)                                                                                                                  8   
+                # constr12 = JuMP.dual.(cons_12) MOVED TO 1ST STAGE, NOT IN SP ANYMORE 
+                constr18 = JuMP.dual.(cons_18)
+                constr19 = JuMP.dual.(cons_19)
     
-                dual_vector_omega = [constr8_1, constr8_2, constr8_3, constr8_4, constr8_5, constr9, constr10, constr11, constr12, constr13, constr14]
+                dual_vector_omega = [constr14_1, constr14_2, constr14_3, constr14_4, constr14_5, constr15, constr16, constr17, constr18, constr19]
                 dual_subproblem[ω] = dual_vector_omega
                 Z_S_omega[ω] = JuMP.objective_value(Subproblem)
             end
@@ -298,7 +297,7 @@ function tender_stochastic_sensitivity(
                 A, A_p, F_time_set, V, P_v, T, T_initial, P, P_a, starting_points_vect_F, starting_points_vect_I, 
                 starting_points_vect_S, capacity_extension_decision, UNICEF_MODEL, L_lower_number, L_upper_number,
                 κ, s_real, L_hat_upper, L_check_upper, d_real_tilde, X_tilde_upper, s_real_tilde, 1, 
-                r, r_avg, h, inf_penalty, V_p, l, f_profit, V_a, delta, L_ddot_upper, overlap_decision)
+                r, r_avg, h, inf_penalty, V_p, l, f_profit, V_a, delta, L_ddot_upper, overlap_decision,  zeta_vm, phi_vm_lower, phi_vm_upper, social_benefit, max_profit)
 
                 set_optimizer_attribute(deterministic_equivalent_model, "LogFile", source)
                 optimize!(deterministic_equivalent_model)

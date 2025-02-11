@@ -21,7 +21,7 @@ Processes production capacity, vaccine pricing, and cost-related data from Excel
 """
 function initialize_parameters(
     data_dir::String, unit::Int, scaled_capacity::Int, max_horizon_length::Int, max_tender_length::Int, 
-    P::Vector, V::Vector, P_v::Dict, V_p::Dict, allowable_capacity_increase_number::Int, m_segments::Vector
+    P::Vector, V::Vector, P_v::Dict, V_p::Dict, allowable_capacity_increase_number::Int
 )
     # Time-related sets
     tmin = 1
@@ -143,21 +143,24 @@ function initialize_parameters(
     end
 
 
+    # Define the m values to cycle through for Q, Z, lambda_m
+    m_segments = [0.05, 0.1, 0.2]
+    lower_breaks = [0,500000,750000]
+    upper_breaks = [500001,750001, 9999999999999999]
 
-# Initialize a dictionary to store lambda values
-lambda_m = Dict()
+    # Initialize a dictionary to store lambda values
+    zeta_vm = Dict()
 
-# Loop through v, p, t, and assign lambda for each m
-for v in V
-    for p in P
-        for t in T
-            for m in eachindex(m_segments)
-                lambda_m[v, p, t, m] = m_segments[m]
-            end
+    # Loop through v, and assign lambda for each m
+    for v in V
+        for m in eachindex(m_segments)
+            zeta_vm[v, m] = m_segments[m]
         end
     end
-end
+
+    phi_vm_lower = Dict((v, m) => lower_breaks[m] for v in V for m in foreach(m_segments))
+    phi_vm_upper = Dict((v, m) => upper_breaks[m] for v in V for m in foreach(m_segments))
 
 
-    return T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, inf_penalty, lambda_m
+    return T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, inf_penalty, zeta_vm, phi_vm_lower, phi_vm_upper
 end

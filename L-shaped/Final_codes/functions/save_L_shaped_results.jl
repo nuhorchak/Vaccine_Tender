@@ -186,7 +186,7 @@ L_shaped_output = Dict()
             end
             S_results[a] = temp_1
         end
-    elseif model_type == "DE_after_L-shaped" #we can remove the IF statement, by passing in the correct variables in the main function
+    elseif model_type == "DE_after_L-shaped" 
         X_results = Dict()
         for v in V
             temp_1 = Dict()

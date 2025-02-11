@@ -44,7 +44,7 @@ Defines the sub-problem for the optimization model, including variables, constra
 
 function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω, beta, f_profit, delta, r_avg, gurobi_solver_no_presolve,
     V, P_v, T, T_initial, A, P, F_time_set, tmin, V_p, X_tilde_upper, s_real_tilde, d_real_tilde, V_a, starting_points_vect_I, 
-    starting_points_vect_S, r, h, l, inf_penalty, UNICEF_MODEL)
+    starting_points_vect_S, r, h, l, UNICEF_MODEL)
 
 
     Subproblem = JuMP.Model()
@@ -54,7 +54,7 @@ function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, 
     @variable(Subproblem, I[v in V, t in T_initial] >= 0)
     @variable(Subproblem, Vc[v in V, t in T] >= 0)
     @variable(Subproblem, S[a in A, t in T_initial] >= 0)
-    @variable(Subproblem, X_inf[p in P, t in T] >= 0)
+    # @variable(Subproblem, X_inf[p in P, t in T] >= 0)
     @variable(Subproblem, X_tilde[v in V, p in P_v[v], (t,tau) in F_time_set] >= 0)
     @variable(Subproblem, K[v in V, p in P_v[v], (t,tau) in F_time_set] >= 0)
 
@@ -71,47 +71,48 @@ function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, 
         @objective(Subproblem, Min, sum(r[v, p, t] * X[v, p, t] / delta[t] for v in V, p in P_v[v], t in T)
         + sum(beta * S[a, t] / delta[t] for a in A, t in T)
         + sum(h[v] * r_avg[v, t] * I[v, t] / delta[t] for v in V, t in T)
-        + sum(inf_penalty * X_inf[p, t] / delta[t] for p in P, t in T)
         )
-    else #min unvax model
+    elseif social_benefit #min unvax model
         println("Condition: Min Unvax Model")
         @objective(Subproblem, Min, sum(beta * S[a, t] / delta[t] for a in A, t in T)
-        + sum(inf_penalty * X_inf[p, t] / delta[t] for p in P, t in T)
         )
+    else max_profit #max profit
+        println("Condition: Max Profit model")
+        @objective(Subproblem, Min, sum(r_avg[v,t]*(1-zeta_vm[v,m])*sum(X[v,p,t,tau,ω] for (t, tau) in F_time_set) / delta[t] for v in V, for p in P_v[v], for m in eachindex(m_segments)))
     end
 
-    cons_8_1 = []
-    cons_8_2 = []
-    cons_8_3 = []
-    cons_8_4 = []
-    cons_8_5 = []
-    cons_9 = []
-    cons_10 = []
-    cons_11 = []
-    cons_12 = []
-    cons_13 = []
-    cons_14 = []
+    cons_14_1 = []
+    cons_14_2 = []
+    cons_14_3 = []
+    cons_14_4 = []
+    cons_14_5 = []
+    cons_15 = []
+    cons_16 = []
+    cons_17 = []
+    # cons_12 = []
+    cons_18 = []
+    cons_19 = []
 
-    # constraint 8 - before McCormick
+    # constraint 14 - McCormick - this uses McCormack relaxation...can we remove it?
     for v in V
         for p in P_v[v]
             for t in T
                 for tau in T
                     if (t,tau) in F_time_set
                         c = @constraint(Subproblem, X_tilde[v,p,(t,tau)] == sum(X[v,p,l] for l in t:tau))
-                        set_name(c, "c_8_1[$((v,p,(t,tau)))]")
+                        set_name(c, "c_14_1[$((v,p,(t,tau)))]")
                         push!(cons_8_1, c)
                         c = @constraint(Subproblem, Q_bar[v,p,(t,tau)] >= K[v,p,(t,tau)])
-                        set_name(c, "c_8_2[$((v,p,(t,tau)))]")
+                        set_name(c, "c_14_2[$((v,p,(t,tau)))]")
                         push!(cons_8_2, c)
                         c = @constraint(Subproblem, K[v,p,(t,tau)] >= X_tilde_upper[v,p,(t,tau)]*W_bar[p,(t,tau)] + X_tilde[v,p,(t,tau)] - X_tilde_upper[v,p,(t,tau)])
-                        set_name(c, "c_8_3[$((v,p,(t,tau)))]")
+                        set_name(c, "c_14_3[$((v,p,(t,tau)))]")
                         push!(cons_8_3, c)
                         c = @constraint(Subproblem, K[v,p,(t,tau)] <= X_tilde[v,p,(t,tau)])
-                        set_name(c, "c_8_4[$((v,p,(t,tau)))]")
+                        set_name(c, "c_14_4[$((v,p,(t,tau)))]")
                         push!(cons_8_4, c)
                         c = @constraint(Subproblem, K[v,p,(t,tau)] <= X_tilde_upper[v,p,(t,tau)]*W_bar[p,(t,tau)])
-                        set_name(c, "c_8_5[$((v,p,(t,tau)))]")
+                        set_name(c, "c_14_5[$((v,p,(t,tau)))]")
                         push!(cons_8_5, c)
                     end
                 end
@@ -119,7 +120,7 @@ function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, 
         end
     end
 
-    # Constraint (9) McCormick
+    # Constraint (15) McCormick
     for p in P
         for t in T
             if Y_bar[p,t]*s_real_tilde[p, t, ω] + K_ddot_bar[p,t] < 1e-1
@@ -128,58 +129,58 @@ function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, 
                 c = @constraint(Subproblem, sum(X[v,p,t] for v in V_p[p]) <= Y_bar[p,t]*s_real_tilde[p, t, ω] + K_ddot_bar[p,t])
             end
 
-            set_name(c, "c_9[$((p,t))]")
+            set_name(c, "c_15[$((p,t))]")
             push!(cons_9, c)
         end
     end
 
-    # Constraint (10)
+    # Constraint (16)
     for v in V
         for t in T
             if t >= tmin
                 c = @constraint(Subproblem, I[v, t-1] + sum(X[v, p, t] for p in P_v[v]) == Vc[v, t] + I[v, t])
-                set_name(c, "c_10[$((v,t))]")
+                set_name(c, "c_16[$((v,t))]")
                 push!(cons_10, c)
             end
         end
     end
 
-    # Constraint (11)
+    # Constraint (17)
     for a in A
         for t in T
             if t >= tmin
                 c = @constraint(Subproblem, d_real_tilde[a, t, ω] - sum(Vc[v, t] for v in V_a[a]) + S[a, t-1] <= S[a, t])
-                set_name(c, "c_11[$((a,t))]")
+                set_name(c, "c_17[$((a,t))]")
                 push!(cons_11, c)
             end
         end
     end
 
-    # Constraint (12)
-    for p in P
-        for t in T
-            c = @constraint(Subproblem, sum(r[v, p, t] * X[v, p, t] for v in V_p[p]) + X_inf[p, t] >= Y_bar[p, t] * sum((1 + l[v, p]) * f_profit[v, p, t] for v in V_p[p]))
-            set_name(c, "c_12[$((p,t))]")
-            push!(cons_12, c)
-        end
-    end
+    # # Constraint (12) - remove
+    # for p in P
+    #     for t in T
+    #         c = @constraint(Subproblem, sum(r[v, p, t] * X[v, p, t] for v in V_p[p]) + X_inf[p, t] >= Y_bar[p, t] * sum((1 + l[v, p]) * f_profit[v, p, t] for v in V_p[p]))
+    #         set_name(c, "c_12[$((p,t))]")
+    #         push!(cons_12, c)
+    #     end
+    # end
 
-    # Constraint (13)
+    # Constraint (18)
     for i in 1:length(starting_points_vect_I)
         v = starting_points_vect_I[i][1]
         amount = starting_points_vect_I[i][2]
         c = @constraint(Subproblem, I[v,0] == amount)
-        set_name(c, "c_13[$v]")
+        set_name(c, "c_18[$v]")
         push!(cons_13, c)
     end
 
-    # Constraint (14)
+    # Constraint (19)
     for i in 1:length(starting_points_vect_S)
         a = starting_points_vect_S[i][1]
         amount = starting_points_vect_S[i][2]
         c = @constraint(Subproblem, S[a,0] == amount)
-        set_name(c, "c_14[$a]")
+        set_name(c, "c_19[$a]")
         push!(cons_14, c)
     end
-    return Subproblem, cons_8_1, cons_8_2, cons_8_3, cons_8_4, cons_8_5, cons_9, cons_10, cons_11, cons_12, cons_13, cons_14
+    return Subproblem, cons_14_1, cons_14_2, cons_14_3, cons_14_4, cons_14_5, cons_15, cons_16, cons_17, cons_18, cons_19
 end

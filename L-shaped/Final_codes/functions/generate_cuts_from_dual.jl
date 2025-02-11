@@ -45,84 +45,93 @@ function generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial
         cons_omega_dict = Dict()
 
         for ω in Ω_test_partial_2
-            cons8_1_b_By_omega = []
-            cons8_2_b_By_omega = []
-            cons8_3_b_By_omega = []
-            cons8_4_b_By_omega = []
-            cons8_5_b_By_omega = []
-            cons9_b_By_omega = []
-            cons10_b_By_omega = []
-            cons11_b_By_omega = []
-            cons12_b_By_omega = []
-            cons13_b_By_omega = []
-            cons14_b_By_omega = []
+            cons14_1_b_By_omega = []
+            cons14_2_b_By_omega = []
+            cons14_3_b_By_omega = []
+            cons14_4_b_By_omega = []
+            cons14_5_b_By_omega = []
+            cons15_b_By_omega = []
+            cons16_b_By_omega = []
+            cons17_b_By_omega = []
+            # cons12_b_By_omega = [] #remove, unnecessary as constraint was removed
+            cons18_b_By_omega = []
+            cons19_b_By_omega = []
 
-            # Constraint (8)
+            # Constraint (14)
             for v in V
                 for p in P_v[v]
                     for t in T
                         for tau in T
                             if (t, tau) in F_time_set
-                                push!(cons8_1_b_By_omega, 0.0)
-                                push!(cons8_2_b_By_omega, -Q[v,p,(t,tau)]) #I need to access the variable from master problem
-                                push!(cons8_3_b_By_omega, X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] - X_tilde_upper[v,p,(t,tau)])
-                                push!(cons8_4_b_By_omega, 0.0)
-                                push!(cons8_5_b_By_omega, X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
+                                push!(cons14_1_b_By_omega, 0.0)
+                                push!(cons14_2_b_By_omega, -Q[v,p,(t,tau)]) 
+                                push!(cons14_3_b_By_omega, X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] - X_tilde_upper[v,p,(t,tau)])
+                                push!(cons14_4_b_By_omega, 0.0)
+                                push!(cons14_5_b_By_omega, X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
                             end
                         end
                     end
                 end
             end
 
-            # Constraint (9)
+            # Constraint (15)
             for p in P
                 for t in T
                     c = Y[p,t]*s_real_tilde[p, t, ω] + K_ddot[p,t]
-                    push!(cons9_b_By_omega, c)
+                    push!(cons15_b_By_omega, c)
                 end
             end
 
-            # Constraint (10)
+            # Constraint (16)
             for v in V
                 for t in T
                     if t >= tmin
                         c = 0.0
-                        push!(cons10_b_By_omega, c)
+                        push!(cons16_b_By_omega, c)
                     end
                 end
             end
 
-            # Constraint (11)
+            # Constraint (17)
             for a in A
                 for t in T
                     if t >= tmin
                         c = -d_real_tilde[a, t, ω]
-                        push!(cons11_b_By_omega, c)
+                        push!(cons17_b_By_omega, c)
                     end
                 end
             end
 
-            # Constraint (12)
-            for p in P
-                for t in T
-                    c = Y[p, t] * sum((1 + l[v, p]) * f_profit[v, p, t] for v in V_p[p])
-                    push!(cons12_b_By_omega, c)
-                end
-            end
+            # Constraint (12) - constraint removed from problem 
+            # for p in P
+            #     for t in T
+            #         c = Y[p, t] * sum((1 + l[v, p]) * f_profit[v, p, t] for v in V_p[p])
+            #         push!(cons12_b_By_omega, c)
+            #     end
+            # end
 
-            # Constraint (13)
+            # Constraint (18)
             for i in 1:length(starting_points_vect_I)
                 amount = starting_points_vect_I[i][2]
-                push!(cons13_b_By_omega, amount)
+                push!(cons18_b_By_omega, amount)
             end
     
-            # Constraint (14)
+            # Constraint (19)
             for i in 1:length(starting_points_vect_S)
                 amount = starting_points_vect_S[i][2]
-                push!(cons14_b_By_omega, amount)
+                push!(cons19_b_By_omega, amount)
             end
 
-            b_By_omega = [cons8_1_b_By_omega, cons8_2_b_By_omega, cons8_3_b_By_omega, cons8_4_b_By_omega, cons8_5_b_By_omega, cons9_b_By_omega, cons10_b_By_omega, cons11_b_By_omega, cons12_b_By_omega, cons13_b_By_omega, cons14_b_By_omega]
+            b_By_omega = [cons14_1_b_By_omega, 
+            cons14_2_b_By_omega,
+            cons14_3_b_By_omega,
+            cons14_4_b_By_omega,
+            cons14_5_b_By_omega,
+            cons15_b_By_omega,
+            cons16_b_By_omega,
+            cons17_b_By_omega,
+            cons18_b_By_omega,
+            cons19_b_By_omega]
             cons_omega_dict[ω] = b_By_omega
             # optimality cut 
             theta_rhs = 0.0
