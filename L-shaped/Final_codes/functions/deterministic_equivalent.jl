@@ -168,7 +168,7 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
         for t in T
             for tau in T
                 if (t, tau) in F_time_set
-                    @constraint(model, sum(Q[v, p, (t, tau), m] for v in V_p[p], for m in eachindex(m_segments)) <= W[p,(t,tau)]*sum(s_real[p] for l in t:tau) + K_hat[p,(t,tau)] + K_check[p,(t,tau)])
+                    @constraint(model, sum(Q[v, p, (t, tau), m] for v in V_p[p], m in eachindex(m_segments)) <= W[p,(t,tau)]*sum(s_real[p] for l in t:tau) + K_hat[p,(t,tau)] + K_check[p,(t,tau)])
                     @constraint(model, L_hat[p,(t,tau)] == sum((tau-l+1)*κ*s_real[p]*L[p,l] for l in t+1:tau))
                     @constraint(model, K_hat[p,(t,tau)] >= L_hat[p,(t,tau)] + W[p,(t,tau)]*L_hat_upper[p,(t,tau)] - L_hat_upper[p,(t,tau)])
                     @constraint(model, K_hat[p,(t,tau)] <= W[p,(t,tau)]*L_hat_upper[p,(t,tau)])
@@ -187,13 +187,13 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
     if max_profit #ROI with prodiction capacity consideration for max profit
         for p in p
             for t in T
-                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set) for v in V_p, for m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] + Γ[p] * L[p, t]for v in V_p))
+                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set) for v in V_p, m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] + Γ[p] * L[p, t] for v in V_p))
             end
         end
     elseif UNICEF_MODEL #ROI without production capacity increases considered
         for p in p
             for t in T
-                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set) for v in V_p, for m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] for v in V_p))
+                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set) for v in V_p, m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] for v in V_p))
             end
         end
     end

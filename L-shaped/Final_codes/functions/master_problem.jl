@@ -79,7 +79,7 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
     if UNICEF_MODEL && capacity_extension_decision #objective function is incorrect
         println("UNICEF-GAVI model with capacity extension/discounts")
         @objective(Masterproblem, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F) +
-        sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v,p,(t, tau),m] for (t1, tau) in F_time_set if t1 == t && tau >= t) / delta[t] for v in V, for p in P_v[v], for m in eachindex(m_segments)) +
+        sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v,p,(t, tau),m] for (t1, tau) in F_time_set if t1 == t && tau >= t) / delta[t] for v in V, p in P_v[v], m in eachindex(m_segments)) +
         + sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
         
             + p_ω_test[partial_scenario] * (
@@ -99,13 +99,13 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
 
     else max_profit && capacity_extension_decision
         println("UNICEF-GAVI model with capacity extension/discounts")
-        @objective(Masterproblem, Min, sum(-r_avg[v,t]*(1-zeta_vm[v,m])*X[v,p,t,ω] / delta[t] for v in V, for p in P_v[v], for t in T, for m in eachindex(m_segments)) +
+        @objective(Masterproblem, Min, sum(-r_avg[v,t]*(1-zeta_vm[v,m])*X[v,p,t,ω] / delta[t] for v in V, p in P_v[v], t in T, m in eachindex(m_segments)) +
         sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T) +
-        sum(f_profit[v,p,t]* Y[p,t] / delta[t] for v in V_p, for p in P) +
+        sum(f_profit[v,p,t]* Y[p,t] / delta[t] for v in V_p, p in P) +
         sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
         
             + p_ω_test[partial_scenario] * (
-                sum(r_avg[v,t]*(1-zeta_vm[v,m])*sum(X[v,p,t,tau,ω] for (t, tau) in F_time_set) / delta[t] for v in V, for p in P_v[v], for m in eachindex(m_segments))
+                sum(r_avg[v,t]*(1-zeta_vm[v,m])*sum(X[v,p,t,tau,ω] for (t, tau) in F_time_set) / delta[t] for v in V, p in P_v[v], m in eachindex(m_segments))
                 )
         )
 
@@ -179,7 +179,7 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
         for t in T
             for tau in T
                 if (t, tau) in F_time_set
-                    @constraint(Masterproblem, sum(Q[v, p, (t, tau), m] for v in V_p[p], for m in eachindex(m_segments)) <= W[p,(t,tau)]*sum(s_real[p] for l in t:tau) + K_hat[p,(t,tau)] + K_check[p,(t,tau)])
+                    @constraint(Masterproblem, sum(Q[v, p, (t, tau), m] for v in V_p[p], m in eachindex(m_segments)) <= W[p,(t,tau)]*sum(s_real[p] for l in t:tau) + K_hat[p,(t,tau)] + K_check[p,(t,tau)])
                     @constraint(Masterproblem, L_hat[p,(t,tau)] == sum((tau-l+1)*κ*s_real[p]*L[p,l] for l in t+1:tau))
                     @constraint(Masterproblem, K_hat[p,(t,tau)] >= L_hat[p,(t,tau)] + W[p,(t,tau)]*L_hat_upper[p,(t,tau)] - L_hat_upper[p,(t,tau)])
                     @constraint(Masterproblem, K_hat[p,(t,tau)] <= W[p,(t,tau)]*L_hat_upper[p,(t,tau)])
@@ -198,13 +198,13 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
     if max_profit #ROI with prodiction capacity consideration for max profit
         for p in p
             for t in T
-                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set ) for v in V_p, for m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] + Γ[p] * L[p, t]for v in V_p))
+                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set ) for v in V_p, m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] + Γ[p] * L[p, t]for v in V_p))
             end
         end
     elseif UNICEF_MODEL #ROI without production capacity increases considered
         for p in p
             for t in T
-                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set ) for v in V_p, for m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] for v in V_p))
+                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set ) for v in V_p, m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] for v in V_p))
             end
         end
     end
