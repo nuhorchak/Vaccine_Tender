@@ -20,7 +20,7 @@ include(joinpath(functions_directory, "create_check_params.jl"))
 include(joinpath(functions_directory, "deterministic_equivalent.jl"))
 include(joinpath(functions_directory, "generate_cuts_from_dual.jl"))
 include(joinpath(functions_directory, "load_model_starting_points.jl"))
-# include(joinpath(functions_directory, "process_production_and_cost_data.jl"))
+include(joinpath(functions_directory, "initialize_parameters.jl"))
 include(joinpath(functions_directory, "process_scenario_data.jl"))
 include(joinpath(functions_directory, "save_L_shaped_results.jl"))
 include(joinpath(functions_directory, "select_random_scenarios.jl"))
@@ -58,7 +58,7 @@ function tender_stochastic_sensitivity(
         ################################################### INITIALIZE NECESSARY PARAMS ###################################################
         #load vaccine dict data
         A, V, A_v, P, P_v, V_a, V_p, P_a, A_p, capacity_category, vaccine_category, antigen_category = create_vaccine_data()
-        T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, inf_penalty, m, lambda_m, phi_vm_lower, phi_vm_upper = initialize_parameters(data_dir, unit, scaled_capacity, max_horizon_length, max_tender_length, P, V, P_v, V_p, allowable_capacity_increase_number, m_segments)
+        T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, inf_penalty, zeta_vm, phi_vm_lower, phi_vm_upper, m_segments = initialize_parameters(data_dir, unit, scaled_capacity, max_horizon_length, max_tender_length, P, V, P_v, V_p, allowable_capacity_increase_number)
         Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2, partial_scenario, s_real_tilde, d_real_tilde, random_scenarios = process_scenario_data(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number)
         X_tilde_lower, X_tilde_upper, L_ddot_lower, L_ddot_upper, L_hat_lower, L_hat_upper, L_check_lower, L_check_upper = create_check_params(V, P, P_v, T, F_time_set, s_real, κ, L_upper_number)
         
@@ -73,7 +73,7 @@ function tender_stochastic_sensitivity(
                                         starting_points_vect_S, starting_points_vect_F, UNICEF_MODEL, 
                                         capacity_extension_decision, Γ, g, pi, delta, p_ω_test, r, h, r_avg, inf_penalty, 
                                         partial_scenario, P_a, gurobi_solver, κ, s_real, L_hat_upper, L_check_upper, V_p, 
-                                        X_tilde_upper, A_p, s_real_tilde, d_real_tilde, 1, f_profit, V_a, L_ddot_upper, l, overlap_decision, m, lambda_m, zeta_vm, phi_vm_lower, phi_vm_upper, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL)
+                                        X_tilde_upper, A_p, s_real_tilde, d_real_tilde, 1, f_profit, V_a, L_ddot_upper, l, overlap_decision, m_segments, zeta_vm, phi_vm_lower, phi_vm_upper, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL)
     
         LB = 0
         UB = 1e30 #high number to start large gap for L-shaped method (which uses infinity)
@@ -239,7 +239,7 @@ function tender_stochastic_sensitivity(
                 constr14_5 = JuMP.dual.(cons_14_5)
                 constr15 = JuMP.dual.(cons_15)
                 constr16 = JuMP.dual.(cons_16)
-                constr17 = JuMP.dual.(cons_17)                                                                                                                  8   
+                constr17 = JuMP.dual.(cons_17)
                 # constr12 = JuMP.dual.(cons_12) MOVED TO 1ST STAGE, NOT IN SP ANYMORE 
                 constr18 = JuMP.dual.(cons_18)
                 constr19 = JuMP.dual.(cons_19)
@@ -345,4 +345,4 @@ function tender_stochastic_sensitivity(
     end
 end
 
-tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, true, true, true)#, false, false, false)
+tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, true, true, true, false, false)

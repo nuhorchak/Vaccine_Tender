@@ -34,7 +34,7 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
     starting_points_vect_S, starting_points_vect_F, UNICEF_MODEL, 
     capacity_extension_decision, Γ, g, beta, delta, p_ω_test, r, h, r_avg, inf_penalty, 
     partial_scenario, P_a, gurobi_solver, κ, s_real, L_hat_upper, L_check_upper, V_p, 
-    X_tilde_upper, A_p, s_real_tilde, d_real_tilde, tmin, f_profit, V_a, L_ddot_upper, l, overlap_decision, m, zeta_vm, phi_vm_lower, phi_vm_upper, social_benefit, max_profit)
+    X_tilde_upper, A_p, s_real_tilde, d_real_tilde, tmin, f_profit, V_a, L_ddot_upper, l, overlap_decision, m_segments, zeta_vm, phi_vm_lower, phi_vm_upper, social_benefit, max_profit)
 
     # Initialize the Master problem
     ######### Initiate the Master problem #########
@@ -79,7 +79,7 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
     if UNICEF_MODEL && capacity_extension_decision #objective function is incorrect
         println("UNICEF-GAVI model with capacity extension/discounts")
         @objective(Masterproblem, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F) +
-        sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v,p,(t, tau),m] for (t1, tau) in F_time_set if t1 == t && tau >= t) / delta[t] for v in V, p in P_v[v], m in eachindex(m_segments)) +
+        sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v,p,(t, tau),m] for (t, tau) in F_time_set) / delta[t] for (t,tau) in F_time_set, v in V, p in P_v[v], m in eachindex(m_segments)) +
         + sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
         
             + p_ω_test[partial_scenario] * (
@@ -195,16 +195,17 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
     end
 
     # Constraint (8) 
-    if max_profit #ROI with prodiction capacity consideration for max profit
-        for p in p
+    if max_profit #ROI with prodiction capacity consideration for max profit - need to fix this
+        for p in P
             for t in T
-                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set ) for v in V_p, m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] + Γ[p] * L[p, t] for v in V_p))
+                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - zeta_vm[v,m])) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set ) for v in V_p[p], m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] + Γ[p] * L[p, t] for v in V_p[p])  for p in P, t in T)
             end
         end
     elseif UNICEF_MODEL #ROI without production capacity increases considered
-        for p in p
+        for p in P
             for t in T
-                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set ) for v in V_p, m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] for v in V_p))
+                @constraint(Masterproblem,
+                sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set) for v in V_p[p], m in eachindex(m_segments)) >= sum((1 + l[v,p]) * f[v,p,t] * Y[p,t] for v in V_p[p]) for p in P, t in T)
             end
         end
     end

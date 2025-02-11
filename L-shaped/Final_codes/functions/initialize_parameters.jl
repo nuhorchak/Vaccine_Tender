@@ -158,9 +158,9 @@ function initialize_parameters(
         end
     end
 
-    phi_vm_lower = Dict((v, m) => lower_breaks[m] for v in V for m in foreach(m_segments))
-    phi_vm_upper = Dict((v, m) => upper_breaks[m] for v in V for m in foreach(m_segments))
+    phi_vm_lower = Dict((v, m) => lower_breaks[m] for v in V for m in eachindex(m_segments))
+    phi_vm_upper = Dict((v, m) => upper_breaks[m] for v in V for m in eachindex(m_segments))
 
 
-    return T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, inf_penalty, zeta_vm, phi_vm_lower, phi_vm_upper
+    return T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, inf_penalty, zeta_vm, phi_vm_lower, phi_vm_upper, m_segments
 end

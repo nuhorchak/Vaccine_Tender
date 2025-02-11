@@ -78,7 +78,7 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
     if UNICEF_MODEL && capacity_extension_decision 
         println("UNICEF-GAVI model with capacity extension/discounts") -
         @objective(model, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F) +
-        sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v,p,(t,tau),m] for (t,tau) in F_time_set) / delta[t] for v in P_v, p in P, m in eachindex(m_segments)) +
+        sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v,p,(t,tau),m] for (t,tau) in F_time_set) / delta[t] for (t,tau) in F_time_set, v in P_v, p in P, m in eachindex(m_segments)) +
         sum(p_ω[ω] * beta * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1) +
         sum(p_ω[ω] * h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
     )
