@@ -76,27 +76,26 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
 
     #social benefit - mods to OBJ funs (MP and SP), calcualted to minimize missed doses
     if UNICEF_MODEL && capacity_extension_decision 
-        println("UNICEF-GAVI model with capacity extension/discounts")
-        @objective(Masterproblem, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F) +
-        sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v,p,(t,tau),m] for (t,tau) in F_time_set) / delta[t] for v in P_v, for p in P, for m in eachindex(m_segments)) +
-        sum(p_ω[ω] *beta * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1) +
-        sum(p_ω[ω] *h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1) 
-        )
+        println("UNICEF-GAVI model with capacity extension/discounts") -
+        @objective(model, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F) +
+        sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v,p,(t,tau),m] for (t,tau) in F_time_set) / delta[t] for v in P_v, p in P, m in eachindex(m_segments)) +
+        sum(p_ω[ω] * beta * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1) +
+        sum(p_ω[ω] * h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
+    )
 
     elseif social_benefit && capacity_extension_decision
         println("Social benefit model with capacity extension/discounts")
-        @objective(Masterproblem, Min, sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2) +
+        @objective(model, Min, sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2) +
         sum(p_ω[ω] *beta * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
         )
 
     else max_profit && capacity_extension_decision
         println("UNICEF-GAVI model with capacity extension/discounts")
-        @objective(Masterproblem, Min, sum(-r_avg[v,t]*(1-zeta_vm[v,m])*X[v,p,t,ω] / delta[t] for v in P_v, for p in P, for t in T, for m in eachindex(m_segments)) +
-        sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T) +
-        sum(f_profit[v,p,t]* Y[p,t] / delta[t] for v in V_p, for p in P) +
-        sum(p_ω[ω] * -r_avg[v,t]*(1-zeta_vm[v,m])*sum(X[v,p,t,tau,ω] for (t, tau) in F_time_set) / delta[t] for v in P_v, for p in P, for m in eachindex(m_segments))
-        )
-
+        @objective(model, Min, sum(-r_avg[v,t] * (1 - zeta_vm[v,m]) * X[v,p,t,ω] / delta[t] for v in P_v, p in P, t in T, m in eachindex(m_segments)) +
+        sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T) +  
+        sum(f_profit[v,p,t] * Y[p,t] / delta[t] for v in V_p, p in P) +
+        sum(p_ω[ω] * -r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(X[v,p,t,tau,ω] for (t, tau) in F_time_set) / delta[t] for v in P_v, p in P, m in eachindex(m_segments))
+    )
     end
 
 
