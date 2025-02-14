@@ -145,21 +145,31 @@ function initialize_parameters(
 
     # Define the m values to cycle through for Q, Z, lambda_m
     m_segments = [0.05, 0.1, 0.2]
-    lower_breaks = [0,500000,750000]
-    upper_breaks = [500001,750001, 9999999999999999]
+    lower_breaks_values = [0,500000,750000]
+    upper_breaks_values = [500001,750001, 9999999999999999]
 
-    # Initialize a dictionary to store lambda values
     zeta_vm = Dict()
-
+    phi_vm_lower = Dict()
+    phi_vm_upper = Dict()
+ 
     # Loop through v, and assign lambda for each m
     for v in V
-        for m in eachindex(m_segments)
+        for m in keys(m_segments)
             zeta_vm[v, m] = m_segments[m]
         end
     end
-
-    phi_vm_lower = Dict((v, m) => lower_breaks[m] for v in V for m in eachindex(m_segments))
-    phi_vm_upper = Dict((v, m) => upper_breaks[m] for v in V for m in eachindex(m_segments))
+ 
+    for v in V
+        for m in keys(lower_breaks_values)
+            phi_vm_lower[v, m] = lower_breaks_values[m]
+        end
+    end
+ 
+    for v in V
+        for m in keys(upper_breaks_values)
+            phi_vm_upper[v, m] = upper_breaks_values[m]
+        end
+    end
 
 
     return T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, inf_penalty, zeta_vm, phi_vm_lower, phi_vm_upper, m_segments

@@ -43,13 +43,16 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
     A, A_p, F_time_set, V, P_v, T, T_initial, P, P_a, starting_points_vect_F, starting_points_vect_I, 
     starting_points_vect_S, capacity_extension_decision, UNICEF_MODEL, L_lower_number, L_upper_number,
     κ, s_real, L_hat_upper, L_check_upper, d_real_tilde, X_tilde_upper, s_real_tilde, tmin, 
-    r, r_avg, h, inf_penalty, V_p, l, f_profit, V_a, delta, L_ddot_upper, overlap_decision, zeta_vm, phi_vm_lower, phi_vm_upper, social_benefit, max_profit)
+    r, r_avg, h, inf_penalty, V_p, l, f_profit, V_a, delta, L_ddot_upper, overlap_decision, Ω_test_partial_1, Ω_test_partial_2, m_segments,zeta_vm, phi_vm_lower, phi_vm_upper, social_benefit, max_profit)
 
         
     model = Model(gurobi_solver_DE)
 
     @variable(model, F[a in A, (t, tau) in F_time_set], Bin)
-    @variable(model, Q[v in V, p in P_v[v], (t, tau) in F_time_set] >= 0)
+    @variable(model, Q[v in V, p in P_v[v], (t, tau) in F_time_set, m in keys(m_segments)] >= 0)
+    # open("Q_out.txt", "w") do io
+    #     println(io, Q)
+    # end
     @variable(model, X[v in V, p in P_v[v], t in T, ω in Ω] >= 0)
     @variable(model, X_tilde[v in V, p in P_v[v], (t, tau) in F_time_set, ω in Ω] >= 0)
     @variable(model, K[v in V, p in P_v[v], (t, tau) in F_time_set, ω in Ω] >= 0)
@@ -66,8 +69,10 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
     @variable(model, K_hat[p in P, (t, tau) in F_time_set] >= 0)
     @variable(model, K_check[p in P, (t, tau) in F_time_set] >= 0)
     # @variable(model, X_inf[p in P, t in T, ω in Ω] >= 0)
-    @variable(Masterproblem, Z[v in V, p in P_v[v], t in T, m in eachindex(m_segments)] >= 0) #Bin not included for relaxation
-
+    @variable(model, Z[v in V, p in P_v[v], t in T, m in keys(m_segments)] >= 0, Bin) #Bin not included for relaxation
+    # open("Z_out.txt", "w") do io
+    #     println(io, Z)
+    # end
     ################################################### OBJECTIVE FUNCTION AND CONSTRAINTS ####################################################
 
     #CONDITIONS: ALL use capacity extension
@@ -76,9 +81,9 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
 
     #social benefit - mods to OBJ funs (MP and SP), calcualted to minimize missed doses
     if UNICEF_MODEL && capacity_extension_decision 
-        println("UNICEF-GAVI model with capacity extension/discounts") -
+        println("UNICEF-GAVI model with capacity extension/discounts")
         @objective(model, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F) +
-        sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v,p,(t,tau),m] for (t,tau) in F_time_set) / delta[t] for (t,tau) in F_time_set, v in P_v, p in P, m in eachindex(m_segments)) +
+        sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * Q[v,p,(t, tau),m] / delta[t] for (t,tau) in F_time_set, v in V, p in P_v[v], m in keys(m_segments)) +
         sum(p_ω[ω] * beta * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1) +
         sum(p_ω[ω] * h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
     )
@@ -91,10 +96,10 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
 
     else max_profit && capacity_extension_decision
         println("UNICEF-GAVI model with capacity extension/discounts")
-        @objective(model, Min, sum(-r_avg[v,t] * (1 - zeta_vm[v,m]) * X[v,p,t,ω] / delta[t] for v in P_v, p in P, t in T, m in eachindex(m_segments)) +
+        @objective(model, Min, sum(-r_avg[v,t] * (1 - zeta_vm[v,m]) * X[v,p,t,ω] / delta[t] for v in P_v, p in P, t in T, m in keys(m_segments)) +
         sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T) +  
         sum(f_profit[v,p,t] * Y[p,t] / delta[t] for v in V_p, p in P) +
-        sum(p_ω[ω] * -r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(X[v,p,t,tau,ω] for (t, tau) in F_time_set) / delta[t] for v in P_v, p in P, m in eachindex(m_segments))
+        sum(p_ω[ω] * -r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(X[v,p,t,tau,ω] for (t, tau) in F_time_set) / delta[t] for v in P_v[v], p in P, m in keys(m_segments))
     )
     end
 
@@ -168,7 +173,7 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
         for t in T
             for tau in T
                 if (t, tau) in F_time_set
-                    @constraint(model, sum(Q[v, p, (t, tau), m] for v in V_p[p], m in eachindex(m_segments)) <= W[p,(t,tau)]*sum(s_real[p] for l in t:tau) + K_hat[p,(t,tau)] + K_check[p,(t,tau)])
+                    @constraint(model, sum(Q[v, p, (t, tau), m] for v in V_p[p], m in keys(m_segments)) <= W[p,(t,tau)]*sum(s_real[p] for l in t:tau) + K_hat[p,(t,tau)] + K_check[p,(t,tau)])
                     @constraint(model, L_hat[p,(t,tau)] == sum((tau-l+1)*κ*s_real[p]*L[p,l] for l in t+1:tau))
                     @constraint(model, K_hat[p,(t,tau)] >= L_hat[p,(t,tau)] + W[p,(t,tau)]*L_hat_upper[p,(t,tau)] - L_hat_upper[p,(t,tau)])
                     @constraint(model, K_hat[p,(t,tau)] <= W[p,(t,tau)]*L_hat_upper[p,(t,tau)])
@@ -183,27 +188,36 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
         end
     end
 
-    # Constraint (8) 
-    if max_profit #ROI with prodiction capacity consideration for max profit
-        for p in p
+     # Constraint (8) 
+     if max_profit #ROI with prodiction capacity consideration for max profit - need to fix this
+        for p in P
             for t in T
-                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set) for v in V_p, m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] + Γ[p] * L[p, t] for v in V_p))
+                # @constraint(model, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) for v in V_p[p], m in m_segments) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set )) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] + Γ[p] * L[p, t] for v in V_p[p])
+                # @constraint(model, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * Q[v1, p, (t, tau), m1] for v in V_p[p], m in m_segments, (t, tau) in F_time_set, v1 in V_p[p], m1 in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] + Γ[p] * L[p, t] for v in V_p[p]))
+                sum_expr = @expression(model, sum(r_avg[v, t] * (1 - zeta_vm[v, m]) * Q[v, p, (t, tau), m] for v in V_p[p], m in keys(m_segments), (t,tau) in F_time_set))
+                rhs_expr = @expression(model, sum((1 + l[v,p])*f_profit[v,p,t]*Y[p,t] + Γ[p] * L[p, t] for v in V_p[p]))
+                @constraint(model, sum_expr >= rhs_expr)
             end
         end
     elseif UNICEF_MODEL #ROI without production capacity increases considered
-        for p in p
+        for p in P
             for t in T
-                @constraint(Masterproblem, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set) for v in V_p, m in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] for v in V_p))
+                # @constraint(model,
+                # sum(r_avg[v,t] * (1 - zeta_vm[v,m] for v in V_p[p], m in m_segments) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set)) >= sum((1 + l[v,p]) * f[v,p,t] * Y[p,t] for v in V_p[p]) for v in V_p[p])
+                # sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * Q[v1, p, (t, tau), m1] for v in V_p[p], m in m_segments, (t, tau) in F_time_set, v1 in V_p[p], m1 in eachindex(m_segments)) >= sum((1 + l[v,p]) * f[v,p,t] * Y[p,t] for v in V_p[p]) for v in V_p[p]))
+                sum_expr = @expression(model, sum(r_avg[v, t] * (1 - zeta_vm[v, m]) * Q[v, p, (t, tau), m] for v in V_p[p], m in keys(m_segments), (t,tau) in F_time_set))
+                rhs_expr = @expression(model, sum((1 + l[v, p]) * f_profit[v, p, t] * Y[p, t] for v in V_p[p]))
+                @constraint(model, sum_expr >= rhs_expr)
             end
         end
     end
 
     # Constraint (9)
-    for v in V_p
-        for p in P
+    for v in V
+        for p in P_v[v]
             for t in T
-                for m in eachindex(m_segements)
-                    @constraint(Masterproblem, phi_vm_lower[v,m] * Z[v,p,t,m] <= sum(Q[v,p,(t,tau),m] for (t1, tau) in F_time_set if t1 == t && tau >= t))
+                for m in keys(m_segments)
+                    @constraint(model, phi_vm_lower[v,m] * Z[v,p,t,m] <= sum(Q[v,p,(t,tau),m] for (t, tau) in F_time_set))
                 end
             end
         end
@@ -211,21 +225,21 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
     
 
     # Constraint (10)
-    for v in V_p
-        for p in P
+    for v in V
+        for p in P_v[v]
             for t in T
-                for m in eachindex(m_segements)
-                    @constraint(Masterproblem, phi_vm_upper[v,m] * Z[v,p,t,m] >= sum(Q[v,p,(t,tau),m] for (t1, tau) in F_time_set if t1 == t && tau >= t))
+                for m in keys(m_segments)
+                    @constraint(model, phi_vm_upper[v,m] * Z[v,p,t,m] >= sum(Q[v,p,(t,tau),m] for (t, tau) in F_time_set))
                 end
             end
         end
     end
 
     # Constraint (11)
-    for v in V_p
-        for p in P
+    for v in V
+        for p in P_v[v]
             for t in T
-                @constraint(Masterproblem, sum(Z[v,p,t,m] for m in eachindex(m_segments)) <= 1)
+                @constraint(model, sum(Z[v,p,t,m] for m in keys(m_segments)) <= 1)
             end
         end
     end
@@ -239,11 +253,11 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
                 for t in T
                     for tau in T
                         if (t,tau) in F_time_set
-                            @constraint(Masterproblem, X_tilde[v,p,(t,tau),ω] == sum(X[v,p,l,ω] for l in t:tau))
-                            @constraint(Masterproblem, sum(Q[v,p,(t,tau), m] for m in eachindex(m_segments)) >= K[v,p,(t,tau),ω])
-                            @constraint(Masterproblem, K[v,p,(t,tau),ω] >= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] + X_tilde[v,p,(t,tau),ω] - X_tilde_upper[v,p,(t,tau)])
-                            @constraint(Masterproblem, K[v,p,(t,tau),ω] <= X_tilde[v,p,(t,tau),ω])
-                            @constraint(Masterproblem, K[v,p,(t,tau),ω] <= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
+                            @constraint(model, X_tilde[v,p,(t,tau),ω] == sum(X[v,p,l,ω] for l in t:tau))
+                            @constraint(model, sum(Q[v,p,(t,tau), m] for m in keys(m_segments)) >= K[v,p,(t,tau),ω])
+                            @constraint(model, K[v,p,(t,tau),ω] >= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] + X_tilde[v,p,(t,tau),ω] - X_tilde_upper[v,p,(t,tau)])
+                            @constraint(model, K[v,p,(t,tau),ω] <= X_tilde[v,p,(t,tau),ω])
+                            @constraint(model, K[v,p,(t,tau),ω] <= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
                         end
                     end
                 end
@@ -355,17 +369,17 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
         end
     end
 
-    for v in V
-        for p in P_v[v]
-            for t in T
-                for m in eachindex(m_segments)
-                    if Z_bar[v,p,t,m] == 0 || Z_bar[v,p,t,m] == 1.0
-                        @constraint(model,Z[v,p,t,m] == Z_bar[v,p,t,m])
-                    end
-                end
-            end
-        end
-    end
+    # for v in V
+    #     for p in P_v[v]
+    #         for t in T
+    #             for m in keys(m_segments)
+    #                 if Z_bar[v,p,t,m] == 0 || Z_bar[v,p,t,m] == 1.0
+    #                     @constraint(model,Z[v,p,t,m] == Z_bar[v,p,t,m])
+    #                 end
+    #             end
+    #         end
+    #     end
+    # end
 
     return model
 end

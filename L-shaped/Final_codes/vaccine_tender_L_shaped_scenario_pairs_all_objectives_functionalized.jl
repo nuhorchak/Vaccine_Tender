@@ -95,7 +95,7 @@ function tender_stochastic_sensitivity(
             println("iter: $iter")
             Masterproblem = generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial_2, V, P_v, T, F_time_set, 
             X_tilde_upper, P, s_real_tilde, 1, A, d_real_tilde, l, f_profit, V_p, 
-            starting_points_vect_I, starting_points_vect_S)
+            starting_points_vect_I, starting_points_vect_S, m_segments)
             JuMP.optimize!(Masterproblem)
     
             if length(opt_cut_list) > 2
@@ -115,7 +115,7 @@ function tender_stochastic_sensitivity(
             X_bar = JuMP.value.(Masterproblem[:X])
             S_bar = JuMP.value.(Masterproblem[:S])
             I_bar = JuMP.value.(Masterproblem[:I])
-            X_inf_bar = JuMP.value.(Masterproblem[:X_inf])
+            # X_inf_bar = JuMP.value.(Masterproblem[:X_inf])
     
             additional_cost_MP = 0.0
             for v in V
@@ -144,19 +144,52 @@ function tender_stochastic_sensitivity(
                 end
             end
     
-            for p in P
-                for t in T
-                    for ω in Ω_test_partial_1
-                        additional_cost_MP += inf_penalty * X_inf_bar[p,t,ω] / delta[t]
-                    end
-                end
-            end
+            # for p in P
+            #     for t in T
+            #         for ω in Ω_test_partial_1
+            #             additional_cost_MP += inf_penalty * X_inf_bar[p,t,ω] / delta[t]
+            #         end
+            #     end
+            # end
+
+            # # Initialize the additional cost as an affine expression
+            # additional_cost_MP = zero(AffExpr)
+
+            # # Accumulate the first set of terms
+            # for v in V
+            #     for p in P_v[v]
+            #         for t in T
+            #             for ω in Ω_test_partial_1
+            #                 add_to_expression!(additional_cost_MP, r[v, p, t] / delta[t], X_bar[v, p, t, ω])
+            #             end
+            #         end
+            #     end
+            # end
+
+            # # Accumulate the second set of terms
+            # for a in A
+            #     for t in T
+            #         for ω in Ω_test_partial_1
+            #             add_to_expression!(additional_cost_MP, π / delta[t], S_bar[a, t, ω])
+            #         end
+            #     end
+            # end
+
+            # # Accumulate the third set of terms
+            # for v in V
+            #     for t in T
+            #         for ω in Ω_test_partial_1
+            #             add_to_expression!(additional_cost_MP, h[v] * r_avg[v, t] / delta[t], I_bar[v, t, ω])
+            #         end
+            #     end
+            # end
+
             
             Z_M = JuMP.objective_value(Masterproblem)
             println("Z_M")
             println(Z_M)
             
-            println("Theta: $(JuMP.value.(Masterproblem[:theta]))")
+            # println("Theta: $(JuMP.value.(Masterproblem[:theta]))")
             global F_bar = JuMP.value.(Masterproblem[:F])
             global W_bar = JuMP.value.(Masterproblem[:W])
             global Y_bar = JuMP.value.(Masterproblem[:Y])
@@ -223,8 +256,10 @@ function tender_stochastic_sensitivity(
                 # println("scenario: $ω")
                 Subproblem, cons_14_1, cons_14_2, cons_14_3, cons_14_4, cons_14_5, 
                 cons_15, cons_16, cons_17, cons_18, cons_19 = sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω, pi, f_profit, delta, r_avg, gurobi_solver_no_presolve,
-                                                                        V, P_v, T, T_initial, A, P, F_time_set, 1, V_p, X_tilde_upper, s_real_tilde, d_real_tilde, V_a, starting_points_vect_I, 
-                                                                        starting_points_vect_S, r, h, l, inf_penalty, UNICEF_MODEL)
+                V, P_v, T, T_initial, A, P, F_time_set, 1, V_p, X_tilde_upper, s_real_tilde, d_real_tilde, V_a, starting_points_vect_I, 
+                starting_points_vect_S, r, h, l, m_segments, UNICEF_MODEL, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL)
+
+                                                                        
                 optimize!(Subproblem)
     
                 X_sub[ω] = JuMP.value.(Subproblem[:X])
@@ -256,6 +291,12 @@ function tender_stochastic_sensitivity(
             for ω in Ω_test_partial_2
                 theta_total += p_ω_test_partial_2[ω] * theta_bar[ω]
             end
+
+            # theta_total = zero(AffExpr)
+            # # Accumulate the terms
+            # for ω in Ω_test_partial_2
+            #     add_to_expression!(theta_total, p_ω_test_partial_2[ω], theta_bar[ω])
+            # end
     
             if Z_M - theta_total + Z_S_expected < UB
                 UB = Z_M - theta_total + Z_S_expected
@@ -285,7 +326,7 @@ function tender_stochastic_sensitivity(
                 P, P_v, V, V_p, random_scenarios, F_time_set, random_scenarios, capacity_category, antigen_category, 
                 vaccine_category, max_horizon_length, max_tender_length, trial, initial_inventory_rate, scaled_capacity, 
                 allowable_capacity_increase_number, number_of_demand_scenarios, total_capacity_scenarios, 
-                p_ω_test, κ, s_real, s_real_tilde, results_dir)
+                p_ω_test, κ, s_real, s_real_tilde, results_dir, m_segments)
 
                 println("L_shaped method converged in $time_elapsed seconds after $iter iterations")
 
@@ -297,7 +338,7 @@ function tender_stochastic_sensitivity(
                 A, A_p, F_time_set, V, P_v, T, T_initial, P, P_a, starting_points_vect_F, starting_points_vect_I, 
                 starting_points_vect_S, capacity_extension_decision, UNICEF_MODEL, L_lower_number, L_upper_number,
                 κ, s_real, L_hat_upper, L_check_upper, d_real_tilde, X_tilde_upper, s_real_tilde, 1, 
-                r, r_avg, h, inf_penalty, V_p, l, f_profit, V_a, delta, L_ddot_upper, overlap_decision,  zeta_vm, phi_vm_lower, phi_vm_upper, social_benefit, max_profit)
+                r, r_avg, h, inf_penalty, V_p, l, f_profit, V_a, delta, L_ddot_upper, overlap_decision, Ω_test_partial_1, Ω_test_partial_2, m_segments, zeta_vm, phi_vm_lower, phi_vm_upper, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL)
 
                 set_optimizer_attribute(deterministic_equivalent_model, "LogFile", source)
                 optimize!(deterministic_equivalent_model)
@@ -335,7 +376,7 @@ function tender_stochastic_sensitivity(
                 P, P_v, V, V_p, random_scenarios, F_time_set, random_scenarios, capacity_category, antigen_category, 
                 vaccine_category, max_horizon_length, max_tender_length, trial, initial_inventory_rate, scaled_capacity, 
                 allowable_capacity_increase_number, number_of_demand_scenarios, total_capacity_scenarios, 
-                p_ω_test, κ, s_real, s_real_tilde, results_dir)
+                p_ω_test, κ, s_real, s_real_tilde, results_dir, m_segments)
 
                 break
             end

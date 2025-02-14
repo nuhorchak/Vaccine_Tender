@@ -58,7 +58,8 @@ function save_L_shaped_results(
     κ::Float64, 
     s_real, 
     s_real_tilde, 
-    results_dir
+    results_dir,
+    m_segments
 )
 
 L_shaped_output = Dict()
@@ -119,9 +120,13 @@ L_shaped_output = Dict()
             for t in T
                 temp_3 = Dict()
                 for tau in T
+                    temp_4 = Dict()
                     if (t,tau) in F_time_set
-                        temp_3[tau] = Q[v,p,(t,tau)]
+                        for m in eachindex(m_segments)
+                            temp_4[m] = Q[v,p,(t,tau), m]
+                        end
                     end
+                    temp_3[tau] = temp_4
                 end
                 temp_2[t] = temp_3
             end

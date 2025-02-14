@@ -31,7 +31,7 @@
 
 function generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial_2, V, P_v, T, F_time_set, 
     X_tilde_upper, P, s_real_tilde, tmin, A, d_real_tilde, l, f_profit, V_p, 
-    starting_points_vect_I, starting_points_vect_S)
+    starting_points_vect_I, starting_points_vect_S, m_segments)
 
     Q = Masterproblem[:Q]
     W = Masterproblem[:W]
@@ -60,14 +60,16 @@ function generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial
             # Constraint (14)
             for v in V
                 for p in P_v[v]
-                    for t in T
-                        for tau in T
-                            if (t, tau) in F_time_set
-                                push!(cons14_1_b_By_omega, 0.0)
-                                push!(cons14_2_b_By_omega, -Q[v,p,(t,tau)]) 
-                                push!(cons14_3_b_By_omega, X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] - X_tilde_upper[v,p,(t,tau)])
-                                push!(cons14_4_b_By_omega, 0.0)
-                                push!(cons14_5_b_By_omega, X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
+                    for m in eachindex(m_segments)
+                        for t in T
+                            for tau in T
+                                if (t, tau) in F_time_set
+                                    push!(cons14_1_b_By_omega, 0.0)
+                                    push!(cons14_2_b_By_omega, -Q[v,p,(t,tau), m]) 
+                                    push!(cons14_3_b_By_omega, X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] - X_tilde_upper[v,p,(t,tau)])
+                                    push!(cons14_4_b_By_omega, 0.0)
+                                    push!(cons14_5_b_By_omega, X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
+                                end
                             end
                         end
                     end
