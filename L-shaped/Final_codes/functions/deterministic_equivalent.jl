@@ -84,22 +84,22 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
         println("UNICEF-GAVI model with capacity extension/discounts")
         @objective(model, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F) +
         sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * Q[v,p,(t, tau),m] / delta[t] for (t,tau) in F_time_set, v in V, p in P_v[v], m in keys(m_segments)) +
-        sum(p_ω[ω] * beta * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1) +
-        sum(p_ω[ω] * h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
+        sum(p_ω[ω] * beta * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω) +
+        sum(p_ω[ω] * h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω)
     )
 
     elseif social_benefit && capacity_extension_decision
         println("Social benefit model with capacity extension/discounts")
         @objective(model, Min, sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2) +
-        sum(p_ω[ω] *beta * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
+        sum(p_ω[ω] *beta * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω)
         )
 
     else max_profit && capacity_extension_decision
-        println("UNICEF-GAVI model with capacity extension/discounts")
+        println("Max Profit model with capacity extension/discounts")
         @objective(model, Min, sum(-r_avg[v,t] * (1 - zeta_vm[v,m]) * X[v,p,t,ω] / delta[t] for v in P_v, p in P, t in T, m in keys(m_segments)) +
         sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T) +  
         sum(f_profit[v,p,t] * Y[p,t] / delta[t] for v in V_p, p in P) +
-        sum(p_ω[ω] * -r_avg[v,t] * (1 - zeta_vm[v,m]) * sum(X[v,p,t,tau,ω] for (t, tau) in F_time_set) / delta[t] for v in P_v[v], p in P, m in keys(m_segments))
+        sum(p_ω[ω] * r_avg[v,t]*S[a,t,ω] / delta[t] for v in V, t = T, m in keys(m_segments), ω in Ω)
     )
     end
 
@@ -247,7 +247,7 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
     #sub problem constraints
     
     # Constraint (14) - McCormick
-    for ω in Ω_test_partial_1
+    for ω in Ω
         for v in V
             for p in P_v[v]
                 for t in T

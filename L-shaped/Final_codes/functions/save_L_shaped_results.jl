@@ -32,6 +32,7 @@ function save_L_shaped_results(
     I, 
     Vc, 
     S, 
+    Z, 
     model_type::String, 
     A::Vector, 
     T, 
@@ -122,7 +123,7 @@ L_shaped_output = Dict()
                 for tau in T
                     temp_4 = Dict()
                     if (t,tau) in F_time_set
-                        for m in eachindex(m_segments)
+                        for m in keys(m_segments)
                             temp_4[m] = Q[v,p,(t,tau), m]
                         end
                     end
@@ -133,6 +134,23 @@ L_shaped_output = Dict()
             temp_1[p] = temp_2
         end
         Q_results[v] = temp_1
+    end
+
+    Z_results = Dict()
+    for v in V
+        temp_1 = Dict()
+        for v in P_v[v]
+            temp_2 = Dict
+            for t in T
+                temp_3 = Dict()
+                for m in keys(m_segments)
+                    temp_3[m] = Z[v,p,t,m]
+                end
+                temp_2[t] = temp_3
+            end
+            temp_1[p] = temp_2
+        end
+        Z_results[v] = temp_1
     end
 
     if model_type == "L-shaped"
@@ -206,7 +224,7 @@ L_shaped_output = Dict()
                 end
                 temp_1[p] = temp_2
             end
-            X_results[v] = temp_1
+            X_results[v] = temp_1saveQ
         end
 
         I_results = Dict()

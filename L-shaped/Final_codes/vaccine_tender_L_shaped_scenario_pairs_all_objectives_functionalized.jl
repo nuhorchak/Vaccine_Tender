@@ -257,7 +257,7 @@ function tender_stochastic_sensitivity(
                 Subproblem, cons_14_1, cons_14_2, cons_14_3, cons_14_4, cons_14_5, 
                 cons_15, cons_16, cons_17, cons_18, cons_19 = sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω, pi, f_profit, delta, r_avg, gurobi_solver_no_presolve,
                 V, P_v, T, T_initial, A, P, F_time_set, 1, V_p, X_tilde_upper, s_real_tilde, d_real_tilde, V_a, starting_points_vect_I, 
-                starting_points_vect_S, r, h, l, m_segments, UNICEF_MODEL, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL)
+                starting_points_vect_S, r, h, l, zeta_vm, m_segments, UNICEF_MODEL, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL)
 
                                                                         
                 optimize!(Subproblem)

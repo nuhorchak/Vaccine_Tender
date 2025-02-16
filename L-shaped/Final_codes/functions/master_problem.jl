@@ -104,14 +104,14 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
         )
 
     else max_profit && capacity_extension_decision
-        println("UNICEF-GAVI model with capacity extension/discounts")
-        @objective(Masterproblem, Min, sum(-r_avg[v,t]*(1-zeta_vm[v,m])*X[v,p,t,ω] / delta[t] for v in V, p in P_v[v], t in T, m in keys(m_segments)) +
+        println("Max profit model with capacity extension/discounts")
+        @objective(Masterproblem, Min, sum(-r_avg[v,t]*(1-zeta_vm[v,m])*Q[v,p,(t,tau),m] / delta[t] for (t,tau) in F_time_set, v in V, p in P_v[v], m in keys(m_segments)) +
         sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T) +
-        sum(f_profit[v,p,t]* Y[p,t] / delta[t] for v in V_p, p in P) +
+        sum(f_profit[v,p,t]* Y[p,t] / delta[t] for v in V, p in P_v[v], t in T) +
         sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
         
             + p_ω_test[partial_scenario] * (
-                sum(r_avg[v,t]*(1-zeta_vm[v,m])*sum(X[v,p,t,tau,ω] for (t, tau) in F_time_set) / delta[t] for v in V, p in P_v[v], m in keys(m_segments))
+                sum(r_avg[v,t]*S[a,t,ω] / delta[t] for a in A, v in V, t = T, m in keys(m_segments), ω in Ω_test_partial_1)
                 )
         )
 
