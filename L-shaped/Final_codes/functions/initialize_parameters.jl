@@ -36,6 +36,8 @@ function initialize_parameters(
     delta = [(1+0.03)^t for t in 1:tmax]
 
     inf_penalty = 100
+    # Unvaccinated children penalty
+    beta = 10
 
     # Read production capacity data
     capacity_file_path = joinpath(data_dir, "production_capacity_scenarios.xlsx")
@@ -172,5 +174,5 @@ function initialize_parameters(
     end
 
 
-    return T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, inf_penalty, zeta_vm, phi_vm_lower, phi_vm_upper, m_segments
+    return T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, beta, zeta_vm, phi_vm_lower, phi_vm_upper, m_segments
 end

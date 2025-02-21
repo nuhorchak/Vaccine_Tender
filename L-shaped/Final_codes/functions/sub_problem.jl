@@ -78,7 +78,7 @@ function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, 
         )
     else max_profit #max profit
         println("Condition: Max Profit model")
-        @objective(Subproblem, Min, sum(r_avg[v,t]*(1-zeta_vm[v,m]))*X[v,p,t] / delta[t] for t in T, v in V,p in P_v[v], m in keys(m_segments))
+        @objective(Subproblem, Min, sum(r_avg[v,t]* S[a, t]/ delta[t] for a in A, t = last(T), v in V))
     end
 
     cons_14_1 = []

@@ -43,7 +43,7 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
     A, A_p, F_time_set, V, P_v, T, T_initial, P, P_a, starting_points_vect_F, starting_points_vect_I, 
     starting_points_vect_S, capacity_extension_decision, UNICEF_MODEL, L_lower_number, L_upper_number,
     κ, s_real, L_hat_upper, L_check_upper, d_real_tilde, X_tilde_upper, s_real_tilde, tmin, 
-    r, r_avg, h, inf_penalty, V_p, l, f_profit, V_a, delta, L_ddot_upper, overlap_decision, Ω_test_partial_1, Ω_test_partial_2, m_segments,zeta_vm, phi_vm_lower, phi_vm_upper, social_benefit, max_profit)
+    r, r_avg, h, V_p, l, f_profit, V_a, delta, L_ddot_upper, overlap_decision, Ω_test_partial_1, Ω_test_partial_2, m_segments,zeta_vm, phi_vm_lower, phi_vm_upper, social_benefit, max_profit)
 
         
     model = Model(gurobi_solver_DE)
@@ -69,7 +69,7 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
     @variable(model, K_hat[p in P, (t, tau) in F_time_set] >= 0)
     @variable(model, K_check[p in P, (t, tau) in F_time_set] >= 0)
     # @variable(model, X_inf[p in P, t in T, ω in Ω] >= 0)
-    @variable(model, Z[v in V, p in P_v[v], t in T, m in keys(m_segments)] >= 0, Bin) #Bin not included for relaxation
+    @variable(model, Z[v in V, p in P_v[v], t in T, m in keys(m_segments)] >= 0, Bin) 
     # open("Z_out.txt", "w") do io
     #     println(io, Z)
     # end
@@ -90,16 +90,14 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
 
     elseif social_benefit && capacity_extension_decision
         println("Social benefit model with capacity extension/discounts")
-        @objective(model, Min, sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2) +
-        sum(p_ω[ω] *beta * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω)
-        )
+        @objective(model, Min, sum(p_ω[ω] *beta * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω))
 
     else max_profit && capacity_extension_decision
         println("Max Profit model with capacity extension/discounts")
-        @objective(model, Min, sum(-r_avg[v,t] * (1 - zeta_vm[v,m]) * X[v,p,t,ω] / delta[t] for v in P_v, p in P, t in T, m in keys(m_segments)) +
-        sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T) +  
-        sum(f_profit[v,p,t] * Y[p,t] / delta[t] for v in V_p, p in P) +
-        sum(p_ω[ω] * r_avg[v,t]*S[a,t,ω] / delta[t] for v in V, t = T, m in keys(m_segments), ω in Ω)
+        @objective(model, Min, sum((-r_avg[v,t] * (1 - zeta_vm[v,m]) * Q[v,p,(t, tau),m]) / delta[t] for (t,tau) in F_time_set, v in V, p in P_v[v], m in keys(m_segments)) +
+        sum((Γ[p] * L[p, t]) / delta[t] for p in P, t in T) +  
+        sum((f_profit[v,p,t] * Y[p,t]) / delta[t] for v in V, p in P_v[v], t in T) +
+        sum(p_ω[ω] * ((r_avg[v,t]*S[a,t,ω]) / delta[t]) for a in A, v in V, t = last(T), ω in Ω)
     )
     end
 
@@ -340,7 +338,8 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
     for a in A
         for (t, tau) in F_time_set
             if F_bar[a,(t,tau)] == 0.0 || F_bar[a,(t,tau)] == 1.0
-                @constraint(model, F[a,(t,tau)] == F_bar[a,(t,tau)])
+                # @constraint(model, F[a,(t,tau)] == F_bar[a,(t,tau)])
+                set_start_value(F[a,(t,tau)], F_bar[a,(t,tau)])
             end
         end
     end
@@ -348,7 +347,8 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
     for p in P
         for t in T
             if Y_bar[p,t] == 0.0 || Y_bar[p,t] == 1.0
-                @constraint(model, Y[p,t] == Y_bar[p,t])
+                # @constraint(model, Y[p,t] == Y_bar[p,t])
+                set_start_value(Y[p,t], Y_bar[p,t])
             end
         end
     end
@@ -356,7 +356,8 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
     for p in P
         for (t, tau) in F_time_set
             if W_bar[p,(t,tau)] == 0.0 || W_bar[p,(t,tau)] == 1.0
-                @constraint(model, W[p,(t,tau)] == W_bar[p,(t,tau)])
+                # @constraint(model, W[p,(t,tau)] == W_bar[p,(t,tau)])
+                set_start_value(W[p,(t,tau)], W_bar[p,(t,tau)])
             end
         end
     end
@@ -364,22 +365,24 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
     for p in P
         for t in T
             if L_bar[p,t] == 0.0 || L_bar[p,t] == 1.0 || L_bar[p,t] == 2.0 || L_bar[p,t] == 3.0 || L_bar[p,t] == 4.0 || L_bar[p,t] == 5.0
-                @constraint(model, L[p,t] == L_bar[p,t])
+                # @constraint(model, L[p,t] == L_bar[p,t])
+                set_start_value(L[p,t], L_bar[p,t])
             end
         end
     end
 
-    # for v in V
-    #     for p in P_v[v]
-    #         for t in T
-    #             for m in keys(m_segments)
-    #                 if Z_bar[v,p,t,m] == 0 || Z_bar[v,p,t,m] == 1.0
-    #                     @constraint(model,Z[v,p,t,m] == Z_bar[v,p,t,m])
-    #                 end
-    #             end
-    #         end
-    #     end
-    # end
+    for v in V
+        for p in P_v[v]
+            for t in T
+                for m in keys(m_segments)
+                    if Z_bar[v,p,t,m] == 0 || Z_bar[v,p,t,m] == 1.0
+                        # @constraint(model,Z[v,p,t,m] == Z_bar[v,p,t,m])
+                        set_start_value(Z[v,p,t,m], Z_bar[v,p,t,m])
+                    end
+                end
+            end
+        end
+    end
 
     return model
 end

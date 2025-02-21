@@ -22,46 +22,58 @@ Saves the results of the L-shaped optimization model to a structured output file
 
 
 # add Z variable to this to check discount pricing
+# function save_L_shaped_results(
+#     F, 
+#     Y, 
+#     W, 
+#     L, 
+#     Q,
+#     X, 
+#     I, 
+#     Vc, 
+#     S, 
+#     Z, 
+#     model_type, 
+#     A, 
+#     T, 
+#     T_initial, 
+#     P, 
+#     P_v, 
+#     V, 
+#     V_p, 
+#     Ω_test, #(defined as equal to random_scenarios in original main; pass in random_scenarios)
+#     F_time_set, 
+#     random_scenarios, 
+#     capacity_category, 
+#     antigen_category, 
+#     vaccine_category, 
+#     tmax, #(defined as max_horizon_length in main, the longest time span possible for planning)
+#     max_tender_length, 
+#     trial, 
+#     initial_inventory_rate, 
+#     scaled_capacity, 
+#     allowable_capacity_increase_number, 
+#     number_of_demand_scenarios, 
+#     total_capacity_scenarios, 
+#     p_ω_test, 
+#     κ, 
+#     s_real, 
+#     s_real_tilde, 
+#     results_dir,
+#     m_segments
+# )
+
 function save_L_shaped_results(
-    F, 
-    Y, 
-    W, 
-    L, 
-    Q,
-    X, 
-    I, 
-    Vc, 
-    S, 
-    Z, 
-    model_type::String, 
-    A::Vector, 
-    T, 
-    T_initial, 
-    P::Vector, 
-    P_v::Dict, 
-    V::Vector, 
-    V_p::Dict, 
-    Ω_test, #(defined as equal to random_scenarios in original main; pass in random_scenarios)
-    F_time_set, 
-    random_scenarios, 
-    capacity_category, 
-    antigen_category, 
-    vaccine_category, 
-    tmax::Int, #(defined as max_horizon_length in main, the longest time span possible for planning)
-    max_tender_length::Int, 
-    trial::Int, 
-    initial_inventory_rate::Int, 
-    scaled_capacity::Int, 
-    allowable_capacity_increase_number::Int, 
-    number_of_demand_scenarios::Int, 
-    total_capacity_scenarios::Int, 
-    p_ω_test, 
-    κ::Float64, 
-    s_real, 
-    s_real_tilde, 
-    results_dir,
-    m_segments
-)
+    F::Any, Y::Any, W::Any, L::Any, Q::Any, X::Any, I::Any, Vc::Any, 
+    S::Any, Z::Any, model_type::Any, A::Any, T::Any, T_initial::Any, 
+    P::Any, P_v::Any, V::Any, V_p::Any, Ω_test::Any, F_time_set::Any, 
+    random_scenarios::Any, capacity_category::Any, antigen_category::Any, 
+    vaccine_category::Any, tmax::Any, max_tender_length::Any, trial::Any, 
+    initial_inventory_rate::Any, scaled_capacity::Any, allowable_capacity_increase_number::Any, 
+    number_of_demand_scenarios::Any, total_capacity_scenarios::Any, p_ω_test::Any, 
+    κ::Any, s_real::Any, s_real_tilde::Any, results_dir::Any, m_segments::Any
+) 
+
 
 L_shaped_output = Dict()
 
@@ -139,8 +151,8 @@ L_shaped_output = Dict()
     Z_results = Dict()
     for v in V
         temp_1 = Dict()
-        for v in P_v[v]
-            temp_2 = Dict
+        for p in P_v[v]
+            temp_2 = Dict()
             for t in T
                 temp_3 = Dict()
                 for m in keys(m_segments)
@@ -277,6 +289,7 @@ L_shaped_output = Dict()
     L_shaped_output["I"] = I_results
     L_shaped_output["Vc"] = Vc_results
     L_shaped_output["S"] = S_results
+    L_shaped_output["Z"] = Z_results
 
     if model_type == "L-shaped"
         source = string(results_dir, "/L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")

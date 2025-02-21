@@ -9,7 +9,7 @@ Parameters:
 - `A`: Set of all antigens.
 - `F_time_set`: Set of time intervals for F variables.
 - `V`: Set of all vaccines.
-- `P_v`: Dictionary mapbetang each vaccine to its associated producer.
+- `P_v`: Dictionary mapping each vaccine to its associated producer.
 - `P`: Set of all producers.
 - `T`: Set of time periods.
 - `L_lower_number`: Lower bound for the L variable.
@@ -32,7 +32,7 @@ Returns:
 function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_number, 
     Ω_test_partial_2, Ω_test_partial_1, T_initial, starting_points_vect_I, 
     starting_points_vect_S, starting_points_vect_F, UNICEF_MODEL, 
-    capacity_extension_decision, Γ, g, beta, delta, p_ω_test, r, h, r_avg, inf_penalty, 
+    capacity_extension_decision, Γ, g, beta, delta, p_ω_test, r, h, r_avg, 
     partial_scenario, P_a, gurobi_solver, κ, s_real, L_hat_upper, L_check_upper, V_p, 
     X_tilde_upper, A_p, s_real_tilde, d_real_tilde, tmin, f_profit, V_a, L_ddot_upper, l, overlap_decision, m_segments, zeta_vm, phi_vm_lower, phi_vm_upper, social_benefit, max_profit)
 
@@ -44,9 +44,9 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
     @variable(Masterproblem, 0.0 <= F[a in A, (t, tau) in F_time_set] <= 1.0)
     # @variable(Masterproblem, F[a in A, (t, tau) in F_time_set], Bin)
     @variable(Masterproblem, Q[v in V, p in P_v[v], (t, tau) in F_time_set, m in keys(m_segments)] >= 0)
-    open("Q_out.txt", "w") do io
-        println(io, Q)
-    end
+    # open("Q_out.txt", "w") do io
+    #     println(io, Q)
+    # end
     @variable(Masterproblem, 0.0 <= Y[p in P, t in T] <= 1.0)
     @variable(Masterproblem, 0.0 <= W[p in P, (t, tau) in F_time_set] <= 1.0)
     @variable(Masterproblem, L_lower_number <= L[p in P, t in T] <= L_upper_number)
@@ -67,7 +67,7 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
     @variable(Masterproblem, Vc[v in V, t in T, ω in Ω_test_partial_1] >= 0)
     @variable(Masterproblem, S[a in A, t in T_initial, ω in Ω_test_partial_1] >= 0)
     # @variable(Masterproblem, X_inf[p in P, t in T, ω in Ω_test_partial_1] >= 0)
-    @variable(Masterproblem, Z[v in V, p in P_v[v], t in T, m in keys(m_segments)] >= 0, Bin)
+    @variable(Masterproblem, 0.0 <= Z[v in V, p in P_v[v], t in T, m in keys(m_segments)] <= 1)
     # open("Z_out.txt", "w") do io
     #     println(io, Z)
     # end
@@ -105,13 +105,13 @@ function master_problem(A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_num
 
     else max_profit && capacity_extension_decision
         println("Max profit model with capacity extension/discounts")
-        @objective(Masterproblem, Min, sum(-r_avg[v,t]*(1-zeta_vm[v,m])*Q[v,p,(t,tau),m] / delta[t] for (t,tau) in F_time_set, v in V, p in P_v[v], m in keys(m_segments)) +
-        sum(Γ[p] * L[p, t] / delta[t] for p in P, t in T) +
-        sum(f_profit[v,p,t]* Y[p,t] / delta[t] for v in V, p in P_v[v], t in T) +
+        @objective(Masterproblem, Min, sum((-r_avg[v,t]*(1-zeta_vm[v,m])*Q[v,p,(t,tau),m]) / delta[t] for (t,tau) in F_time_set, v in V, p in P_v[v], m in keys(m_segments)) +
+        sum((Γ[p] * L[p, t]) / delta[t] for p in P, t in T) +
+        sum((f_profit[v,p,t]* Y[p,t]) / delta[t] for v in V, p in P_v[v], t in T) +
         sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
         
             + p_ω_test[partial_scenario] * (
-                sum(r_avg[v,t]*S[a,t,ω] / delta[t] for a in A, v in V, t = T, m in keys(m_segments), ω in Ω_test_partial_1)
+                sum((r_avg[v,t]*S[a,t,ω]) / delta[t] for a in A, v in V, t = last(T), ω in Ω_test_partial_1)
                 )
         )
 
