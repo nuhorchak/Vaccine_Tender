@@ -1,4 +1,4 @@
- using JuMP
+using JuMP
 using Gurobi
 using Random
 using Dualization
@@ -50,6 +50,7 @@ function tender_stochastic_sensitivity(
 )
     # value to scale coefficients for faster computation
     unit = 1000
+    global total_time = 0
 
     for trial in 1:number_of_trials
         println("trial: $trial")
@@ -81,34 +82,34 @@ function tender_stochastic_sensitivity(
                                         partial_scenario, P_a, gurobi_solver, κ, s_real, L_hat_upper, L_check_upper, V_p, 
                                         X_tilde_upper, A_p, s_real_tilde, d_real_tilde, 1, f_profit, V_a, L_ddot_upper, l, overlap_decision, m_segments, zeta_vm, phi_vm_lower, phi_vm_upper, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL)
 
-        write_to_file(Masterproblem, "pre_start_model.lp")
+        # write_to_file(Masterproblem, "pre_start_model.lp")
 
         # Relax constraints for integer and binary variables
-        for a in A, (t, tau) in F_time_set
-            unset_binary(Masterproblem[:F][a, (t, tau)])
-        end
-    
-        for p in P, t in T
-            unset_binary(Masterproblem[:Y][p, t])
-        end
-    
-        # for p in P, (t, tau) in F_time_set
-        #     unset_binary(Masterproblem[:W][p, (t, tau)])  # Ensure proper indexing
+        # for a in A, (t, tau) in F_time_set
+        #     unset_binary(Masterproblem[:F][a, (t, tau)])
         # end
     
-        for v in V, p in P_v[v], t in T, m in keys(m_segments)
-            unset_binary(Masterproblem[:Z][v, p, t, m])
+        # for p in P, t in T
+        #     unset_binary(Masterproblem[:Y][p, t])
+        # end
+    
+        for p in P, (t, tau) in F_time_set
+            unset_binary(Masterproblem[:W][p, (t, tau)])  # Ensure proper indexing
         end
     
-        for p in P, t in T
-            unset_integer(Masterproblem[:L][p, t])
-        end
+        # for v in V, p in P_v[v], t in T, m in keys(m_segments)
+        #     unset_binary(Masterproblem[:Z][v, p, t, m])
+        # end
+    
+        # for p in P, t in T
+        #     unset_integer(Masterproblem[:L][p, t])
+        # end
     
         LB = 0
         UB = 1e30 #high number to start large gap for L-shaped method (which uses infinity)
     
-        relaxation_tol1 = 5e-1
-        relaxation_tol2 = 5e-2
+        relaxation_tol1 = 5e-3
+        relaxation_tol2 = 8e-1
         global iter1 = 1
         global iter2 = 1
         iter_max = 5000
@@ -320,13 +321,15 @@ function tender_stochastic_sensitivity(
             close(f)
     
             LB = Z_M
+            global LB_phase1 = LB
     
             println("LB: $LB")
             println("UB: $UB")
     
             if (UB - LB) / UB < relaxation_tol1
 
-                write_to_file(Masterproblem, "phase1_model.lp")
+                # global LB_phase1 = LB
+                # write_to_file(Masterproblem, "phase1_model.lp")
 
 
                 model_type = "L-shaped-phase1"
@@ -338,6 +341,7 @@ function tender_stochastic_sensitivity(
 
 
                 println("Phase 1 L-shaped method converged in $time_elapsed seconds after $iter1 iterations")
+                total_time += time_elapsed
 
                 # global X_sub_warm_start = X_sub
                 # global I_sub_warm_start = I_sub
@@ -353,47 +357,151 @@ function tender_stochastic_sensitivity(
         println("################################ Solving phase 2, integer problem... ###############################")
 
         UB = 1e30
+        LB = LB_phase1
+        if LB == 0
+            break
+        end
         # write_to_file(Masterproblem, "phase2_start_model.lp")
 
         set_optimizer_attribute(Masterproblem, "Heuristics", 0.5)
         set_optimizer_attribute(Masterproblem, "PumpPasses", 10)
-        set_optimizer_attribute(Masterproblem, "GomoryPasses" => 2)
+        # set_optimizer_attribute(Masterproblem, "GomoryPasses" => 2)
+
+        #redefine MP OBJ problems without scenarios and constraints
+
+        # if UNICEF_MODEL 
+        #     println("Updating UNICEF-GAVI objective")
+        #     JuMP.set_objective_function(Masterproblem, 
+        #         sum(g[t] * Masterproblem[:F][a, (t, tau)] / delta[t] 
+        #             for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F) +
+        #         sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * Masterproblem[:Q][v,p,(t, tau),m] / delta[t] 
+        #             for (t,tau) in F_time_set, v in V, p in P_v[v], m in keys(m_segments)) +
+        #         sum(p_ω_test[ω] * Masterproblem[:theta][ω] for ω in Ω_test_partial_2)
+        #     )
+        
+        # elseif SOCIAL_BENEFIT_MODEL 
+        #     println("Updating Social benefit objective")
+        #     JuMP.set_objective_function(Masterproblem, 
+        #         sum(p_ω_test[ω] * Masterproblem[:theta][ω] for ω in Ω_test_partial_2)
+        #     )
+        
+        # else MAX_PROFIT_MODEL 
+        #     println("Updating Max profit objective")
+        #     JuMP.set_objective_function(Masterproblem, 
+        #         sum((-r_avg[v,t] * (1 - zeta_vm[v,m]) * Masterproblem[:Q][v,p,(t,tau),m]) / delta[t] 
+        #             for (t,tau) in F_time_set, v in V, p in P_v[v], m in keys(m_segments)) +
+        #         sum((Γ[p] * Masterproblem[:L][p, t]) / delta[t] for p in P, t in T) +
+        #         sum((f_profit[v,p,t] * Masterproblem[:Y][p,t]) / delta[t] for v in V, p in P_v[v], t in T) +
+        #         sum(p_ω_test[ω] * Masterproblem[:theta][ω] for ω in Ω_test_partial_2)
+        #     )
+        # end
+        
+        # #delete constraints for sub problem, from master problem, since we dont need to solve the partial benders anymore
+
+        # function delete_constraint_by_name(model, name)
+        #     con_ref = constraint_by_name(model, name)
+        #     if con_ref !== nothing
+        #         delete(model, con_ref)  # No need for JuMP. prefix
+        #         # println("Deleted constraint: $name")
+        #     else
+        #         println("Constraint $name not found")
+        #     end
+        # end
+        
+        # tmin = 1
+        # println("Delete SP constraints from MP")
+
+        # # Delete Constraints (14)
+        # for ω in Ω_test_partial_1
+        #     for v in V
+        #         for p in P_v[v]
+        #             for t in T
+        #                 for tau in T
+        #                     if (t, tau) in F_time_set
+        #                         delete_constraint_by_name(Masterproblem, "c_14_1[$((v,p,(t,tau),ω))]")
+        #                         delete_constraint_by_name(Masterproblem, "c_14_2[$((v,p,(t,tau),ω))]")
+        #                         delete_constraint_by_name(Masterproblem, "c_14_3[$((v,p,(t,tau),ω))]")
+        #                         delete_constraint_by_name(Masterproblem, "c_14_4[$((v,p,(t,tau),ω))]")
+        #                         delete_constraint_by_name(Masterproblem, "c_14_5[$((v,p,(t,tau),ω))]")
+        #                     end
+        #                 end
+        #             end
+        #         end
+        #     end
+        # end
+
+        # # Delete Constraints (15) - McCormick
+        # for p in P
+        #     for t in T
+        #         delete_constraint_by_name(Masterproblem, "c_15_1[$((p,t))]")
+        #         delete_constraint_by_name(Masterproblem, "c_15_2[$((p,t))]")
+        #         delete_constraint_by_name(Masterproblem, "c_15_3[$((p,t))]")
+        #         delete_constraint_by_name(Masterproblem, "c_15_4[$((p,t))]")
+        #     end
+        # end
+
+        # # Delete Constraint (16)
+        # for ω in Ω_test_partial_1
+        #     for p in P
+        #         for t in T
+        #             delete_constraint_by_name(Masterproblem, "c_16[$((p,t,ω))]")
+        #         end
+        #     end
+        # end
+
+        # # Delete Constraint (17)
+        # for ω in Ω_test_partial_1
+        #     for v in V
+        #         for t in T
+        #             if t >= tmin
+        #                 delete_constraint_by_name(Masterproblem, "c_17[$((v,t,ω))]")
+        #             end
+        #         end
+        #     end
+        # end
+
+        # # Delete Constraint (18)
+        # for ω in Ω_test_partial_1
+        #     for a in A
+        #         for t in T
+        #             if t >= tmin
+        #                 delete_constraint_by_name(Masterproblem, "c_18[$((a,t,ω))]")
+        #             end
+        #         end
+        #     end
+        # end
 
         # Restore binary/integer constraints
-        for a in A, (t, tau) in F_time_set
-            set_binary(Masterproblem[:F][a, (t, tau)])
-        end
-    
-        for p in P, t in T
-            set_binary(Masterproblem[:Y][p, t])
-        end
-    
-        # for p in P, (t, tau) in F_time_set
-        #     set_binary(Masterproblem[:W][p, (t, tau)])  # Ensure proper indexing
-        # end
-    
-        for v in V, p in P_v[v], t in T, m in keys(m_segments)
-            set_binary(Masterproblem[:Z][v, p, t, m])
-        end
-    
-        for p in P, t in T
-            set_integer(Masterproblem[:L][p, t])
-        end
-
-        #init warm start values for IP from relaxtion
         # for a in A, (t, tau) in F_time_set
-        #     set_start_value(Masterproblem[:F][a, (t, tau)], F_bar[a, (t, tau)])
+        #     set_binary(Masterproblem[:F][a, (t, tau)])
         # end
-
+    
         # for p in P, t in T
-        #     set_start_value(Masterproblem[:Y][p, t], Y_bar[p, t])
-        #     set_start_value(Masterproblem[:L][p, t], L_bar[p, t])
-        #     set_start_value(Masterproblem[:L_ddot][p, t], L_bar[p, t])
+        #     set_binary(Masterproblem[:Y][p, t])
+        # end
+    
+        for p in P, (t, tau) in F_time_set
+            set_binary(Masterproblem[:W][p, (t, tau)])  # Ensure proper indexing
+        end
+    
+        # for v in V, p in P_v[v], t in T, m in keys(m_segments)
+        #     set_binary(Masterproblem[:Z][v, p, t, m])
+        # end
+    
+        # for p in P, t in T
+        #     set_integer(Masterproblem[:L][p, t])
         # end
 
-        # for p in P, (t, tau) in F_time_set
-        #     set_start_value(Masterproblem[:W][p, (t, tau)], W_bar[p, (t, tau)])
-        # end
+        # init warm start values for IP from relaxtion
+        for a in A, (t, tau) in F_time_set
+            set_start_value(Masterproblem[:F][a, (t, tau)], F_bar[a, (t, tau)])
+        end
+
+        for p in P, t in T
+            set_start_value(Masterproblem[:Y][p, t], Y_bar[p, t])
+            set_start_value(Masterproblem[:L][p, t], L_bar[p, t])
+            set_start_value(Masterproblem[:L_ddot][p, t], L_bar[p, t])
+        end
 
         for p in P, (t, tau) in F_time_set
             if W_bar[p, (t, tau)] in (0, 1)
@@ -401,14 +509,15 @@ function tender_stochastic_sensitivity(
             end
         end
         
-        # for v in V, p in P_v[v], (t, tau) in F_time_set, m in keys(m_segments)
-        #     set_start_value(Masterproblem[:Q][v, p, (t, tau), m], Q_bar[v, p, (t, tau), m])
-        # end
+        for v in V, p in P_v[v], (t, tau) in F_time_set, m in keys(m_segments)
+            set_start_value(Masterproblem[:Q][v, p, (t, tau), m], Q_bar[v, p, (t, tau), m])
+        end
         
-        # for v in V, p in P_v[v], t in T, m in keys(m_segments)
-        #     set_start_value(Masterproblem[:Z][v, p, t, m], Z_bar[v, p, t, m])
-        # end
-        
+        for v in V, p in P_v[v], t in T, m in keys(m_segments)
+            set_start_value(Masterproblem[:Z][v, p, t, m], Z_bar[v, p, t, m])
+        end
+
+        # write_to_file(Masterproblem, "phase2_deleted_cons.lp")
                 
         while iter2 <= iter_max
             println("Phase 2 iteration: $iter2")
@@ -609,13 +718,15 @@ function tender_stochastic_sensitivity(
             JSON.print(f, lb_and_ub_vectors)
             close(f)
     
-            LB = Z_M
+            # LB = Z_M
     
             println("LB: $LB")
             println("UB: $UB")
 
             #cut generation complete conditions
             if (UB - LB) / UB < relaxation_tol2
+                println("Phase 2 L-shaped method converged in $time_elapsed seconds after $iter2 iterations")
+                total_time += time_elapsed
                 model_type = "L-shaped-phase2"
                 save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_sub,I_sub,Vc_sub,S_sub,Z_bar, model_type, A, T, T_initial, 
                 P, P_v, V, V_p, random_scenarios, F_time_set, random_scenarios, capacity_category, antigen_category, 
@@ -624,14 +735,14 @@ function tender_stochastic_sensitivity(
                 p_ω_test, κ, s_real, s_real_tilde, results_dir, m_segments)
 
 
-                println("Phase 2 L-shaped method converged in $time_elapsed seconds after $iter2 iterations")
-                println("Masterproblem Model status: ", termination_status(Masterproblem))
-                phase2_objective = JuMP.objective_value(Masterproblem)
-                phase2_run_time = JuMP.solve_time(Masterproblem)
+                # println("Final Sub Problem status: ", termination_status(Subproblem))
+                # phase2_objective = JuMP.objective_value(Masterproblem)
+                # phase2_run_time = JuMP.solve_time(Masterproblem)
                 println("Phase 2 Objective Value")
-                println(phase2_objective)
+                println(UB)
                 println("Phase 2 run time")
-                println(phase2_run_time)
+                println(time_elapsed)
+                Println("Total run time: $total_time")
 
                 # current_directory = @__DIR__
                 # scenarios = length(random_scenarios)
@@ -643,4 +754,4 @@ function tender_stochastic_sensitivity(
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, true, true, false, true, false)
+tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, true, true, false, false, true)

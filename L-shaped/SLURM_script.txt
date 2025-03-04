@@ -1,0 +1,22 @@
+#!/bin/bash
+#SBATCH --job-name=vaccine_tender_two_phase_unicef_gavi
+#SBATCH --ntasks=1 
+#SBATCH --partition=cloud72
+#SBATCH --nodes=1
+#SBATCH --tasks-per-node=1
+#SBATCH --time=72:00:00
+#SBATCH --output two_phase_unicef_gavi_%j.txt  
+#SBATCH --error model_output_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=uhorchak@uark.edu
+
+cd $SLURM_SUBMIT_DIR
+module purge
+module load julia/1.10.2
+
+# Add required Julia packages
+#julia -e 'import Pkg; Pkg.add("Pkg")'
+julia -e 'using Pkg; Pkg.add(["JuMP", "Gurobi", "Plots", "DataFrames", "CSV", "XLSX", "JSON", "Dualization"])'
+
+# Run the Julia script using srun
+srun --export=ALL julia vaccine_tender_L_shaped_scenario_pairs_all_objectives_functionalized.jl

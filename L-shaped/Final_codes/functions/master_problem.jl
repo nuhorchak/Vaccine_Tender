@@ -34,20 +34,19 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
     starting_points_vect_S, starting_points_vect_F, UNICEF_MODEL, 
     capacity_extension_decision, Γ, g, beta, delta, p_ω_test, r, h, r_avg, 
     partial_scenario, P_a, gurobi_solver, κ, s_real, L_hat_upper, L_check_upper, V_p, 
-    X_tilde_upper, A_p, s_real_tilde, d_real_tilde, tmin, f_profit, V_a, L_ddot_upper, l, overlap_decision, m_segments, zeta_vm, phi_vm_lower, phi_vm_upper, social_benefit, max_profit, integer_solution)
+    X_tilde_upper, A_p, s_real_tilde, d_real_tilde, tmin, f_profit, V_a, L_ddot_upper, l, 
+    overlap_decision, m_segments, zeta_vm, phi_vm_lower, phi_vm_upper, social_benefit, max_profit)
 
-    # Initialize the Master problem
-    ######### Initiate the Master problem #########
-    # Masterproblem = JuMP.Model()
-    # JuMP.set_optimizer(Masterproblem, gurobi_solver)
+    println("Building master problem")
 
-    #binary: F, Y, W, Z
-    #integer: L 
-
-    @variable(Masterproblem, 0.0 <= F[a in A, (t, tau) in F_time_set] <= 1.0, Bin)
+    # @variable(Masterproblem, 0.0 <= F[a in A, (t, tau) in F_time_set] <= 1.0, Bin)
+    # @variable(Masterproblem, Q[v in V, p in P_v[v], (t, tau) in F_time_set, m in keys(m_segments)] >= 0)
+    # @variable(Masterproblem, 0.0 <= Y[p in P, t in T] <= 1.0, Bin)
+    # @variable(Masterproblem, 0.0 <= W[p in P, (t, tau) in F_time_set] <= 1.0, Bin)
+    @variable(Masterproblem, F[a in A, (t, tau) in F_time_set], Bin)
     @variable(Masterproblem, Q[v in V, p in P_v[v], (t, tau) in F_time_set, m in keys(m_segments)] >= 0)
-    @variable(Masterproblem, 0.0 <= Y[p in P, t in T] <= 1.0, Bin)
-    @variable(Masterproblem, 0.0 <= W[p in P, (t, tau) in F_time_set] <= 1.0, Bin)
+    @variable(Masterproblem, Y[p in P, t in T], Bin)
+    @variable(Masterproblem, W[p in P, (t, tau) in F_time_set], Bin)
     @variable(Masterproblem, L_lower_number <= L[p in P, t in T] <= L_upper_number, Int)
     @variable(Masterproblem, L_hat[p in P, (t, tau) in F_time_set] >= 0)
     @variable(Masterproblem, K_hat[p in P, (t, tau) in F_time_set] >= 0)
@@ -62,53 +61,10 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
     @variable(Masterproblem, I[v in V, t in T_initial, ω in Ω_test_partial_1] >= 0)
     @variable(Masterproblem, Vc[v in V, t in T, ω in Ω_test_partial_1] >= 0)
     @variable(Masterproblem, S[a in A, t in T_initial, ω in Ω_test_partial_1] >= 0)
-    @variable(Masterproblem, 0.0 <= Z[v in V, p in P_v[v], t in T, m in keys(m_segments)] <= 1, Bin)
+    # @variable(Masterproblem, 0.0 <= Z[v in V, p in P_v[v], t in T, m in keys(m_segments)] <= 1, Bin)
+    @variable(Masterproblem, Z[v in V, p in P_v[v], t in T, m in keys(m_segments)], Bin)
 
-    if integer_solution == false
-        # Relax constraints for integer and binary variables
-        for a in A, (t, tau) in F_time_set
-            unset_binary(F[a, (t, tau)])
-        end
-    
-        for p in P, t in T
-            unset_binary(Y[p, t])
-        end
-    
-        for p in P, (t, tau) in F_time_set
-            unset_binary(W[p, (t, tau)])  # Ensure proper indexing
-        end
-    
-        for v in V, p in P_v[v], t in T, m in keys(m_segments)
-            unset_binary(Z[v, p, t, m])
-        end
-    
-        for p in P, t in T
-            unset_integer(L[p, t])
-        end
-    else
-        # Restore binary/integer constraints
-        for a in A, (t, tau) in F_time_set
-            set_binary(F[a, (t, tau)])
-        end
-    
-        for p in P, t in T
-            set_binary(Y[p, t])
-        end
-    
-        for p in P, (t, tau) in F_time_set
-            set_binary(W[p, (t, tau)])  # Ensure proper indexing
-        end
-    
-        for v in V, p in P_v[v], t in T, m in keys(m_segments)
-            set_binary(Z[v, p, t, m])
-        end
-    
-        for p in P, t in T
-            set_integer(L[p, t])
-        end
-    end
-    
-
+ 
 
     ################################################### MASTER PROBLEM ####################################################
 
@@ -224,6 +180,7 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
             for tau in T
                 if (t, tau) in F_time_set
                     @constraint(Masterproblem, sum(Q[v, p, (t, tau), m] for v in V_p[p], m in keys(m_segments)) <= W[p,(t,tau)]*sum(s_real[p] for l in t:tau) + K_hat[p,(t,tau)] + K_check[p,(t,tau)])
+                    # c7_1 = @constraint(Masterproblem, sum(Q[v, p, (t, tau), m] for v in V_p[p], m in keys(m_segments)) <= W[p,(t,tau)]*((tau-l+1)*s_real[p]) + K_hat[p,(t,tau)] + K_check[p,(t,tau)])
                     @constraint(Masterproblem, L_hat[p,(t,tau)] == sum((tau-l+1)*κ*s_real[p]*L[p,l] for l in t+1:tau))
                     @constraint(Masterproblem, K_hat[p,(t,tau)] >= L_hat[p,(t,tau)] + W[p,(t,tau)]*L_hat_upper[p,(t,tau)] - L_hat_upper[p,(t,tau)])
                     @constraint(Masterproblem, K_hat[p,(t,tau)] <= W[p,(t,tau)]*L_hat_upper[p,(t,tau)])
@@ -239,7 +196,7 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
     end
 
     # Constraint (8) 
-    if max_profit #ROI with prodiction capacity consideration for max profit - need to fix this
+    if max_profit #ROI with prodiction capacity consideration for max profit
         for p in P
             for t in T
                 # @constraint(Masterproblem, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) for v in V_p[p], m in keys(m_segments)) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set )) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] + Γ[p] * L[p, t] for v in V_p[p])
@@ -293,21 +250,50 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
             end
         end
     end
+
+    cons_14_1 = []
+    cons_14_2 = []
+    cons_14_3 = []
+    cons_14_4 = []
+    cons_14_5 = []
+    cons_15_1 = []
+    cons_15_2 = []
+    cons_15_3 = []
+    cons_15_4 = []
+    cons_16 = []
+    cons_17 = []
+    cons_18 = []
+    cons_19 = []
+    cons_20 = []
+    cons_21 = []
     
     #sub problem constraints
-
     # Constraint (14) - McCormick 
     for ω in Ω_test_partial_1
         for v in V
             for p in P_v[v]
                 for t in T
                     for tau in T
-                        if (t,tau) in F_time_set
-                            @constraint(Masterproblem, X_tilde[v,p,(t,tau),ω] == sum(X[v,p,l,ω] for l in t:tau))
-                            @constraint(Masterproblem, sum(Q[v,p,(t,tau), m] for m in keys(m_segments)) >= K[v,p,(t,tau),ω])
-                            @constraint(Masterproblem, K[v,p,(t,tau),ω] >= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] + X_tilde[v,p,(t,tau),ω] - X_tilde_upper[v,p,(t,tau)])
-                            @constraint(Masterproblem, K[v,p,(t,tau),ω] <= X_tilde[v,p,(t,tau),ω])
-                            @constraint(Masterproblem, K[v,p,(t,tau),ω] <= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
+                        if (t, tau) in F_time_set
+                            c = @constraint(Masterproblem, X_tilde[v, p, (t, tau), ω] == sum(X[v, p, l, ω] for l in t:tau))
+                            set_name(c, "c_14_1[$((v,p,(t,tau),ω))]")
+                            push!(cons_14_1, c)
+
+                            c = @constraint(Masterproblem, sum(Q[v, p, (t, tau), m] for m in keys(m_segments)) >= K[v, p, (t, tau), ω])
+                            set_name(c, "c_14_2[$((v,p,(t,tau),ω))]")
+                            push!(cons_14_2, c)
+
+                            c = @constraint(Masterproblem, K[v, p, (t, tau), ω] >= X_tilde_upper[v, p, (t, tau)] * W[p, (t, tau)] + X_tilde[v, p, (t, tau), ω] - X_tilde_upper[v, p, (t, tau)])
+                            set_name(c, "c_14_3[$((v,p,(t,tau),ω))]")
+                            push!(cons_14_3, c)
+
+                            c = @constraint(Masterproblem, K[v, p, (t, tau), ω] <= X_tilde[v, p, (t, tau), ω])
+                            set_name(c, "c_14_4[$((v,p,(t,tau),ω))]")
+                            push!(cons_14_4, c)
+
+                            c = @constraint(Masterproblem, K[v, p, (t, tau), ω] <= X_tilde_upper[v, p, (t, tau)] * W[p, (t, tau)])
+                            set_name(c, "c_14_5[$((v,p,(t,tau),ω))]")
+                            push!(cons_14_5, c)
                         end
                     end
                 end
@@ -315,82 +301,90 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
         end
     end
 
-    # Constraint (15) McCormick 
+    # Constraint (15) - McCormick 
     for p in P
         for t in T
-            @constraint(Masterproblem, L_ddot[p,t] == sum(κ*s_real[p] * L[p, l] for l in 1:t))
-            @constraint(Masterproblem, K_ddot[p,t] >= L_ddot[p,t] + Y[p,t]*L_ddot_upper[p,t] - L_ddot_upper[p,t])
-            @constraint(Masterproblem, K_ddot[p,t] <= Y[p,t]*L_ddot_upper[p,t])
-            @constraint(Masterproblem, K_ddot[p,t] <= L_ddot[p,t])
-        end
-    end
+            c = @constraint(Masterproblem, L_ddot[p,t] == sum(κ * s_real[p] * L[p, l] for l in 1:t))
+            set_name(c, "c_15_1[$((p,t))]")
+            push!(cons_15_1, c)
 
-    for ω in Ω_test_partial_1
-        for p in P
-            for t in T
-                @constraint(Masterproblem, sum(X[v,p,t,ω] for v in V_p[p]) <= Y[p,t]*s_real_tilde[p,t,ω] + K_ddot[p,t])
-            end
+            c = @constraint(Masterproblem, K_ddot[p,t] >= L_ddot[p,t] + Y[p,t] * L_ddot_upper[p,t] - L_ddot_upper[p,t])
+            set_name(c, "c_15_2[$((p,t))]")
+            push!(cons_15_2, c)
+
+            c = @constraint(Masterproblem, K_ddot[p,t] <= Y[p,t] * L_ddot_upper[p,t])
+            set_name(c, "c_15_3[$((p,t))]")
+            push!(cons_15_3, c)
+
+            c = @constraint(Masterproblem, K_ddot[p,t] <= L_ddot[p,t])
+            set_name(c, "c_15_4[$((p,t))]")
+            push!(cons_15_4, c)
         end
     end
 
     # Constraint (16)
     for ω in Ω_test_partial_1
-        for v in V
+        for p in P
             for t in T
-                if t >= tmin
-                    @constraint(Masterproblem, I[v,t-1,ω] + sum(X[v,p,t,ω] for p in P_v[v]) == Vc[v,t,ω] + I[v,t,ω])
-                end
+                c = @constraint(Masterproblem, sum(X[v, p, t, ω] for v in V_p[p]) <= Y[p,t] * s_real_tilde[p,t,ω] + K_ddot[p,t])
+                set_name(c, "c_16[$((p,t,ω))]")
+                push!(cons_16, c)
             end
         end
     end
 
     # Constraint (17)
     for ω in Ω_test_partial_1
-        for a in A
+        for v in V
             for t in T
                 if t >= tmin
-                    @constraint(Masterproblem, d_real_tilde[a,t,ω] - sum(Vc[v,t,ω] for v in V_a[a]) + S[a,t-1,ω] <= S[a,t,ω])
+                    c = @constraint(Masterproblem, I[v,t-1,ω] + sum(X[v, p, t, ω] for p in P_v[v]) == Vc[v,t,ω] + I[v,t,ω])
+                    set_name(c, "c_17[$((v,t,ω))]")
+                    push!(cons_17, c)
                 end
             end
         end
     end
 
-    # # Constraint ROI - max profit only
-    # if max_profit
-    #     for ω in Ω_test_partial_1
-    #         for p in P
-    #             for t in T
-    #                 @constraint(Masterproblem, sum(r_avg[p,t]*X[v,p,t,ω] for v in V_p[p]) + X_inf[p,t,ω] >= Y[p,t] * sum((1+l[v,p])*f_profit[v,p,t] for v in V_p[p]))
-    #             end
-    #         end
-    #     end
-    # end
-
-    # Constraint ()
+    # Constraint (18)
     for ω in Ω_test_partial_1
-        for i in 1:length(starting_points_vect_I)
-            v = starting_points_vect_I[i][1]
-            amount = starting_points_vect_I[i][2]
-            @constraint(Masterproblem, I[v,0,ω] == amount)
+        for a in A
+            for t in T
+                if t >= tmin
+                    c = @constraint(Masterproblem, d_real_tilde[a,t,ω] - sum(Vc[v,t,ω] for v in V_a[a]) + S[a,t-1,ω] <= S[a,t,ω])
+                    set_name(c, "c_18[$((a,t,ω))]")
+                    push!(cons_18, c)
+                end
+            end
         end
     end
 
-    # Constraint ()
+    # Constraint (19) - Initial Inventory
     for ω in Ω_test_partial_1
-        for i in 1:length(starting_points_vect_S)
-            a = starting_points_vect_S[i][1]
-            amount = starting_points_vect_S[i][2]
-            @constraint(Masterproblem, S[a,0,ω] == amount)
+        for (v, amount) in starting_points_vect_I
+            c = @constraint(Masterproblem, I[v,0,ω] == amount)
+            set_name(c, "c_19[$((v,ω))]")
+            push!(cons_19, c)
         end
     end
 
-    for i in 1:length(starting_points_vect_F)
-        a = starting_points_vect_F[i][1]
-        t = starting_points_vect_F[i][2]
-        tau = starting_points_vect_F[i][3]
-        @constraint(Masterproblem, F[a, (t, tau)] == 1)
+    # Constraint (20) - Initial Shortage
+    for ω in Ω_test_partial_1
+        for (a, amount) in starting_points_vect_S
+            c = @constraint(Masterproblem, S[a,0,ω] == amount)
+            set_name(c, "c_20[$((a,ω))]")
+            push!(cons_20, c)
+        end
     end
-    
-    
+
+    # Constraint (21) - Initial F Decision
+    for (a, t, tau) in starting_points_vect_F
+        c = @constraint(Masterproblem, F[a, (t, tau)] == 1)
+        set_name(c, "c_21[$((a,t,tau))]")
+        push!(cons_21, c)
+    end
+
+
+ 
     return Masterproblem
 end

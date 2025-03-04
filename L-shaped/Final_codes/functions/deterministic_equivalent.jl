@@ -50,9 +50,6 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
 
     @variable(model, F[a in A, (t, tau) in F_time_set], Bin)
     @variable(model, Q[v in V, p in P_v[v], (t, tau) in F_time_set, m in keys(m_segments)] >= 0)
-    # open("Q_out.txt", "w") do io
-    #     println(io, Q)
-    # end
     @variable(model, X[v in V, p in P_v[v], t in T, ω in Ω] >= 0)
     @variable(model, X_tilde[v in V, p in P_v[v], (t, tau) in F_time_set, ω in Ω] >= 0)
     @variable(model, K[v in V, p in P_v[v], (t, tau) in F_time_set, ω in Ω] >= 0)
@@ -68,11 +65,8 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
     @variable(model, K_ddot[p in P, t in T] >= 0)
     @variable(model, K_hat[p in P, (t, tau) in F_time_set] >= 0)
     @variable(model, K_check[p in P, (t, tau) in F_time_set] >= 0)
-    # @variable(model, X_inf[p in P, t in T, ω in Ω] >= 0)
     @variable(model, Z[v in V, p in P_v[v], t in T, m in keys(m_segments)] >= 0, Bin) 
-    # open("Z_out.txt", "w") do io
-    #     println(io, Z)
-    # end
+
     ################################################### OBJECTIVE FUNCTION AND CONSTRAINTS ####################################################
 
     #CONDITIONS: ALL use capacity extension
@@ -335,54 +329,54 @@ function deterministic_equivalent(p_ω, Ω, F_bar, W_bar, Y_bar, L_bar, g, beta,
         end
     end
     
-    for a in A
-        for (t, tau) in F_time_set
-            if F_bar[a,(t,tau)] == 0.0 || F_bar[a,(t,tau)] == 1.0
-                # @constraint(model, F[a,(t,tau)] == F_bar[a,(t,tau)])
-                set_start_value(F[a,(t,tau)], F_bar[a,(t,tau)])
-            end
-        end
-    end
+    # for a in A
+    #     for (t, tau) in F_time_set
+    #         if F_bar[a,(t,tau)] == 0.0 || F_bar[a,(t,tau)] == 1.0
+    #             # @constraint(model, F[a,(t,tau)] == F_bar[a,(t,tau)])
+    #             set_start_value(F[a,(t,tau)], F_bar[a,(t,tau)])
+    #         end
+    #     end
+    # end
 
-    for p in P
-        for t in T
-            if Y_bar[p,t] == 0.0 || Y_bar[p,t] == 1.0
-                # @constraint(model, Y[p,t] == Y_bar[p,t])
-                set_start_value(Y[p,t], Y_bar[p,t])
-            end
-        end
-    end
+    # for p in P
+    #     for t in T
+    #         if Y_bar[p,t] == 0.0 || Y_bar[p,t] == 1.0
+    #             # @constraint(model, Y[p,t] == Y_bar[p,t])
+    #             set_start_value(Y[p,t], Y_bar[p,t])
+    #         end
+    #     end
+    # end
 
-    for p in P
-        for (t, tau) in F_time_set
-            if W_bar[p,(t,tau)] == 0.0 || W_bar[p,(t,tau)] == 1.0
-                # @constraint(model, W[p,(t,tau)] == W_bar[p,(t,tau)])
-                set_start_value(W[p,(t,tau)], W_bar[p,(t,tau)])
-            end
-        end
-    end
+    # for p in P
+    #     for (t, tau) in F_time_set
+    #         if W_bar[p,(t,tau)] == 0.0 || W_bar[p,(t,tau)] == 1.0
+    #             # @constraint(model, W[p,(t,tau)] == W_bar[p,(t,tau)])
+    #             set_start_value(W[p,(t,tau)], W_bar[p,(t,tau)])
+    #         end
+    #     end
+    # end
 
-    for p in P
-        for t in T
-            if L_bar[p,t] == 0.0 || L_bar[p,t] == 1.0 || L_bar[p,t] == 2.0 || L_bar[p,t] == 3.0 || L_bar[p,t] == 4.0 || L_bar[p,t] == 5.0
-                # @constraint(model, L[p,t] == L_bar[p,t])
-                set_start_value(L[p,t], L_bar[p,t])
-            end
-        end
-    end
+    # for p in P
+    #     for t in T
+    #         if L_bar[p,t] == 0.0 || L_bar[p,t] == 1.0 || L_bar[p,t] == 2.0 || L_bar[p,t] == 3.0 || L_bar[p,t] == 4.0 || L_bar[p,t] == 5.0
+    #             # @constraint(model, L[p,t] == L_bar[p,t])
+    #             set_start_value(L[p,t], L_bar[p,t])
+    #         end
+    #     end
+    # end
 
-    for v in V
-        for p in P_v[v]
-            for t in T
-                for m in keys(m_segments)
-                    if Z_bar[v,p,t,m] == 0 || Z_bar[v,p,t,m] == 1.0
-                        # @constraint(model,Z[v,p,t,m] == Z_bar[v,p,t,m])
-                        set_start_value(Z[v,p,t,m], Z_bar[v,p,t,m])
-                    end
-                end
-            end
-        end
-    end
+    # for v in V
+    #     for p in P_v[v]
+    #         for t in T
+    #             for m in keys(m_segments)
+    #                 if Z_bar[v,p,t,m] == 0 || Z_bar[v,p,t,m] == 1.0
+    #                     # @constraint(model,Z[v,p,t,m] == Z_bar[v,p,t,m])
+    #                     set_start_value(Z[v,p,t,m], Z_bar[v,p,t,m])
+    #                 end
+    #             end
+    #         end
+    #     end
+    # end
 
     return model
 end
