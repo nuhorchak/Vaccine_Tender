@@ -48,13 +48,24 @@ function tender_stochastic_sensitivity(
     SOCIAL_BENEFIT_MODEL::Bool = false,
     MAX_PROFIT_MODEL::Bool = false
 )
+
+model = []
+
+if UNICEF_MODEL
+    model = "UNICEF_GAVI"
+elseif SOCIAL_BENEFIT_MODEL
+    model = "SOCIAL_BENEFIT"
+else
+    model = "MAX_PROFIT"
+end
+
     # value to scale coefficients for faster computation
     unit = 1000
     global total_time = 0
 
     for trial in 1:number_of_trials
         println("trial: $trial")
-        source = string(results_dir, "/log_DE_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",number_of_demand_scenarios*total_capacity_scenarios,"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
+        source = string(results_dir, "/", model, "_log_DE_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",number_of_demand_scenarios*total_capacity_scenarios,"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
             overlap_decision = true
     
         ################################################### INITIALIZE NECESSARY PARAMS ###################################################
@@ -72,8 +83,8 @@ function tender_stochastic_sensitivity(
         ################################################### INITIALIZE MASTER PROBLEM ###################################################
         Masterproblem = JuMP.Model()
         JuMP.set_optimizer(Masterproblem, gurobi_solver)
-        source1 = string(results_dir, "/log_Phase1_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
-        source2 = string(results_dir, "/log_Phase2_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
+        source1 = string(results_dir, "/", model, "_log_Phase1_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
+        source2 = string(results_dir, "/", model, "_log_Phase2_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
 
         Masterproblem = master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_number, 
                                         Ω_test_partial_2, Ω_test_partial_1, T_initial, starting_points_vect_I, 
@@ -108,7 +119,7 @@ function tender_stochastic_sensitivity(
         LB = 0
         UB = 1e30 #high number to start large gap for L-shaped method (which uses infinity)
     
-        relaxation_tol1 = 5e-3
+        relaxation_tol1 = 5e-1
         relaxation_tol2 = 8e-1
         global iter1 = 1
         global iter2 = 1
@@ -315,7 +326,7 @@ function tender_stochastic_sensitivity(
             lb_and_ub_vectors["run_time"] = time_elapsed
             # current_directory = @__DIR__
 
-            source = string(results_dir, "/Phase1_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
+            source = string(results_dir, "/", model, "_Phase1_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
             f = open(source, "w")
             JSON.print(f, lb_and_ub_vectors)
             close(f)
@@ -326,7 +337,7 @@ function tender_stochastic_sensitivity(
             println("LB: $LB")
             println("UB: $UB")
     
-            if (UB - LB) / UB < relaxation_tol1
+            if (UB - LB) / abs(UB) < relaxation_tol1
 
                 # global LB_phase1 = LB
                 # write_to_file(Masterproblem, "phase1_model.lp")
@@ -358,9 +369,6 @@ function tender_stochastic_sensitivity(
 
         UB = 1e30
         LB = LB_phase1
-        if LB == 0
-            break
-        end
         # write_to_file(Masterproblem, "phase2_start_model.lp")
 
         set_optimizer_attribute(Masterproblem, "Heuristics", 0.5)
@@ -713,18 +721,18 @@ function tender_stochastic_sensitivity(
             lb_and_ub_vectors["run_time"] = time_elapsed
             # current_directory = @__DIR__
 
-            source = string(results_dir, "/Phase2_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
+            source = string(results_dir, "/", model, "_Phase2_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
             f = open(source, "w")
             JSON.print(f, lb_and_ub_vectors)
             close(f)
     
-            # LB = Z_M
+            LB = Z_M
     
             println("LB: $LB")
             println("UB: $UB")
 
             #cut generation complete conditions
-            if (UB - LB) / UB < relaxation_tol2
+            if (UB - LB) / abs(UB) < relaxation_tol2
                 println("Phase 2 L-shaped method converged in $time_elapsed seconds after $iter2 iterations")
                 total_time += time_elapsed
                 model_type = "L-shaped-phase2"
@@ -742,11 +750,11 @@ function tender_stochastic_sensitivity(
                 println(UB)
                 println("Phase 2 run time")
                 println(time_elapsed)
-                Println("Total run time: $total_time")
+                println("Total run time: $total_time")
 
                 # current_directory = @__DIR__
                 # scenarios = length(random_scenarios)
-                source = string(results_dir, "/log_Phase2_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
+                source = string(results_dir, "/", model, "_log_Phase2_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
                 break #break iter 2
             end #end phase 2, tolerance reached
             iter2 += 1
@@ -754,4 +762,4 @@ function tender_stochastic_sensitivity(
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, true, true, false, false, true)
+tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, true, true, true, false, false)
