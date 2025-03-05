@@ -33,6 +33,7 @@ function generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial
     X_tilde_upper, P, s_real_tilde, tmin, A, d_real_tilde, l, f_profit, V_p, 
     starting_points_vect_I, starting_points_vect_S, m_segments)
 
+
     Q = Masterproblem[:Q]
     W = Masterproblem[:W]
     Y = Masterproblem[:Y]
@@ -41,6 +42,7 @@ function generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial
 
         
     if length(dual_subproblem) > 0
+        println("Generating cuts from dual")
 
         cons_omega_dict = Dict()
 
@@ -141,8 +143,10 @@ function generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial
                 theta_rhs += (transpose(cons_omega_dict[ω][i]) * dual_subproblem[ω][i])
             end
             @constraint(Masterproblem, theta[ω] >= theta_rhs)
+            println("*** Cut generated! ***")
         end
     end
+    
 
     return Masterproblem
 end

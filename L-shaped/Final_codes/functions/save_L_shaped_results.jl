@@ -165,7 +165,7 @@ L_shaped_output = Dict()
         Z_results[v] = temp_1
     end
 
-    if model_type == "L-shaped"
+    if model_type == "L-shaped-phase1" || model_type == "L-shaped-phase2"
         X_results = Dict()
         for v in V
             temp_1 = Dict()
@@ -291,8 +291,8 @@ L_shaped_output = Dict()
     L_shaped_output["S"] = S_results
     L_shaped_output["Z"] = Z_results
 
-    if model_type == "L-shaped"
-        source = string(results_dir, "/L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
+    if model_type == "L-shaped-phase1"
+        source = string(results_dir, "/Phase1_L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
         f = open(source, "w")
         JSON.print(f, L_shaped_output)
         close(f)
@@ -301,6 +301,12 @@ L_shaped_output = Dict()
         f = open(source, "w")
         JSON.print(f, L_shaped_output)
         close(f)
+    elseif model_type == "L-shaped-phase2"
+        source = string(results_dir, "/Phase2_L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
+        f = open(source, "w")
+        JSON.print(f, L_shaped_output)
+        close(f)
+
 
         sensitivity_output = Dict()
 
@@ -381,7 +387,7 @@ L_shaped_output = Dict()
                 temp_total_X = 0.0
                 for v in V_p[p]
                     for t in T
-                        temp_total_X += X[v,p,t,ω]
+                        temp_total_X += X[ω][v, p, t] #X[v,p,t,ω]
                     end
                 end
                 temp_avg_X = temp_total_X / length(T)
@@ -406,7 +412,7 @@ L_shaped_output = Dict()
                     for v in V_p[p]
                         if v in vaccine_category[category]
                             for t in T
-                                temp_category_total_X += X[v,p,t,ω]
+                                temp_category_total_X += X[ω][v, p, t] #X[v,p,t,ω]
                             end
                         end
                     end
@@ -461,7 +467,7 @@ L_shaped_output = Dict()
             for ω in Ω_test
                 temp_total_S = 0.0
                 for t in T
-                    temp_total_S += S[a,t,ω]
+                    temp_total_S += S[ω][a,t] #S[a,t,ω]
                 end
                 temp_avg_S = temp_total_S / length(T)
                 temp_a_dict[ω] = temp_avg_S
@@ -550,7 +556,7 @@ L_shaped_output = Dict()
             for ω in Ω_test
                 temp_total_I = 0.0
                 for t in T
-                    temp_total_I += I[v,t,ω]
+                    temp_total_I += I[ω][v,t] #I[v,t,ω]
                 end
                 temp_avg_I = temp_total_I / length(T)
                 temp_v_dict[ω] = temp_avg_I
@@ -626,7 +632,7 @@ L_shaped_output = Dict()
         sensitivity_output["inv_range_category"] = inv_range_category
 
         current_directory = @__DIR__
-        source = string(results_dir, "/DE_L_results_T_", tmax, "_delta_", max_tender_length, "_scen_", number_of_demand_scenarios * total_capacity_scenarios, "_trial_", trial, "_inv_", initial_inventory_rate, "_cap._", scaled_capacity, "_cap.inc._", allowable_capacity_increase_number, "_sensitivity_original.json")
+        source = string(results_dir, "/Two_Phase_L_results_T_", tmax, "_delta_", max_tender_length, "_scen_", number_of_demand_scenarios * total_capacity_scenarios, "_trial_", trial, "_inv_", initial_inventory_rate, "_cap._", scaled_capacity, "_cap.inc._", allowable_capacity_increase_number, "_sensitivity.json")
         f = open(source, "w")
         JSON.print(f, sensitivity_output)
         close(f)

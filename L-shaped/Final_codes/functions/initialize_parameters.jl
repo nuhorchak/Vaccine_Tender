@@ -146,9 +146,13 @@ function initialize_parameters(
 
 
     # Define the m values to cycle through for Q, Z, lambda_m
-    m_segments = [0.05, 0.1, 0.2]
-    lower_breaks_values = [0,500000,750000]
-    upper_breaks_values = [500001,750001, 9999999999999999]
+    # m_segments = [0.05, 0.1, 0.2]
+    # lower_breaks_values = [0,500000,750000]
+    # upper_breaks_values = [500001,750001, 9999999999999999]
+
+    m_segments = [0]
+    lower_breaks_values = [0]
+    upper_breaks_values = [99999999999999999999999999999999999]
 
     zeta_vm = Dict()
     phi_vm_lower = Dict()
