@@ -13,7 +13,7 @@ Reads starting points data from an Excel file and processes it into structured v
 - `starting_points_vect_I::Vector`: Vector of tuples for `I_start` containing (vaccine, scaled amount).
 - `starting_points_vect_S::Vector`: Vector of tuples for `S_start` containing (antigen, scaled amount).
 """
-function load_starting_points(file_path::String, initial_inventory_rate::Int, unit::Int)
+function load_model_starting_points(file_path::String, initial_inventory_rate::Int, unit::Int)
     # Read the Excel file
     filename = "Starting_point.xlsx"
     relative_path = joinpath(file_path, filename)

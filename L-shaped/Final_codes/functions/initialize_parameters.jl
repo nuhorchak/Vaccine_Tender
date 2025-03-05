@@ -19,7 +19,7 @@ Processes production capacity, vaccine pricing, and cost-related data from Excel
 - Various dictionaries (`s_real`, `r`, `r_avg`, `r_producer_avg`, `g`, `h`, `l`, `f_profit`, `Γ`) and sets (`T`, `T_initial`, `Δ`, `F_time_set`) used for simulation and optimization.
 
 """
-function process_production_and_cost_data(
+function initialize_parameters(
     data_dir::String, unit::Int, scaled_capacity::Int, max_horizon_length::Int, max_tender_length::Int, 
     P::Vector, V::Vector, P_v::Dict, V_p::Dict, allowable_capacity_increase_number::Int
 )
@@ -36,6 +36,8 @@ function process_production_and_cost_data(
     delta = [(1+0.03)^t for t in 1:tmax]
 
     inf_penalty = 100
+    # Unvaccinated children penalty
+    beta = 10
 
     # Read production capacity data
     capacity_file_path = joinpath(data_dir, "production_capacity_scenarios.xlsx")
@@ -143,5 +145,38 @@ function process_production_and_cost_data(
     end
 
 
-    return T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, inf_penalty
+    # Define the m values to cycle through for Q, Z, lambda_m
+    # m_segments = [0.05, 0.1, 0.2]
+    # lower_breaks_values = [0,500000,750000]
+    # upper_breaks_values = [500001,750001, 9999999999999999]
+
+    m_segments = [0]
+    lower_breaks_values = [0]
+    upper_breaks_values = [99999999999999999999999999999999999]
+
+    zeta_vm = Dict()
+    phi_vm_lower = Dict()
+    phi_vm_upper = Dict()
+ 
+    # Loop through v, and assign lambda for each m
+    for v in V
+        for m in keys(m_segments)
+            zeta_vm[v, m] = m_segments[m]
+        end
+    end
+ 
+    for v in V
+        for m in keys(lower_breaks_values)
+            phi_vm_lower[v, m] = lower_breaks_values[m]
+        end
+    end
+ 
+    for v in V
+        for m in keys(upper_breaks_values)
+            phi_vm_upper[v, m] = upper_breaks_values[m]
+        end
+    end
+
+
+    return T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, beta, zeta_vm, phi_vm_lower, phi_vm_upper, m_segments
 end
