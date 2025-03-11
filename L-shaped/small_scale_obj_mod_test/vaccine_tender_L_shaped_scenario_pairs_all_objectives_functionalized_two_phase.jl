@@ -10,8 +10,10 @@ import JSON
 import MathOptInterface
 
 current_directory = @__DIR__
-functions_directory = joinpath(current_directory, "functions")
-data_dir = joinpath(current_directory, "data")
+#functions_directory = joinpath(current_directory, "functions")
+#data_dir = joinpath(current_directory, "data")
+functions_directory = joinpath(current_directory, "..", "functions")
+data_dir = joinpath(current_directory, "..", "data")
 results_dir = joinpath(current_directory, "results")
 
 #lambda_m done; add z, update formulation; check McCormack for second stage; access model vars in sub problem and cuts; update model objectives; update constraints in each model
@@ -30,9 +32,9 @@ include(joinpath(functions_directory, "create_vaccine_data.jl"))
 include(joinpath(functions_directory, "sub_problem.jl"))
 include(joinpath(functions_directory, "master_problem.jl"))
 
-gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1, "Threads" => 8) 
-gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-1, "Threads" => 8) 
-gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1, "Threads" => 8) 
+gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1, "Threads" => 32) 
+gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-1, "Threads" => 32) 
+gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1, "Threads" => 32) 
 
 function tender_stochastic_sensitivity(
     max_horizon_length::Int,
@@ -66,7 +68,7 @@ end
 
     for trial in 1:number_of_trials
         println("trial: $trial")
-        source = string(results_dir, "/", model, "_log_DE_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",number_of_demand_scenarios*total_capacity_scenarios,"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
+        source = string(results_dir, "/model_", model, "log_DE_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",number_of_demand_scenarios*total_capacity_scenarios,"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
             overlap_decision = true
     
         ################################################### INITIALIZE NECESSARY PARAMS ###################################################
@@ -120,8 +122,8 @@ end
         LB = 0
         UB = 1e30 #high number to start large gap for L-shaped method (which uses infinity)
     
-        relaxation_tol1 = 2e-1
-        relaxation_tol2 = 1e-1
+        relaxation_tol1 = 2e-2
+        relaxation_tol2 = 1e-2
         global iter1 = 1
         global iter2 = 1
         iter_max = 5000
@@ -141,10 +143,8 @@ end
             X_tilde_upper, P, s_real_tilde, 1, A, d_real_tilde, l, f_profit, V_p, 
             starting_points_vect_I, starting_points_vect_S, m_segments)
             set_optimizer_attribute(Masterproblem, "LogFile", source1)
-            println("Solving MP after cuts!")
             JuMP.optimize!(Masterproblem)
-            println("Masterproblem Model status: ", termination_status(Masterproblem))           
-
+            println("Masterproblem Model status: ", termination_status(Masterproblem))
     
             if length(opt_cut_list) > 2
                 popfirst!(opt_cut_list)
@@ -219,14 +219,13 @@ end
             global W_bar = JuMP.value.(Masterproblem[:W])
 
             #rounding heuristic for W - rounds first W
-            # found = false
-            # for p in P, (t, tau) in F_time_set
-            #     if !found && W_bar[p, (t, tau)] > 0.5 && W_bar[p, (t, tau)] != round(W_bar[p, (t, tau)])
-            #         W_bar[p, (t, tau)] = 1
-            #         found = true
-            #     end
-            # end     
-            
+            found = false
+            for p in P, (t, tau) in F_time_set
+                if !found && W_bar[p, (t, tau)] > 0.5 && W_bar[p, (t, tau)] != round(W_bar[p, (t, tau)])
+                    W_bar[p, (t, tau)] = 1
+                    found = true
+                end
+            end     
 
             global Y_bar = JuMP.value.(Masterproblem[:Y])
             global Q_bar = JuMP.value.(Masterproblem[:Q])
@@ -351,7 +350,7 @@ end
             println("LB: $LB")
             println("UB: $UB")
     
-            if (UB - LB) / abs(UB) < relaxation_tol1
+            if (UB - LB) / UB < relaxation_tol1
 
                 # global LB_phase1 = LB
                 # write_to_file(Masterproblem, "phase1_model.lp")
@@ -389,6 +388,110 @@ end
         set_optimizer_attribute(Masterproblem, "PumpPasses", 10)
         # set_optimizer_attribute(Masterproblem, "GomoryPasses" => 2)
 
+        #redefine MP OBJ problems without scenarios and constraints
+
+        # if UNICEF_MODEL 
+        #     println("Updating UNICEF-GAVI objective")
+        #     JuMP.set_objective_function(Masterproblem, 
+        #         sum(g[t] * Masterproblem[:F][a, (t, tau)] / delta[t] 
+        #             for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F) +
+        #         sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * Masterproblem[:Q][v,p,(t, tau),m] / delta[t] 
+        #             for (t,tau) in F_time_set, v in V, p in P_v[v], m in keys(m_segments)) +
+        #         sum(p_ω_test[ω] * Masterproblem[:theta][ω] for ω in Ω_test_partial_2)
+        #     )
+        
+        # elseif SOCIAL_BENEFIT_MODEL 
+        #     println("Updating Social benefit objective")
+        #     JuMP.set_objective_function(Masterproblem, 
+        #         sum(p_ω_test[ω] * Masterproblem[:theta][ω] for ω in Ω_test_partial_2)
+        #     )
+        
+        # else MAX_PROFIT_MODEL 
+        #     println("Updating Max profit objective")
+        #     JuMP.set_objective_function(Masterproblem, 
+        #         sum((-r_avg[v,t] * (1 - zeta_vm[v,m]) * Masterproblem[:Q][v,p,(t,tau),m]) / delta[t] 
+        #             for (t,tau) in F_time_set, v in V, p in P_v[v], m in keys(m_segments)) +
+        #         sum((Γ[p] * Masterproblem[:L][p, t]) / delta[t] for p in P, t in T) +
+        #         sum((f_profit[v,p,t] * Masterproblem[:Y][p,t]) / delta[t] for v in V, p in P_v[v], t in T) +
+        #         sum(p_ω_test[ω] * Masterproblem[:theta][ω] for ω in Ω_test_partial_2)
+        #     )
+        # end
+        
+        # #delete constraints for sub problem, from master problem, since we dont need to solve the partial benders anymore
+
+        # function delete_constraint_by_name(model, name)
+        #     con_ref = constraint_by_name(model, name)
+        #     if con_ref !== nothing
+        #         delete(model, con_ref)  # No need for JuMP. prefix
+        #         # println("Deleted constraint: $name")
+        #     else
+        #         println("Constraint $name not found")
+        #     end
+        # end
+        
+        # tmin = 1
+        # println("Delete SP constraints from MP")
+
+        # # Delete Constraints (14)
+        # for ω in Ω_test_partial_1
+        #     for v in V
+        #         for p in P_v[v]
+        #             for t in T
+        #                 for tau in T
+        #                     if (t, tau) in F_time_set
+        #                         delete_constraint_by_name(Masterproblem, "c_14_1[$((v,p,(t,tau),ω))]")
+        #                         delete_constraint_by_name(Masterproblem, "c_14_2[$((v,p,(t,tau),ω))]")
+        #                         delete_constraint_by_name(Masterproblem, "c_14_3[$((v,p,(t,tau),ω))]")
+        #                         delete_constraint_by_name(Masterproblem, "c_14_4[$((v,p,(t,tau),ω))]")
+        #                         delete_constraint_by_name(Masterproblem, "c_14_5[$((v,p,(t,tau),ω))]")
+        #                     end
+        #                 end
+        #             end
+        #         end
+        #     end
+        # end
+
+        # # Delete Constraints (15) - McCormick
+        # for p in P
+        #     for t in T
+        #         delete_constraint_by_name(Masterproblem, "c_15_1[$((p,t))]")
+        #         delete_constraint_by_name(Masterproblem, "c_15_2[$((p,t))]")
+        #         delete_constraint_by_name(Masterproblem, "c_15_3[$((p,t))]")
+        #         delete_constraint_by_name(Masterproblem, "c_15_4[$((p,t))]")
+        #     end
+        # end
+
+        # # Delete Constraint (16)
+        # for ω in Ω_test_partial_1
+        #     for p in P
+        #         for t in T
+        #             delete_constraint_by_name(Masterproblem, "c_16[$((p,t,ω))]")
+        #         end
+        #     end
+        # end
+
+        # # Delete Constraint (17)
+        # for ω in Ω_test_partial_1
+        #     for v in V
+        #         for t in T
+        #             if t >= tmin
+        #                 delete_constraint_by_name(Masterproblem, "c_17[$((v,t,ω))]")
+        #             end
+        #         end
+        #     end
+        # end
+
+        # # Delete Constraint (18)
+        # for ω in Ω_test_partial_1
+        #     for a in A
+        #         for t in T
+        #             if t >= tmin
+        #                 delete_constraint_by_name(Masterproblem, "c_18[$((a,t,ω))]")
+        #             end
+        #         end
+        #     end
+        # end
+
         # Restore binary/integer constraints
         # for a in A, (t, tau) in F_time_set
         #     set_binary(Masterproblem[:F][a, (t, tau)])
@@ -419,7 +522,7 @@ end
             set_start_value(Masterproblem[:Y][p, t], Y_bar[p, t])
             set_start_value(Masterproblem[:L][p, t], L_bar[p, t])
             set_start_value(Masterproblem[:L_ddot][p, t], L_bar[p, t])
-        end   
+        end
 
         for p in P, (t, tau) in F_time_set
             if W_bar[p, (t, tau)] in (0, 1)
@@ -467,49 +570,49 @@ end
             I_bar = JuMP.value.(Masterproblem[:I])
             # X_inf_bar = JuMP.value.(Masterproblem[:X_inf])
     
-            # additional_cost_MP = 0.0
+            additional_cost_MP = 0.0
 
-            # if UNICEF_MODEL
+            if UNICEF_MODEL
 
-            #     for a in A
-            #         for t in T
-            #             for ω in Ω_test_partial_1
-            #                 additional_cost_MP += beta * S_bar[a,t,ω] / delta[t]
-            #             end
-            #         end
-            #     end
+                for a in A
+                    for t in T
+                        for ω in Ω_test_partial_1
+                            additional_cost_MP += beta * S_bar[a,t,ω] / delta[t]
+                        end
+                    end
+                end
 
-            #     for v in V
-            #         for t in T
-            #             for ω in Ω_test_partial_1
-            #                 additional_cost_MP += h[v] * r_avg[v,t] * I_bar[v,t,ω] / delta[t]
-            #             end
-            #         end
-            #     end
+                for v in V
+                    for t in T
+                        for ω in Ω_test_partial_1
+                            additional_cost_MP += h[v] * r_avg[v,t] * I_bar[v,t,ω] / delta[t]
+                        end
+                    end
+                end
 
-            # elseif SOCIAL_BENEFIT_MODEL
+            elseif SOCIAL_BENEFIT_MODEL
 
-            #     for a in A
-            #         for t in T
-            #             for ω in Ω_test_partial_1
-            #                 additional_cost_MP += beta * S_bar[a,t,ω] / delta[t]
-            #             end
-            #         end
-            #     end
+                for a in A
+                    for t in T
+                        for ω in Ω_test_partial_1
+                            additional_cost_MP += beta * S_bar[a,t,ω] / delta[t]
+                        end
+                    end
+                end
 
-            # else MAX_PROFIT_MODEL
+            else MAX_PROFIT_MODEL
 
-            #     for a in A
-            #         for v in V
-            #             for t  = last(T)
-            #                 for ω in Ω_test_partial_1
-            #                     additional_cost_MP += r_avg[v,t] * S_bar[a,t,ω] / delta[t]
-            #                 end
-            #             end
-            #         end
-            #     end
+                for a in A
+                    for v in V
+                        for t  = last(T)
+                            for ω in Ω_test_partial_1
+                                additional_cost_MP += r_avg[v,t] * S_bar[a,t,ω] / delta[t]
+                            end
+                        end
+                    end
+                end
 
-            # end #end if statements
+            end #end if statements
 
             
             Z_M = JuMP.objective_value(Masterproblem)
@@ -642,7 +745,7 @@ end
             println("UB: $UB")
 
             #cut generation complete conditions
-            if (UB - LB) / abs(UB) < relaxation_tol2
+            if (UB - LB) / UB < relaxation_tol2
                 println("Phase 2 L-shaped method converged in $time_elapsed seconds after $iter2 iterations")
                 total_time += time_elapsed
                 model_type = "L-shaped-phase2"
@@ -672,4 +775,4 @@ end
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(10,5,2,2,1,1,1,1, true, true, true, false, false)
+tender_stochastic_sensitivity(10,5,5,5,1,1,1,1, true, true, true, false, false)
