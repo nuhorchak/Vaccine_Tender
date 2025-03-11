@@ -14,16 +14,34 @@ function process_scenario_data_n_selected(
     allowable_capacity_increase_number::Int,
     num_MP_scenarios::Int  # New input parameter
 )
-    # Load scenario pair probabilities
+    # # Load scenario pair probabilities
+    # scenario_pair_probs_path = joinpath(data_dir, "scenario_pair_probabilities_new.json")
+    # scenario_pair_probs = JSON.parsefile(scenario_pair_probs_path)
+
+    # total_scenarios = length(scenario_pair_probs)
+    # random_scenarios = select_random_scenarios(1, ceil(Int, total_scenarios / total_capacity_scenarios), number_of_demand_scenarios, total_capacity_scenarios, 22)
+
+    # # Load scenario pairs
+    # scenario_pairs_path = joinpath(data_dir, "scenario_pairs_new.json")
+    # scenario_pairs = JSON.parsefile(scenario_pairs_path)
+
     scenario_pair_probs_path = joinpath(data_dir, "scenario_pair_probabilities_new.json")
     scenario_pair_probs = JSON.parsefile(scenario_pair_probs_path)
+    # Convert keys to integers and sort them
+    sorted_keys = sort(parse.(Int, collect(keys(scenario_pair_probs))))
+    # Select the first m keys
+    selected_keys = sorted_keys[1:min((total_capacity_scenarios * number_of_demand_scenarios), length(sorted_keys))]
 
-    total_scenarios = length(scenario_pair_probs)
-    random_scenarios = select_random_scenarios(1, ceil(Int, total_scenarios / total_capacity_scenarios), number_of_demand_scenarios, total_capacity_scenarios)
+    # Create a new dictionary with the selected keys
+    selected_scenario_probs = Dict(string(k) => scenario_pair_probs[string(k)] for k in selected_keys)
 
     # Load scenario pairs
     scenario_pairs_path = joinpath(data_dir, "scenario_pairs_new.json")
     scenario_pairs = JSON.parsefile(scenario_pairs_path)
+    selected_scenario_pairs = Dict(string(k) => scenario_pairs[string(k)] for k in selected_keys)
+
+    total_scenarios = length(selected_scenario_probs)
+    random_scenarios = select_random_scenarios(1, ceil(Int, length(selected_scenario_pairs) / total_capacity_scenarios), number_of_demand_scenarios, total_capacity_scenarios, 22)
 
     unit = 1000
     Ω_test = random_scenarios
@@ -87,3 +105,4 @@ function process_scenario_data_n_selected(
 
     return Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2, partial_scenario, s_real_tilde, d_real_tilde, random_scenarios
 end
+
