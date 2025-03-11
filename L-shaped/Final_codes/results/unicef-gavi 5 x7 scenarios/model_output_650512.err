@@ -1,0 +1,6 @@
+    Updating registry at `~/.julia/registries/General.toml`
+   Resolving package versions...
+  No Changes to `/scrfs/storage/uhorchak/home/.julia/environments/v1.10/Project.toml`
+  No Changes to `/scrfs/storage/uhorchak/home/.julia/environments/v1.10/Manifest.toml`
+┌ Warning: The addition operator has been used on JuMP expressions a large number of times. This warning is safe to ignore but may indicate that model generation is slower than necessary. For performance reasons, you should not add expressions in a loop. Instead of x += y, use add_to_expression!(x,y) to modify x in place. If y is a single variable, you may also use add_to_expression!(x, coef, y) for x += coef*y.
+└ @ JuMP ~/.julia/packages/JuMP/6RAQ9/src/operators.jl:282
