@@ -39,20 +39,53 @@ function initialize_parameters(
     # Unvaccinated children penalty
     beta = 10
 
-    # Read production capacity data
-    capacity_file_path = joinpath(data_dir, "production_capacity_scenarios.xlsx")
-    capacity_file = XLSX.readxlsx(capacity_file_path)
-    s_real_raw = capacity_file["base_capacity"]
+    # # Read production capacity data
+    # capacity_file_path = joinpath(data_dir, "production_capacity_scenarios.xlsx")
+    # capacity_file = XLSX.readxlsx(capacity_file_path)
+    # s_real_raw = capacity_file["base_capacity"]
 
-    total_supply_row = length(P) + 1
-    total_supply_col = 2
+    # total_supply_row = length(P) + 1
+    # total_supply_col = 2
+    # s_real = Dict()
+
+    # for row in 2:total_supply_row
+    #     producer = s_real_raw[row, 1]
+    #     for col in 2:total_supply_col
+    #         year = s_real_raw[1, col]
+    #         s_real[producer] = round(s_real_raw[row, col] * scaled_capacity / unit, digits=0)
+    #     end
+    # end
+
+    # Define file path
+    capacity_file_path = joinpath(data_dir, "production_capacity_scenarios.xlsx")
+
+    # Open the XLSX file and read the "base_capacity" sheet
+    capacity_file = XLSX.readxlsx(capacity_file_path)
+    s_real_raw = capacity_file["base_capacity"]  # Select the first sheet by name
+
+    # Extract column names from the first row, ensuring they are all strings
+    column_names = string.(vec(s_real_raw[1, :]))  # Convert to 1D vector of Strings
+
+    # Extract actual data from row 2 onwards
+    data = s_real_raw[2:end, :]
+
+    # Convert to DataFrame using extracted column names
+    s_real_raw_df = DataFrame(data, column_names)
+    s_real_raw_df_filtered = filter(row -> row[1] in P, s_real_raw_df)
+    # s_real_raw_df_filtered = s_real_raw_df_filtered[:, 1:2]
+
+
+    # Initialize s_real dictionary
     s_real = Dict()
 
-    for row in 2:total_supply_row
-        producer = s_real_raw[row, 1]
-        for col in 2:total_supply_col
-            year = s_real_raw[1, col]
-            s_real[producer] = round(s_real_raw[row, col] * scaled_capacity / unit, digits=0)
+    # Iterate over rows of the filtered DataFrame
+    for row in eachrow(s_real_raw_df_filtered)
+        producer = row[1]  # Extract the manufacturer name from the first column
+
+        # Iterate over column names starting from the second column (years)
+        for col in names(s_real_raw_df_filtered)[2:2]  # Skip the first column (Manufacturer)
+            year = string(col)  # Ensure the year is a string
+            s_real[producer] = round(row[col] / unit, digits=0)  # Store value in dictionary
         end
     end
 
