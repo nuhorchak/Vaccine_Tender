@@ -48,7 +48,7 @@ function process_scenario_data(
     scenario_pair_probs = JSON.parsefile(scenario_pair_probs_path)
 
     total_scenarios = length(scenario_pair_probs)
-    random_scenarios = select_random_scenarios(1, ceil(Int, total_scenarios / total_capacity_scenarios), number_of_demand_scenarios, total_capacity_scenarios)
+    random_scenarios = select_random_scenarios(1, ceil(Int, total_scenarios / total_capacity_scenarios), number_of_demand_scenarios, total_capacity_scenarios, 22)
 
     # Load scenario pairs
     scenario_pairs_path = joinpath(data_dir, "scenario_pairs_new.json")
