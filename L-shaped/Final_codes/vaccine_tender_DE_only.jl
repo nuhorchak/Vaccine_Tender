@@ -1,0 +1,154 @@
+using JuMP
+using Gurobi
+using Random
+using Dualization
+using Plots
+using DataFrames
+using CSV
+import XLSX
+import JSON
+import MathOptInterface
+
+current_directory = @__DIR__
+functions_directory = joinpath(current_directory, "functions")
+data_dir = joinpath(current_directory, "data")
+# functions_directory = joinpath(current_directory, "..", "functions")
+# data_dir = joinpath(current_directory, "..", "data")
+results_dir = joinpath(current_directory, "results")
+
+#lambda_m done; add z, update formulation; check McCormack for second stage; access model vars in sub problem and cuts; update model objectives; update constraints in each model
+
+# Include all the function files
+include(joinpath(functions_directory, "create_check_params.jl"))
+include(joinpath(functions_directory, "deterministic_equivalent.jl"))
+include(joinpath(functions_directory, "generate_cuts_from_dual.jl"))
+include(joinpath(functions_directory, "load_model_starting_points.jl"))
+include(joinpath(functions_directory, "initialize_parameters.jl"))
+include(joinpath(functions_directory, "process_scenario_data.jl"))
+include(joinpath(functions_directory, "process_scenario_data_n_selected.jl"))
+include(joinpath(functions_directory, "save_L_shaped_results.jl"))
+include(joinpath(functions_directory, "select_random_scenarios.jl"))
+include(joinpath(functions_directory, "create_vaccine_data.jl"))
+include(joinpath(functions_directory, "sub_problem.jl"))
+include(joinpath(functions_directory, "master_problem.jl"))
+
+gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1)#, "Threads" => 32) 
+gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 0.9)#, "Threads" => 32) 
+gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1)#, "Threads" => 32) 
+
+function tender_stochastic_sensitivity(
+    max_horizon_length::Int,
+    max_tender_length::Int,
+    number_of_demand_scenarios::Int,
+    total_capacity_scenarios::Int,
+    number_of_trials::Int,
+    initial_inventory_rate::Int,
+    scaled_capacity::Int,
+    allowable_capacity_increase_number::Int,
+    overlap_decision::Bool = true,
+    capacity_extension_decision::Bool = true,
+    UNICEF_MODEL::Bool = true,
+    SOCIAL_BENEFIT_MODEL::Bool = false,
+    MAX_PROFIT_MODEL::Bool = false
+)
+
+model = []
+
+if UNICEF_MODEL
+    model = "UNICEF_GAVI"
+elseif SOCIAL_BENEFIT_MODEL
+    model = "SOCIAL_BENEFIT"
+else
+    model = "MAX_PROFIT"
+end
+
+    # value to scale coefficients for faster computation
+    unit = 1000
+    global total_time = 0
+
+    for trial in 1:number_of_trials
+        println("trial: $trial")
+        source = string(results_dir, "/model_", model, "log_DE_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",number_of_demand_scenarios*total_capacity_scenarios,"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
+            overlap_decision = true
+    
+        ################################################### INITIALIZE NECESSARY PARAMS ###################################################
+        #load vaccine dict data
+        A, V, A_v, P, P_v, V_a, V_p, P_a, A_p, capacity_category, vaccine_category, antigen_category = create_vaccine_data()
+        T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, beta, zeta_vm, phi_vm_lower, phi_vm_upper, m_segments = initialize_parameters(data_dir, unit, scaled_capacity, max_horizon_length, max_tender_length, P, V, P_v, V_p, allowable_capacity_increase_number)
+        Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2, partial_scenario, s_real_tilde, d_real_tilde, random_scenarios = process_scenario_data_n_selected(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number, 1)
+        X_tilde_lower, X_tilde_upper, L_ddot_lower, L_ddot_upper, L_hat_lower, L_hat_upper, L_check_lower, L_check_upper = create_check_params(V, P, P_v, T, F_time_set, s_real, κ, L_upper_number)
+        
+        starting_points_vect_F, starting_points_vect_I, starting_points_vect_S = load_model_starting_points(data_dir, initial_inventory_rate, unit, A, V)
+        # cuts_dict = Dict()
+
+        start_time = time()
+    
+        ################################################### INITIALIZE DE ###################################################
+        Deterministic_Equivalent = JuMP.Model()
+        JuMP.set_optimizer(Deterministic_Equivalent, gurobi_solver_DE)
+        source1 = string(results_dir, "/", model, "_log_Phase1_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
+
+        # Deterministic_Equivalent = deterministic_equivalent(p_ω_test, random_scenarios, g, beta, Γ, gurobi_solver_DE,
+        # A, A_p, F_time_set, V, P_v, T, T_initial, P, P_a, starting_points_vect_F, starting_points_vect_I, 
+        # starting_points_vect_S, capacity_extension_decision, UNICEF_MODEL, L_lower_number, L_upper_number,
+        # κ, s_real, L_hat_upper, L_check_upper, d_real_tilde, X_tilde_upper, s_real_tilde, 1, 
+        # r, r_avg, h, V_p, l, f_profit, V_a, delta, L_ddot_upper, overlap_decision, Ω_test_partial_1, Ω_test_partial_2, m_segments,zeta_vm, phi_vm_lower, phi_vm_upper, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL)
+
+        #SOLVING 1 SCENARIO ONLY
+        Deterministic_Equivalent = deterministic_equivalent(1, 1, g, beta, Γ, gurobi_solver_DE,
+        A, A_p, F_time_set, V, P_v, T, T_initial, P, P_a, starting_points_vect_F, starting_points_vect_I, 
+        starting_points_vect_S, capacity_extension_decision, UNICEF_MODEL, L_lower_number, L_upper_number,
+        κ, s_real, L_hat_upper, L_check_upper, d_real_tilde, X_tilde_upper, s_real_tilde, 1, 
+        r, r_avg, h, V_p, l, f_profit, V_a, delta, L_ddot_upper, overlap_decision, Ω_test_partial_1, Ω_test_partial_2, m_segments,zeta_vm, phi_vm_lower, phi_vm_upper, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL)
+
+        set_optimizer_attribute(Deterministic_Equivalent, "LogFile", source1)
+        JuMP.optimize!(Deterministic_Equivalent)
+
+    
+        if primal_status(Deterministic_Equivalent) == MOI.NO_SOLUTION
+            compute_conflict!(Deterministic_Equivalent)
+            iis_model, _ = copy_conflict(Deterministic_Equivalent)
+            println("MASTER_INFEASIBLE")
+            print(iis_model)
+        end
+
+        println("DE Model status: ", termination_status(Deterministic_Equivalent))
+        OBJ_value = JuMP.objective_value(Deterministic_Equivalent)
+        println("Objective Value: $OBJ_value")
+    
+        global F_bar = JuMP.value.(Deterministic_Equivalent[:F])
+        global W_bar = JuMP.value.(Deterministic_Equivalent[:W])
+        global Y_bar = JuMP.value.(Deterministic_Equivalent[:Y])
+        global Q_bar = JuMP.value.(Deterministic_Equivalent[:Q])
+        global L_bar = JuMP.value.(Deterministic_Equivalent[:L])
+        global Z_bar = JuMP.value.(Deterministic_Equivalent[:Z])
+        global X_bar = JuMP.value.(Deterministic_Equivalent[:X])
+        global I_bar = JuMP.value.(Deterministic_Equivalent[:I])
+        global Vc_bar = JuMP.value.(Deterministic_Equivalent[:Vc])
+        global S_bar = JuMP.value.(Deterministic_Equivalent[:S])
+
+        println("F_bar: ", F_bar)
+        println("W_bar: ", W_bar)
+        println("Y_bar: ", Y_bar)
+        println("Q_bar: ", Q_bar)
+        println("L_bar: ", L_bar)
+        println("Z_bar: ", Z_bar)
+        println("X_bar: ", X_bar)
+        println("I_bar: ", I_bar)
+        println("Vc_bar: ", Vc_bar)
+        println("S_bar: ", S_bar)
+
+
+
+        model_type = "DE model"
+        save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_bar,I_bar,Vc_bar,S_bar,Z_bar, model_type, A, T, T_initial, 
+        P, P_v, V, V_p, 1, F_time_set, 1, capacity_category, antigen_category, 
+        vaccine_category, max_horizon_length, max_tender_length, trial, initial_inventory_rate, scaled_capacity, 
+        allowable_capacity_increase_number, number_of_demand_scenarios, total_capacity_scenarios, 
+        p_ω_test, κ, s_real, s_real_tilde, results_dir, m_segments)
+
+
+    end #end trials
+end # end function
+
+tender_stochastic_sensitivity(10,5,5,7,1,1,1,1, true, true, true, false, false)

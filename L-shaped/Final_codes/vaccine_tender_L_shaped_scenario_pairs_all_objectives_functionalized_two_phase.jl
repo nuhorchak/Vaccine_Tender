@@ -29,9 +29,9 @@ include(joinpath(functions_directory, "sub_problem.jl"))
 include(joinpath(functions_directory, "master_problem.jl"))
 include(joinpath(functions_directory, "create_vaccine_data_MMR_only.jl"))
 
-gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1, "Threads" => 8) 
-gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-1, "Threads" => 8) 
-gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1, "Threads" => 8) 
+gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1, "Heuristics" => 0.5, "PumpPasses" => 10, "GomoryPasses"=>2)#, "Threads" => 8) 
+gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-1)#, "Threads" => 8) 
+gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1)#, "Threads" => 8) 
 
 function tender_stochastic_sensitivity(
     max_horizon_length::Int,
@@ -119,8 +119,8 @@ end
         LB = 0
         UB = 1e30 #high number to start large gap for L-shaped method (which uses infinity)
     
-        relaxation_tol1 = 2e-1
-        relaxation_tol2 = 1e-1
+        relaxation_tol1 = 5e-2
+        relaxation_tol2 = 1e-2
         global iter1 = 1
         global iter2 = 1
         iter_max = 5000
@@ -383,10 +383,6 @@ end
         UB = 1e30
         LB = LB_phase1
         # write_to_file(Masterproblem, "phase2_start_model.lp")
-
-        set_optimizer_attribute(Masterproblem, "Heuristics", 0.5)
-        set_optimizer_attribute(Masterproblem, "PumpPasses", 10)
-        # set_optimizer_attribute(Masterproblem, "GomoryPasses" => 2)
 
         # Restore binary/integer constraints
         # for a in A, (t, tau) in F_time_set
@@ -671,4 +667,4 @@ end
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(10,5,2,2,1,1,1,1, true, true, true, false, false)
+tender_stochastic_sensitivity(10,5,1,1,1,1,1,1, true, true, false, false, true)
