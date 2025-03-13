@@ -221,7 +221,7 @@ L_shaped_output = Dict()
             end
             S_results[a] = temp_1
         end
-    elseif model_type == "DE_after_L-shaped" 
+    elseif model_type == "DE model"
         X_results = Dict()
         for v in V
             temp_1 = Dict()
@@ -236,7 +236,7 @@ L_shaped_output = Dict()
                 end
                 temp_1[p] = temp_2
             end
-            X_results[v] = temp_1saveQ
+            X_results[v] = temp_1
         end
 
         I_results = Dict()
@@ -296,7 +296,7 @@ L_shaped_output = Dict()
         f = open(source, "w")
         JSON.print(f, L_shaped_output)
         close(f)
-    elseif model_type == "DE_after_L-shaped"
+    elseif model_type == "DE model"
         source = string(results_dir, "/DE_L_results_T_", tmax, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
         f = open(source, "w")
         JSON.print(f, L_shaped_output)
@@ -306,6 +306,9 @@ L_shaped_output = Dict()
         f = open(source, "w")
         JSON.print(f, L_shaped_output)
         close(f)
+    end
+
+    if model_type == "L-shaped-phase2" || model_type == "DE model"
 
 
         sensitivity_output = Dict()
@@ -387,7 +390,11 @@ L_shaped_output = Dict()
                 temp_total_X = 0.0
                 for v in V_p[p]
                     for t in T
-                        temp_total_X += X[ω][v, p, t] #X[v,p,t,ω]
+                        if model_type == "L-shaped-phase2"
+                            temp_total_X += X[ω][v, p, t] #X[v,p,t,ω]
+                        elseif  model_type == "DE model"
+                            temp_total_X += X[v,p,t,ω]
+                        end
                     end
                 end
                 temp_avg_X = temp_total_X / length(T)
@@ -412,7 +419,11 @@ L_shaped_output = Dict()
                     for v in V_p[p]
                         if v in vaccine_category[category]
                             for t in T
-                                temp_category_total_X += X[ω][v, p, t] #X[v,p,t,ω]
+                                if model_type == "L-shaped-phase2"
+                                    temp_total_X += X[ω][v, p, t] #X[v,p,t,ω]
+                                elseif  model_type == "DE model"
+                                    temp_total_X += X[v,p,t,ω]
+                                end
                             end
                         end
                     end
@@ -467,7 +478,11 @@ L_shaped_output = Dict()
             for ω in Ω_test
                 temp_total_S = 0.0
                 for t in T
-                    temp_total_S += S[ω][a,t] #S[a,t,ω]
+                    if model_type == "L-shaped-phase2"
+                        temp_total_S += S[ω][a,t] #S[a,t,ω]
+                    elseif  model_type == "DE model"
+                        temp_total_S += S[a,t,ω]
+                    end
                 end
                 temp_avg_S = temp_total_S / length(T)
                 temp_a_dict[ω] = temp_avg_S
@@ -556,7 +571,12 @@ L_shaped_output = Dict()
             for ω in Ω_test
                 temp_total_I = 0.0
                 for t in T
-                    temp_total_I += I[ω][v,t] #I[v,t,ω]
+                    
+                    if model_type == "L-shaped-phase2"
+                        temp_total_I += I[ω][v,t] #I[v,t,ω]
+                    elseif  model_type == "DE model"
+                        temp_total_I += I[v,t,ω]
+                    end
                 end
                 temp_avg_I = temp_total_I / length(T)
                 temp_v_dict[ω] = temp_avg_I

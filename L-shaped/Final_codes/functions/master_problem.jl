@@ -279,7 +279,7 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
                             set_name(c, "master_c_14_1[$((v,p,(t,tau),ω))]")
                             push!(cons_14_1, c)
 
-                            c = @constraint(Masterproblem, sum(Q[v, p, (t, tau), m] for m in keys(m_segments)) >= K[v, p, (t, tau), ω])
+                            c = @constraint(Masterproblem, sum(Q[v, p, (t, tau), m]  for m in keys(m_segments)) >= K[v, p, (t, tau), ω])
                             set_name(c, "master_c_14_2[$((v,p,(t,tau),ω))]")
                             push!(cons_14_2, c)
 
@@ -299,7 +299,7 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
                 end
             end
         end
-    end
+    end 
 
     # Constraint (15) - McCormick 
     for p in P
