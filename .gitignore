@@ -2,7 +2,7 @@
 */.ipynb_checkpoints
 .vscode
 
-
+.vs
 
 .DS_Store
 running.log
