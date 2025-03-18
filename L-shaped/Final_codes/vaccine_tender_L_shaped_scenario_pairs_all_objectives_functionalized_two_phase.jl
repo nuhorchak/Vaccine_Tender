@@ -29,7 +29,7 @@ include(joinpath(functions_directory, "sub_problem.jl"))
 include(joinpath(functions_directory, "master_problem.jl"))
 include(joinpath(functions_directory, "create_vaccine_data_MMR_only.jl"))
 
-gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1, "Heuristics" => 0.5, "PumpPasses" => 10, "GomoryPasses"=>2)#, "Threads" => 8) 
+gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 9e-1, "Heuristics" => 0.5, "PumpPasses" => 10, "GomoryPasses"=>2)#, "Threads" => 8) 
 gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-1)#, "Threads" => 8) 
 gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1)#, "Threads" => 8) 
 
@@ -138,7 +138,7 @@ end
             println("Phase 1 iteration: $iter1")
             Masterproblem = generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial_2, V, P_v, T, F_time_set, 
             X_tilde_upper, P, s_real_tilde, 1, A, d_real_tilde, l, f_profit, V_p, 
-            starting_points_vect_I, starting_points_vect_S, m_segments)
+            starting_points_vect_I, starting_points_vect_S, m_segments, κ, s_real)
             set_optimizer_attribute(Masterproblem, "LogFile", source1)
             println("Solving MP after cuts!")
             JuMP.optimize!(Masterproblem)
@@ -289,10 +289,9 @@ end
             dual_subproblem = Dict()
             for ω in Ω_test_partial_2
                 # println("scenario: $ω")
-                Subproblem, cons_14_1, cons_14_2, cons_14_3, cons_14_4, cons_14_5, 
-                cons_15, cons_16, cons_17, cons_18, cons_19 = sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω, beta, f_profit, delta, r_avg, gurobi_solver_no_presolve,
-                V, P_v, T, T_initial, A, P, F_time_set, 1, V_p, X_tilde_upper, s_real_tilde, d_real_tilde, V_a, starting_points_vect_I, 
-                starting_points_vect_S, r, h, l, zeta_vm, m_segments, UNICEF_MODEL, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL)
+                Subproblem, cons_14, cons_15, cons_16, cons_17, cons_18, cons_19 = sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω, beta, f_profit, delta, r_avg, gurobi_solver_no_presolve,
+                V, P_v, T, T_initial, A, P, F_time_set, 1, V_p, X_tilde_upper, s_real, s_real_tilde, d_real_tilde, V_a, starting_points_vect_I, 
+                starting_points_vect_S, r, h, l, zeta_vm, m_segments, κ, UNICEF_MODEL, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL)
 
                                                                         
                 optimize!(Subproblem)
@@ -303,18 +302,18 @@ end
                 S_sub[ω] = JuMP.value.(Subproblem[:S])
                 Vc_sub[ω] = JuMP.value.(Subproblem[:Vc])
     
-                constr14_1 = JuMP.dual.(cons_14_1)
-                constr14_2 = JuMP.dual.(cons_14_2)
-                constr14_3 = JuMP.dual.(cons_14_3)
-                constr14_4 = JuMP.dual.(cons_14_4)
-                constr14_5 = JuMP.dual.(cons_14_5)
+                constr14 = JuMP.dual.(cons_14)
+                # constr14_2 = JuMP.dual.(cons_14_2)
+                # constr14_3 = JuMP.dual.(cons_14_3)
+                # constr14_4 = JuMP.dual.(cons_14_4)
+                # constr14_5 = JuMP.dual.(cons_14_5)
                 constr15 = JuMP.dual.(cons_15)
                 constr16 = JuMP.dual.(cons_16)
                 constr17 = JuMP.dual.(cons_17)
                 constr18 = JuMP.dual.(cons_18)
                 constr19 = JuMP.dual.(cons_19)
     
-                dual_vector_omega = [constr14_1, constr14_2, constr14_3, constr14_4, constr14_5, constr15, constr16, constr17, constr18, constr19]
+                dual_vector_omega = [constr14, constr15, constr16, constr17, constr18, constr19]
                 dual_subproblem[ω] = dual_vector_omega
                 Z_S_omega[ω] = JuMP.objective_value(Subproblem)
             end #end dual solving
@@ -435,82 +434,89 @@ end
         while iter2 <= iter_max
             println("Phase 2 iteration: $iter2")
 
-            Masterproblem = generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial_2, V, P_v, T, F_time_set, 
-            X_tilde_upper, P, s_real_tilde, 1, A, d_real_tilde, l, f_profit, V_p, 
-            starting_points_vect_I, starting_points_vect_S, m_segments)
-            set_optimizer_attribute(Masterproblem, "LogFile", source2)
-            println("Optimizing Master Problem")
-            JuMP.optimize!(Masterproblem)
-            println("Masterproblem Model status: ", termination_status(Masterproblem))
-    
-            if length(opt_cut_list) > 2
-                popfirst!(opt_cut_list)
-                if opt_cut_list[1] == opt_cut_list[2]
-                    break
+            if iter2 < 2
+                println("Optimizing Master Problem")
+                JuMP.optimize!(Masterproblem)
+                println("Masterproblem Model status: ", termination_status(Masterproblem))
+            else
+
+                Masterproblem = generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial_2, V, P_v, T, F_time_set, 
+                X_tilde_upper, P, s_real_tilde, 1, A, d_real_tilde, l, f_profit, V_p, 
+                starting_points_vect_I, starting_points_vect_S, m_segments, κ, s_real)
+                set_optimizer_attribute(Masterproblem, "LogFile", source2)
+                println("Optimizing Master Problem")
+                JuMP.optimize!(Masterproblem)
+                println("Masterproblem Model status: ", termination_status(Masterproblem))
+        
+                if length(opt_cut_list) > 2
+                    popfirst!(opt_cut_list)
+                    if opt_cut_list[1] == opt_cut_list[2]
+                        break
+                    end
                 end
+        
+                if primal_status(Masterproblem) == MOI.NO_SOLUTION
+                    compute_conflict!(Masterproblem)
+                    iis_model, _ = copy_conflict(Masterproblem)
+                    println("MASTER_INFEASIBLE")
+                    print(iis_model)
+                end
+        
+                X_bar = JuMP.value.(Masterproblem[:X])
+                S_bar = JuMP.value.(Masterproblem[:S])
+                I_bar = JuMP.value.(Masterproblem[:I])
+                # X_inf_bar = JuMP.value.(Masterproblem[:X_inf])
+        
+                # additional_cost_MP = 0.0
+
+                # if UNICEF_MODEL
+
+                #     for a in A
+                #         for t in T
+                #             for ω in Ω_test_partial_1
+                #                 additional_cost_MP += beta * S_bar[a,t,ω] / delta[t]
+                #             end
+                #         end
+                #     end
+
+                #     for v in V
+                #         for t in T
+                #             for ω in Ω_test_partial_1
+                #                 additional_cost_MP += h[v] * r_avg[v,t] * I_bar[v,t,ω] / delta[t]
+                #             end
+                #         end
+                #     end
+
+                # elseif SOCIAL_BENEFIT_MODEL
+
+                #     for a in A
+                #         for t in T
+                #             for ω in Ω_test_partial_1
+                #                 additional_cost_MP += beta * S_bar[a,t,ω] / delta[t]
+                #             end
+                #         end
+                #     end
+
+                # else MAX_PROFIT_MODEL
+
+                #     for a in A
+                #         for v in V
+                #             for t  = last(T)
+                #                 for ω in Ω_test_partial_1
+                #                     additional_cost_MP += r_avg[v,t] * S_bar[a,t,ω] / delta[t]
+                #                 end
+                #             end
+                #         end
+                #     end
+
+                # end #end if statements
+
+                
+                Z_M = JuMP.objective_value(Masterproblem)
+                println("Z_M")
+                println(Z_M)
             end
-    
-            if primal_status(Masterproblem) == MOI.NO_SOLUTION
-                compute_conflict!(Masterproblem)
-                iis_model, _ = copy_conflict(Masterproblem)
-                println("MASTER_INFEASIBLE")
-                print(iis_model)
-            end
-    
-            X_bar = JuMP.value.(Masterproblem[:X])
-            S_bar = JuMP.value.(Masterproblem[:S])
-            I_bar = JuMP.value.(Masterproblem[:I])
-            # X_inf_bar = JuMP.value.(Masterproblem[:X_inf])
-    
-            # additional_cost_MP = 0.0
 
-            # if UNICEF_MODEL
-
-            #     for a in A
-            #         for t in T
-            #             for ω in Ω_test_partial_1
-            #                 additional_cost_MP += beta * S_bar[a,t,ω] / delta[t]
-            #             end
-            #         end
-            #     end
-
-            #     for v in V
-            #         for t in T
-            #             for ω in Ω_test_partial_1
-            #                 additional_cost_MP += h[v] * r_avg[v,t] * I_bar[v,t,ω] / delta[t]
-            #             end
-            #         end
-            #     end
-
-            # elseif SOCIAL_BENEFIT_MODEL
-
-            #     for a in A
-            #         for t in T
-            #             for ω in Ω_test_partial_1
-            #                 additional_cost_MP += beta * S_bar[a,t,ω] / delta[t]
-            #             end
-            #         end
-            #     end
-
-            # else MAX_PROFIT_MODEL
-
-            #     for a in A
-            #         for v in V
-            #             for t  = last(T)
-            #                 for ω in Ω_test_partial_1
-            #                     additional_cost_MP += r_avg[v,t] * S_bar[a,t,ω] / delta[t]
-            #                 end
-            #             end
-            #         end
-            #     end
-
-            # end #end if statements
-
-            
-            Z_M = JuMP.objective_value(Masterproblem)
-            println("Z_M")
-            println(Z_M)
-            
             # println("Theta: $(JuMP.value.(Masterproblem[:theta]))")
             global F_bar = JuMP.value.(Masterproblem[:F])
             global W_bar = JuMP.value.(Masterproblem[:W])
@@ -576,10 +582,9 @@ end
             dual_subproblem = Dict()
             for ω in Ω_test_partial_2
                 # println("scenario: $ω")
-                Subproblem, cons_14_1, cons_14_2, cons_14_3, cons_14_4, cons_14_5, 
-                cons_15, cons_16, cons_17, cons_18, cons_19 = sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω, beta, f_profit, delta, r_avg, gurobi_solver_no_presolve,
-                V, P_v, T, T_initial, A, P, F_time_set, 1, V_p, X_tilde_upper, s_real_tilde, d_real_tilde, V_a, starting_points_vect_I, 
-                starting_points_vect_S, r, h, l, zeta_vm, m_segments, UNICEF_MODEL, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL)
+                Subproblem, cons_14, cons_15, cons_16, cons_17, cons_18, cons_19 = sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω, beta, f_profit, delta, r_avg, gurobi_solver_no_presolve,
+                V, P_v, T, T_initial, A, P, F_time_set, 1, V_p, X_tilde_upper, s_real, s_real_tilde, d_real_tilde, V_a, starting_points_vect_I, 
+                starting_points_vect_S, r, h, l, zeta_vm, m_segments, κ, UNICEF_MODEL, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL)
 
                                                                         
                 optimize!(Subproblem)
@@ -590,18 +595,18 @@ end
                 S_sub[ω] = JuMP.value.(Subproblem[:S])
                 Vc_sub[ω] = JuMP.value.(Subproblem[:Vc])
     
-                constr14_1 = JuMP.dual.(cons_14_1)
-                constr14_2 = JuMP.dual.(cons_14_2)
-                constr14_3 = JuMP.dual.(cons_14_3)
-                constr14_4 = JuMP.dual.(cons_14_4)
-                constr14_5 = JuMP.dual.(cons_14_5)
+                constr14 = JuMP.dual.(cons_14)
+                # constr14_2 = JuMP.dual.(cons_14_2)
+                # constr14_3 = JuMP.dual.(cons_14_3)
+                # constr14_4 = JuMP.dual.(cons_14_4)
+                # constr14_5 = JuMP.dual.(cons_14_5)
                 constr15 = JuMP.dual.(cons_15)
                 constr16 = JuMP.dual.(cons_16)
                 constr17 = JuMP.dual.(cons_17)
                 constr18 = JuMP.dual.(cons_18)
                 constr19 = JuMP.dual.(cons_19)
     
-                dual_vector_omega = [constr14_1, constr14_2, constr14_3, constr14_4, constr14_5, constr15, constr16, constr17, constr18, constr19]
+                dual_vector_omega = [constr14, constr15, constr16, constr17, constr18, constr19]
                 dual_subproblem[ω] = dual_vector_omega
                 Z_S_omega[ω] = JuMP.objective_value(Subproblem)
             end #end dual solving
@@ -667,4 +672,4 @@ end
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(10,5,1,1,1,1,1,1, true, true, false, false, true)
+tender_stochastic_sensitivity(10,5,2,2,1,1,1,1, true, true, false, false, true)

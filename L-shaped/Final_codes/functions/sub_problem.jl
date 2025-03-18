@@ -43,8 +43,8 @@ Defines the sub-problem for the optimization model, including variables, constra
 
 
 function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω, beta, f_profit, delta, r_avg, gurobi_solver_no_presolve,
-    V, P_v, T, T_initial, A, P, F_time_set, tmin, V_p, X_tilde_upper, s_real_tilde, d_real_tilde, V_a, starting_points_vect_I, 
-    starting_points_vect_S, r, h, l, zeta_vm, m_segments, UNICEF_MODEL, social_benefit, max_profit)
+    V, P_v, T, T_initial, A, P, F_time_set, tmin, V_p, X_tilde_upper, s_real, s_real_tilde, d_real_tilde, V_a, starting_points_vect_I, 
+    starting_points_vect_S, r, h, l, zeta_vm, m_segments, κ, UNICEF_MODEL, social_benefit, max_profit)
 
     println("Building sub problem")
 
@@ -83,11 +83,11 @@ function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, 
         @objective(Subproblem, Min, sum(r_avg[v,t]* S[a, t]/ delta[t] for a in A, t = last(T), v in V))
     end
 
-    cons_14_1 = []
-    cons_14_2 = []
-    cons_14_3 = []
-    cons_14_4 = []
-    cons_14_5 = []
+    cons_14 = []
+    # cons_14_2 = []
+    # cons_14_3 = []
+    # cons_14_4 = []
+    # cons_14_5 = []
     cons_15 = []
     cons_16 = []
     cons_17 = []
@@ -95,28 +95,45 @@ function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, 
     cons_18 = []
     cons_19 = []
 
-    # constraint 14 - McCormick - this uses McCormack relaxation...can we remove it?
+    # # constraint 14 - McCormick - this uses McCormack relaxation...can we remove it?
+    # for v in V
+    #     for p in P_v[v]
+    #         for m in keys(m_segments)
+    #             for t in T
+    #                 for tau in T
+    #                     if (t,tau) in F_time_set
+    #                         c = @constraint(Subproblem, X_tilde[v,p,(t,tau)] == sum(X[v,p,l] for l in t:tau))
+    #                         set_name(c, "c_14_1[$((v,p,(t,tau)))]")
+    #                         push!(cons_14_1, c)
+    #                         c = @constraint(Subproblem, Q_bar[v,p,(t,tau),m] >= K[v,p,(t,tau)])
+    #                         set_name(c, "c_14_2[$((v,p,(t,tau)))]")
+    #                         push!(cons_14_2, c)
+    #                         c = @constraint(Subproblem, K[v,p,(t,tau)] >= X_tilde_upper[v,p,(t,tau)]*W_bar[p,(t,tau)] + X_tilde[v,p,(t,tau)] - X_tilde_upper[v,p,(t,tau)])
+    #                         set_name(c, "c_14_3[$((v,p,(t,tau)))]")
+    #                         push!(cons_14_3, c)
+    #                         c = @constraint(Subproblem, K[v,p,(t,tau)] <= X_tilde[v,p,(t,tau)])
+    #                         set_name(c, "c_14_4[$((v,p,(t,tau)))]")
+    #                         push!(cons_14_4, c)
+    #                         c = @constraint(Subproblem, K[v,p,(t,tau)] <= X_tilde_upper[v,p,(t,tau)]*W_bar[p,(t,tau)])
+    #                         set_name(c, "c_14_5[$((v,p,(t,tau)))]")
+    #                         push!(cons_14_5, c)
+    #                     end
+    #                 end
+    #             end
+    #         end
+    #     end
+    # end
+
+    # constraint 14 - non McCormack
     for v in V
         for p in P_v[v]
             for m in keys(m_segments)
                 for t in T
                     for tau in T
                         if (t,tau) in F_time_set
-                            c = @constraint(Subproblem, X_tilde[v,p,(t,tau)] == sum(X[v,p,l] for l in t:tau))
-                            set_name(c, "c_14_1[$((v,p,(t,tau)))]")
-                            push!(cons_14_1, c)
-                            c = @constraint(Subproblem, Q_bar[v,p,(t,tau),m] >= K[v,p,(t,tau)])
-                            set_name(c, "c_14_2[$((v,p,(t,tau)))]")
-                            push!(cons_14_2, c)
-                            c = @constraint(Subproblem, K[v,p,(t,tau)] >= X_tilde_upper[v,p,(t,tau)]*W_bar[p,(t,tau)] + X_tilde[v,p,(t,tau)] - X_tilde_upper[v,p,(t,tau)])
-                            set_name(c, "c_14_3[$((v,p,(t,tau)))]")
-                            push!(cons_14_3, c)
-                            c = @constraint(Subproblem, K[v,p,(t,tau)] <= X_tilde[v,p,(t,tau)])
-                            set_name(c, "c_14_4[$((v,p,(t,tau)))]")
-                            push!(cons_14_4, c)
-                            c = @constraint(Subproblem, K[v,p,(t,tau)] <= X_tilde_upper[v,p,(t,tau)]*W_bar[p,(t,tau)])
-                            set_name(c, "c_14_5[$((v,p,(t,tau)))]")
-                            push!(cons_14_5, c)
+                            c = @constraint(Subproblem, sum(Q_bar[v,p,(t, tau),m] for m in keys(m_segments)) >= W_bar[p,(t,tau)] * sum(X[v,p,l] for l in t:tau))
+                            set_name(c, "c_14[$((v,p,(t,tau)))]")
+                            push!(cons_14, c)
                         end
                     end
                 end
@@ -124,15 +141,24 @@ function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, 
         end
     end
 
-    # Constraint (15) McCormick
+    # # Constraint (15) McCormick
+    # for p in P
+    #     for t in T
+    #         if Y_bar[p,t]*s_real_tilde[p, t, ω] + K_ddot_bar[p,t] < 1e-1
+    #             c = @constraint(Subproblem, sum(X[v,p,t] for v in V_p[p]) <= round(Y_bar[p,t]*s_real_tilde[p, t, ω] + K_ddot_bar[p,t], digits=0))
+    #         else
+    #             c = @constraint(Subproblem, sum(X[v,p,t] for v in V_p[p]) <= Y_bar[p,t]*s_real_tilde[p, t, ω] + K_ddot_bar[p,t])
+    #         end
+
+    #         set_name(c, "c_15[$((p,t))]")
+    #         push!(cons_15, c)
+    #     end
+    # end
+
+    # Constraint (15) - non McCormick
     for p in P
         for t in T
-            if Y_bar[p,t]*s_real_tilde[p, t, ω] + K_ddot_bar[p,t] < 1e-1
-                c = @constraint(Subproblem, sum(X[v,p,t] for v in V_p[p]) <= round(Y_bar[p,t]*s_real_tilde[p, t, ω] + K_ddot_bar[p,t], digits=0))
-            else
-                c = @constraint(Subproblem, sum(X[v,p,t] for v in V_p[p]) <= Y_bar[p,t]*s_real_tilde[p, t, ω] + K_ddot_bar[p,t])
-            end
-
+            c = @constraint(Subproblem, sum(X[v,p,t] for v in V_p[p]) <= Y_bar[p,t] * (s_real_tilde[p, t, ω] + (sum(κ * s_real[p] * L_bar[p, l] for l in 1:t))))
             set_name(c, "c_15[$((p,t))]")
             push!(cons_15, c)
         end
@@ -186,5 +212,6 @@ function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, 
         set_name(c, "c_19[$a]")
         push!(cons_19, c)
     end
-    return Subproblem, cons_14_1, cons_14_2, cons_14_3, cons_14_4, cons_14_5, cons_15, cons_16, cons_17, cons_18, cons_19
+    # return Subproblem, cons_14_1, cons_14_2, cons_14_3, cons_14_4, cons_14_5, cons_15, cons_16, cons_17, cons_18, cons_19
+    return Subproblem, cons_14, cons_15, cons_16, cons_17, cons_18, cons_19
 end

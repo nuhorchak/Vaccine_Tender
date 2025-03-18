@@ -1,4 +1,6 @@
-function process_scenario_data_n_selected(
+using Statistics
+
+function process_scenario_data_n_selected_with_MVP(
     current_directory::String,
     data_dir::String, 
     total_capacity_scenarios::Int, 
@@ -12,8 +14,10 @@ function process_scenario_data_n_selected(
     trial::Int, 
     initial_inventory_rate::Int, 
     allowable_capacity_increase_number::Int,
-    num_MP_scenarios::Int  # New input parameter
+    num_MP_scenarios::Int,  # New input parameter
+    MVP::Bool               # New binary flag
 )
+
     # # Load scenario pair probabilities
     # scenario_pair_probs_path = joinpath(data_dir, "scenario_pair_probabilities_new.json")
     # scenario_pair_probs = JSON.parsefile(scenario_pair_probs_path)
@@ -98,13 +102,56 @@ function process_scenario_data_n_selected(
         "Partial_2" => Ω_test_partial_2
     )
 
-    result_file = string(current_directory, "/results/scenarios_", tmax, "_delta_", max_tender_length, "_scen_", 
-                         length(random_scenarios), "_trial_", trial, "_inv_", initial_inventory_rate, 
-                         "_cap._", scaled_capacity, "_cap.inc._", allowable_capacity_increase_number, ".json")
-    open(result_file, "w") do f
-        JSON.print(f, Scenarios_used)
+
+
+    Ω_MVP = Set()
+    p_ω_MVP = Dict()
+
+    if MVP
+        MVP_scenario = "MVP"
+        Ω_MVP = Set([MVP_scenario])
+    
+        # Compute average demand and capacity
+        d_real_tilde_MVP = Dict()
+        s_real_tilde_MVP = Dict()
+    
+        for a in A
+            for t in T
+                d_real_tilde_MVP[a, t, MVP_scenario] = round(Statistics.mean([d_real_tilde[a, t, ω] for ω in Ω_test]), digits=0)
+            end
+        end
+    
+        for p in P
+            for t in T
+                s_real_tilde_MVP[p, t, MVP_scenario] = round(Statistics.mean([s_real_tilde[p, t, ω] for ω in Ω_test]), digits=0)
+            end
+        end
+    
+        # Assign probability 1 to MVP scenario
+        p_ω_MVP[MVP_scenario] = 1.0
+    
+        # Override outputs with MVP results
+        s_real_tilde = s_real_tilde_MVP
+        d_real_tilde = d_real_tilde_MVP
     end
 
-    return Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2, partial_scenario, s_real_tilde, d_real_tilde, random_scenarios
+    #use random_scenarios for full set, Ω_MVP for MVP
+    if MVP 
+        result_file = string(current_directory, "/results/scenarios_", tmax, "_delta_", max_tender_length, "_scen_", 
+                            length(Ω_MVP), "_trial_", trial, "_inv_", initial_inventory_rate, 
+                            "_cap._", scaled_capacity, "_cap.inc._", allowable_capacity_increase_number, ".json")
+        open(result_file, "w") do f
+            JSON.print(f, Scenarios_used)
+        end
+    else
+        result_file = string(current_directory, "/results/scenarios_", tmax, "_delta_", max_tender_length, "_scen_", 
+                            length(random_scenarios), "_trial_", trial, "_inv_", initial_inventory_rate, 
+                            "_cap._", scaled_capacity, "_cap.inc._", allowable_capacity_increase_number, ".json")
+        open(result_file, "w") do f
+            JSON.print(f, Scenarios_used)
+        end
+    end
+
+    return Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2, partial_scenario, s_real_tilde, d_real_tilde, random_scenarios, p_ω_MVP, Ω_MVP
 end
 
