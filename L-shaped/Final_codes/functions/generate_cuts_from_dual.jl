@@ -85,7 +85,7 @@ function generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial
                         for tau in T
                             if (t, tau) in F_time_set
                                 # push!(cons14_1_b_By_omega, 0.0)
-                                push!(cons14_b_By_omega, -sum(Q[v,p,(t, tau),m] for m in keys(m_segments)))
+                                push!(cons14_b_By_omega, -sum(Q[v,p,(t, tau),m] for m in keys(m_segments)) * (1/W_bar[p,(t,tau)]))
                                 # push!(cons14_3_b_By_omega, X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] - X_tilde_upper[v,p,(t,tau)])
                                 # push!(cons14_4_b_By_omega, 0.0)
                                 # push!(cons14_5_b_By_omega, X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])

@@ -21,7 +21,7 @@ include(joinpath(functions_directory, "generate_cuts_from_dual.jl"))
 include(joinpath(functions_directory, "load_model_starting_points.jl"))
 include(joinpath(functions_directory, "initialize_parameters.jl"))
 include(joinpath(functions_directory, "process_scenario_data.jl"))
-include(joinpath(functions_directory, "process_scenario_data_n_selected.jl"))
+include(joinpath(functions_directory, "process_scenario_data_n_selected_with_MVP.jl"))
 include(joinpath(functions_directory, "save_L_shaped_results.jl"))
 include(joinpath(functions_directory, "select_random_scenarios.jl"))
 include(joinpath(functions_directory, "create_vaccine_data.jl"))
@@ -61,6 +61,8 @@ function tender_stochastic_sensitivity(
     end
 
     # value to scale coefficients for faster computation
+    global seed = rand(1:9999999)
+    # global seed = 22
     unit = 1000
     global total_time = 0
     global mip_gap = 1e-1  # 5% initial gap
@@ -75,7 +77,7 @@ function tender_stochastic_sensitivity(
         #load vaccine dict data
         A, V, A_v, P, P_v, V_a, V_p, P_a, A_p, capacity_category, vaccine_category, antigen_category = create_vaccine_data() #there is something wrong with this data
         T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, beta, zeta_vm, phi_vm_lower, phi_vm_upper, m_segments = initialize_parameters(data_dir, unit, scaled_capacity, max_horizon_length, max_tender_length, P, V, P_v, V_p, allowable_capacity_increase_number)
-        Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2, partial_scenario, s_real_tilde, d_real_tilde, random_scenarios = process_scenario_data_n_selected(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number, 1)
+        Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2, partial_scenario, s_real_tilde, d_real_tilde, random_scenarios = process_scenario_data_n_selected_with_MVP(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number, 1, false, seed)
         X_tilde_lower, X_tilde_upper, L_ddot_lower, L_ddot_upper, L_hat_lower, L_hat_upper, L_check_lower, L_check_upper = create_check_params(V, P, P_v, T, F_time_set, s_real, κ, L_upper_number)
         
         starting_points_vect_F, starting_points_vect_I, starting_points_vect_S = load_model_starting_points(data_dir, initial_inventory_rate, unit, A, V)
@@ -99,17 +101,17 @@ function tender_stochastic_sensitivity(
         # write_to_file(Masterproblem, "pre_start_model.lp")
 
         # Relax constraints for integer and binary variables
-        # for a in A, (t, tau) in F_time_set
-        #     unset_binary(Masterproblem[:F][a, (t, tau)])
-        # end
-    
-        # for p in P, t in T
-        #     unset_binary(Masterproblem[:Y][p, t])
-        # end
-    
-        for p in P, (t, tau) in F_time_set
-            unset_binary(Masterproblem[:W][p, (t, tau)])  # Ensure proper indexing
+        for a in A, (t, tau) in F_time_set
+            unset_binary(Masterproblem[:F][a, (t, tau)])
         end
+    
+        for p in P, t in T
+            unset_binary(Masterproblem[:Y][p, t])
+        end
+    
+        # for p in P, (t, tau) in F_time_set
+        #     unset_binary(Masterproblem[:W][p, (t, tau)])  # Ensure proper indexing
+        # end
     
         # for v in V, p in P_v[v], t in T, m in keys(m_segments)
         #     unset_binary(Masterproblem[:Z][v, p, t, m])
@@ -291,18 +293,18 @@ function tender_stochastic_sensitivity(
 
             #heuristic rounding
             #rounding heuristic for W 
-            for p in P, (t, tau) in F_time_set
-                w_val = W_bar[p, (t, tau)]  # Extract fractional value
+            # for p in P, (t, tau) in F_time_set
+            #     w_val = W_bar[p, (t, tau)]  # Extract fractional value
         
-                if 0 < w_val < 1  # Apply MIR only to fractional values
-                    # Compute floor and fractional part
-                    w_floor = floor(w_val)
-                    w_frac = w_val - w_floor
+            #     if 0 < w_val < 1  # Apply MIR only to fractional values
+            #         # Compute floor and fractional part
+            #         w_floor = floor(w_val)
+            #         w_frac = w_val - w_floor
                     
-                    # Create the MIR cut
-                    @constraint(Masterproblem, Masterproblem[:W][p, (t, tau)] <= w_floor + w_frac)
-                end
-            end
+            #         # Create the MIR cut
+            #         @constraint(Masterproblem, Masterproblem[:W][p, (t, tau)] <= w_floor + w_frac)
+            #     end
+            # end
     
             Z_S_omega = Dict()
             dual_subproblem = Dict()
@@ -368,7 +370,7 @@ function tender_stochastic_sensitivity(
             println("LB: $LB")
             println("UB: $UB")
     
-            if (UB - LB) / abs(UB) < relaxation_tol1
+            if (UB - LB) / abs(UB) < relaxation_tol1 #|| time_elapsed >=500
 
                 # global LB_phase1 = LB
                 # write_to_file(Masterproblem, "phase1_model.lp")
@@ -403,17 +405,17 @@ function tender_stochastic_sensitivity(
         # write_to_file(Masterproblem, "phase2_start_model.lp")
 
         # Restore binary/integer constraints
-        # for a in A, (t, tau) in F_time_set
-        #     set_binary(Masterproblem[:F][a, (t, tau)])
-        # end
-    
-        # for p in P, t in T
-        #     set_binary(Masterproblem[:Y][p, t])
-        # end
-    
-        for p in P, (t, tau) in F_time_set
-            set_binary(Masterproblem[:W][p, (t, tau)])  # Ensure proper indexing
+        for a in A, (t, tau) in F_time_set
+            set_binary(Masterproblem[:F][a, (t, tau)])
         end
+    
+        for p in P, t in T
+            set_binary(Masterproblem[:Y][p, t])
+        end
+    
+        # for p in P, (t, tau) in F_time_set
+        #     set_binary(Masterproblem[:W][p, (t, tau)])  # Ensure proper indexing
+        # end
     
         # for v in V, p in P_v[v], t in T, m in keys(m_segments)
         #     set_binary(Masterproblem[:Z][v, p, t, m])
@@ -424,12 +426,12 @@ function tender_stochastic_sensitivity(
         # end
 
         # init warm start values for IP from relaxtion
-        for a in A, (t, tau) in F_time_set
-            set_start_value(Masterproblem[:F][a, (t, tau)], F_bar[a, (t, tau)])
-        end
+        # for a in A, (t, tau) in F_time_set
+        #     set_start_value(Masterproblem[:F][a, (t, tau)], F_bar[a, (t, tau)])
+        # end
 
         for p in P, t in T
-            set_start_value(Masterproblem[:Y][p, t], Y_bar[p, t])
+            # set_start_value(Masterproblem[:Y][p, t], Y_bar[p, t])
             set_start_value(Masterproblem[:L][p, t], L_bar[p, t])
             set_start_value(Masterproblem[:L_ddot][p, t], L_bar[p, t])
         end   
@@ -661,7 +663,7 @@ function tender_stochastic_sensitivity(
             println("UB: $UB")
 
             #cut generation complete conditions
-            if (UB - LB) / abs(UB) < relaxation_tol2
+            if (UB - LB) / abs(UB) < relaxation_tol2 #|| time_elapsed >=500
                 println("Phase 2 L-shaped method converged in $time_elapsed seconds after $iter2 iterations")
                 total_time += time_elapsed
                 model_type = "L-shaped-phase2"
