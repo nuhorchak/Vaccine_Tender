@@ -29,8 +29,8 @@ include(joinpath(functions_directory, "sub_problem.jl"))
 include(joinpath(functions_directory, "master_problem.jl"))
 include(joinpath(functions_directory, "create_vaccine_data_MMR_only.jl"))
 
-# gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 9e-1, "Heuristics" => 0.5, "PumpPasses" => 10, "GomoryPasses"=>2)#, "Threads" => 8)
-gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1)#, "Threads" => 8) 
+# gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1, "Heuristics" => 0.5, "PumpPasses" => 10, "GomoryPasses"=>2)#, "Threads" => 8) 
+gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1,  "Heuristics" => 0.5, "PumpPasses" => 10, "GomoryPasses"=>2)#, "Threads" => 8)
 gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-1)#, "Threads" => 8) 
 gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1)#, "Threads" => 8) 
 
@@ -121,8 +121,6 @@ end
     
         LB = 0
         UB = 1e30 #high number to start large gap for L-shaped method (which uses infinity)
-
-
     
         relaxation_tol1 = 5e-2
         relaxation_tol2 = 1e-2
@@ -148,9 +146,23 @@ end
             set_optimizer_attribute(Masterproblem, "MIPGap", mip_gap)
             println("Solving MP after cuts!")
             JuMP.optimize!(Masterproblem)
-            # println("Masterproblem Model status: ", termination_status(Masterproblem))
-            # Check the solver status
-            ######################################################################3 add to second phase #########################################################
+            println("Masterproblem Model status: ", termination_status(Masterproblem))           
+
+    
+            # if length(opt_cut_list) > 2
+            #     popfirst!(opt_cut_list)
+            #     if opt_cut_list[1] == opt_cut_list[2]
+            #         break
+            #     end
+            # end
+    
+            # if primal_status(Masterproblem) == MOI.NO_SOLUTION
+            #     compute_conflict!(Masterproblem)
+            #     iis_model, _ = copy_conflict(Masterproblem)
+            #     println("MASTER_INFEASIBLE")
+            #     print(iis_model)
+            # end
+
             if termination_status(Masterproblem) == MOI.OPTIMAL
                 println("Optimal solution found with MIPGap = ", mip_gap)
                 # break
@@ -231,6 +243,17 @@ end
             # println("Theta: $(JuMP.value.(Masterproblem[:theta]))")
             global F_bar = JuMP.value.(Masterproblem[:F])
             global W_bar = JuMP.value.(Masterproblem[:W])
+
+            #rounding heuristic for W - rounds first W
+            # found = false
+            # for p in P, (t, tau) in F_time_set
+            #     if !found && W_bar[p, (t, tau)] > 0.5 && W_bar[p, (t, tau)] != round(W_bar[p, (t, tau)])
+            #         W_bar[p, (t, tau)] = 1
+            #         found = true
+            #     end
+            # end     
+            
+
             global Y_bar = JuMP.value.(Masterproblem[:Y])
             global Q_bar = JuMP.value.(Masterproblem[:Q])
             global L_bar = JuMP.value.(Masterproblem[:L])
@@ -288,21 +311,6 @@ end
                     set_normalized_rhs(obj_lb, Z_M_prev)
                 end
             end
-
-            #heuristic rounding
-            #rounding heuristic for W 
-            for p in P, (t, tau) in F_time_set
-                w_val = W_bar[p, (t, tau)]  # Extract fractional value
-        
-                if 0 < w_val < 1  # Apply MIR only to fractional values
-                    # Compute floor and fractional part
-                    w_floor = floor(w_val)
-                    w_frac = w_val - w_floor
-                    
-                    # Create the MIR cut
-                    @constraint(Masterproblem, Masterproblem[:W][p, (t, tau)] <= w_floor + w_frac)
-                end
-            end
     
             Z_S_omega = Dict()
             dual_subproblem = Dict()
@@ -345,7 +353,7 @@ end
                 theta_total += p_ω_test_partial_2[ω] * theta_bar[ω]
             end
     
-            if Z_M - theta_total + Z_S_expected < UB
+            if Z_M - theta_total + Z_S_expected <= UB
                 UB = Z_M - theta_total + Z_S_expected
             end
             push!(lb_vector, Z_M)

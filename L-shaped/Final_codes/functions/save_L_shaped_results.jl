@@ -411,7 +411,13 @@ L_shaped_output = Dict()
                 if temp_p_dict_2[ω] >= largest_ratio
                     largest_ratio = temp_p_dict_2[ω]
                 end
-                ratio_expected += temp_p_dict_2[ω] * p_ω_test[ω]
+                println(ω)
+                if model_type == "L-shaped-phase2"
+                    ratio_expected += temp_p_dict_2[ω] * p_ω_test[ω]
+                elseif  model_type == "DE model"
+                    ratio_expected += temp_p_dict_2[ω] * 1
+                end
+                
 
                 category_cap_usage = Dict()
                 for category in keys(vaccine_category)
@@ -440,7 +446,12 @@ L_shaped_output = Dict()
             for category in keys(vaccine_category)
                 category_ratio_expected = 0.0
                 for ω in Ω_test
-                    category_ratio_expected += cap_usage_category[p][ω][category] * p_ω_test[ω]
+                    if model_type == "L-shaped-phase2"
+                        category_ratio_expected += cap_usage_category[p][ω][category] * p_ω_test[ω]
+                    elseif  model_type == "DE model"
+                        category_ratio_expected += cap_usage_category[p][ω][category] * 1
+                    end
+                    
                 end
                 category_ratio_expected_dict[category] = category_ratio_expected
             end
@@ -493,7 +504,12 @@ L_shaped_output = Dict()
                 if temp_avg_S >= largest_unvac
                     largest_unvac = temp_avg_S
                 end
-                unvac_expected += temp_avg_S * p_ω_test[ω]
+                if model_type == "L-shaped-phase2"
+                    unvac_expected += temp_avg_S * p_ω_test[ω]
+                elseif  model_type == "DE model"
+                    unvac_expected += temp_avg_S * 1
+                end
+                
             end
 
             unvac_children_range[a] = [smallest_unvac,largest_unvac]
@@ -535,7 +551,11 @@ L_shaped_output = Dict()
             for a in A
                 if a in antigen_category[category]
                     for ω in Ω_test
-                        category_S_expected += unvac_children[a][ω] * p_ω_test[ω]
+                        if model_type == "L-shaped-phase2"
+                            category_S_expected += unvac_children[a][ω] * p_ω_test[ω]
+                        elseif  model_type == "DE model"
+                            category_S_expected += unvac_children[a][ω] * 1
+                        end
                     end
                 end
             end
@@ -587,7 +607,11 @@ L_shaped_output = Dict()
                 if temp_avg_I >= largest_inv
                     largest_inv = temp_avg_I
                 end
-                inv_expected += temp_avg_I * p_ω_test[ω]
+                if model_type == "L-shaped-phase2"
+                    inv_expected += temp_avg_I * p_ω_test[ω]
+                elseif  model_type == "DE model"
+                    inv_expected += temp_avg_I * 1
+                end
             end
             inv_vaccine_range[v] = [smallest_inv,largest_inv]
             inv_vaccine_expected[v] = inv_expected
@@ -627,7 +651,12 @@ L_shaped_output = Dict()
             for v in V
                 if v in vaccine_category[category]
                     for ω in Ω_test
-                        category_I_expected += inv_vaccine[v][ω] * p_ω_test[ω]
+                        if model_type == "L-shaped-phase2"
+                            category_I_expected += inv_vaccine[v][ω] * p_ω_test[ω]
+                        elseif  model_type == "DE model"
+                            category_I_expected += inv_vaccine[v][ω] * 1
+                        end
+                        
                     end
                 end
             end
