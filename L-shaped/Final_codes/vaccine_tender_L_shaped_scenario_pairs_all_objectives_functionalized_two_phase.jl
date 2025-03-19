@@ -30,7 +30,7 @@ include(joinpath(functions_directory, "master_problem.jl"))
 include(joinpath(functions_directory, "create_vaccine_data_MMR_only.jl"))
 
 # gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 9e-1, "Heuristics" => 0.5, "PumpPasses" => 10, "GomoryPasses"=>2)#, "Threads" => 8)
-gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1)#, "Threads" => 8) 
+gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "Heuristics" => 0.5, "PumpPasses" => 10, "GomoryPasses"=>2)#, "Threads" => 8) 
 gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-1)#, "Threads" => 8) 
 gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1)#, "Threads" => 8) 
 
@@ -50,21 +50,21 @@ function tender_stochastic_sensitivity(
     MAX_PROFIT_MODEL::Bool = false
 )
 
-model = []
+    model = []
 
-if UNICEF_MODEL
-    model = "UNICEF_GAVI"
-elseif SOCIAL_BENEFIT_MODEL
-    model = "SOCIAL_BENEFIT"
-else
-    model = "MAX_PROFIT"
-end
+    if UNICEF_MODEL
+        model = "UNICEF_GAVI"
+    elseif SOCIAL_BENEFIT_MODEL
+        model = "SOCIAL_BENEFIT"
+    else
+        model = "MAX_PROFIT"
+    end
 
     # value to scale coefficients for faster computation
     unit = 1000
     global total_time = 0
     global mip_gap = 1e-1  # 5% initial gap
-    global min_gap = 1e-4  # Minimum acceptable gap
+    global min_gap = 1e-3  # Minimum acceptable gap
 
     for trial in 1:number_of_trials
         println("trial: $trial")
@@ -170,9 +170,9 @@ end
             end
             
             # Reduce the MIP gap by half
-            # mip_gap /= 1.05
-            # mip_gap = max(mip_gap, min_gap)
-            # println("Reducing MIPGap to ", mip_gap)
+            mip_gap /= 1.01
+            mip_gap = max(mip_gap, min_gap)
+            println("Reducing MIPGap to ", mip_gap)
     
             X_bar = JuMP.value.(Masterproblem[:X])
             S_bar = JuMP.value.(Masterproblem[:S])
@@ -691,4 +691,4 @@ end
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(10,5,2,2,1,1,1,1, true, true, true, false, false)
+tender_stochastic_sensitivity(10,5,3,3,1,1,1,1, true, true, true, false, false)

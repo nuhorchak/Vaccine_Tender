@@ -1,3 +1,5 @@
+using JSON
+
 """
 Master Problem Initialization Function
 
@@ -29,7 +31,7 @@ Returns:
   function based on the specified conditions.
 """
 
-function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_number, 
+function master_problem_fixed_first(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_number, 
     Ω_test_partial_2, Ω_test_partial_1, T_initial, starting_points_vect_I, 
     starting_points_vect_S, starting_points_vect_F, UNICEF_MODEL, 
     capacity_extension_decision, Γ, g, beta, delta, p_ω_test, r, h, r_avg, 
@@ -37,7 +39,7 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
     X_tilde_upper, A_p, s_real_tilde, d_real_tilde, tmin, f_profit, V_a, L_ddot_upper, l, 
     overlap_decision, m_segments, zeta_vm, phi_vm_lower, phi_vm_upper, social_benefit, max_profit)
 
-    println("Building master problem")
+    println("Building master problem - Fixed First Stage")
 
     # @variable(Masterproblem, 0.0 <= F[a in A, (t, tau) in F_time_set] <= 1.0, Bin)
     # @variable(Masterproblem, Q[v in V, p in P_v[v], (t, tau) in F_time_set, m in keys(m_segments)] >= 0)
@@ -268,12 +270,13 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
     cons_21 = []
     
 
-    using JSON
+
 
     # Read in first-stage variables from DE solution
     current_directory = @__DIR__
-    filename = "DE_L_results_T_10_delta_5_scen_35_trial_1_inv_1_cap._1_cap.inc._1.json"
-    relative_path = joinpath(current_directory, filename)
+    data_dir = joinpath(current_directory, "..", "data")
+    filename = "DE_L_results_T_10_delta_5_scen_1_trial_1_inv_1_cap._1_cap.inc._1.json"
+    relative_path = joinpath(data_dir, filename)
     data = JSON.parsefile(relative_path)
     
 
@@ -294,8 +297,12 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
         for p in P_v[v]
             p_data = get(v_data, p, Dict())  # Access p-level data once
             for (t, tau) in F_time_set
-                value = get(get(p_data, string(t), Dict()), string(tau), 0)
-                fix(Q[v, p, (t, tau)], value; force=true)
+                time_data = get(get(p_data, string(t), Dict()), string(tau), 0) # Access (t,tau)-level data once
+                # println(time_data)
+                for m in keys(m_segments)
+                    value = get(time_data, string(m), 0)  # No need for string conversion if m is a key
+                    fix(Q[v, p, (t, tau), m], value; force=true)  # Ensure correct indexing
+                end
             end
         end
     end
@@ -330,6 +337,37 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
         for t in T
             value = get(p_data, string(t), 0)
             fix(L[p, t], value; force=true)
+        end
+    end
+
+    # FIX First Stage L Variables
+    L_data = get(data, "L", Dict())
+
+    for p in P
+        p_data = get(L_data, p, Dict())  # Access p-level data once
+        for t in T
+            value = get(p_data, string(t), 0)
+            fix(L[p, t], value; force=true)
+        end
+    end
+
+    # FIX First Stage Q Variables
+    Z_data = get(data, "Z", Dict())
+    Z_data
+
+
+    for v in V
+        v_data = get(Z_data, v, Dict())  # Access v-level data once
+        for p in P_v[v]
+            p_data = get(v_data, p, Dict())  # Access p-level data once
+            for t in T
+                time_data = get(p_data, string(t), Dict()) # Access (t,tau)-level data once
+                # println(time_data)
+                for m in keys(m_segments)
+                    value = get(time_data, string(m), 0)  # No need for string conversion if m is a key
+                    fix(Z[v, p, t, m], value; force=true)  # Ensure correct indexing
+                end
+            end
         end
     end
 

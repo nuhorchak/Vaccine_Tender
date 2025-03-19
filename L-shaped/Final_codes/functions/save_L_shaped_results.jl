@@ -411,7 +411,6 @@ L_shaped_output = Dict()
                 if temp_p_dict_2[ω] >= largest_ratio
                     largest_ratio = temp_p_dict_2[ω]
                 end
-                println(ω)
                 if model_type == "L-shaped-phase2"
                     ratio_expected += temp_p_dict_2[ω] * p_ω_test[ω]
                 elseif  model_type == "DE model"
