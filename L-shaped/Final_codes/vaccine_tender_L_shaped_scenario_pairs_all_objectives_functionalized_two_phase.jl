@@ -66,7 +66,7 @@ function tender_stochastic_sensitivity(
     unit = 1000
     global total_time = 0
     global mip_gap = 1e-1  # 5% initial gap
-    global min_gap = 1e-3  # Minimum acceptable gap
+    global min_gap = 1e-5  # Minimum acceptable gap
 
     for trial in 1:number_of_trials
         println("trial: $trial")
@@ -101,17 +101,17 @@ function tender_stochastic_sensitivity(
         # write_to_file(Masterproblem, "pre_start_model.lp")
 
         # Relax constraints for integer and binary variables
-        for a in A, (t, tau) in F_time_set
-            unset_binary(Masterproblem[:F][a, (t, tau)])
-        end
-    
-        for p in P, t in T
-            unset_binary(Masterproblem[:Y][p, t])
-        end
-    
-        # for p in P, (t, tau) in F_time_set
-        #     unset_binary(Masterproblem[:W][p, (t, tau)])  # Ensure proper indexing
+        # for a in A, (t, tau) in F_time_set
+        #     unset_binary(Masterproblem[:F][a, (t, tau)])
         # end
+    
+        # for p in P, t in T
+        #     unset_binary(Masterproblem[:Y][p, t])
+        # end
+    
+        for p in P, (t, tau) in F_time_set
+            unset_binary(Masterproblem[:W][p, (t, tau)])  # Ensure proper indexing
+        end
     
         # for v in V, p in P_v[v], t in T, m in keys(m_segments)
         #     unset_binary(Masterproblem[:Z][v, p, t, m])
@@ -126,8 +126,8 @@ function tender_stochastic_sensitivity(
 
 
     
-        relaxation_tol1 = 5e-2
-        relaxation_tol2 = 1e-2
+        relaxation_tol1 = 5e-3
+        relaxation_tol2 = 1e-3
         global iter1 = 1
         global iter2 = 1
         iter_max = 5000
@@ -145,7 +145,7 @@ function tender_stochastic_sensitivity(
             println("Phase 1 iteration: $iter1")
             Masterproblem = generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial_2, V, P_v, T, F_time_set, 
             X_tilde_upper, P, s_real_tilde, 1, A, d_real_tilde, l, f_profit, V_p, 
-            starting_points_vect_I, starting_points_vect_S, m_segments, κ, s_real)
+            starting_points_vect_I, starting_points_vect_S, m_segments, κ, s_real, model)
             set_optimizer_attribute(Masterproblem, "LogFile", source1)
             set_optimizer_attribute(Masterproblem, "MIPGap", mip_gap)
             println("Solving MP after cuts!")
@@ -175,55 +175,6 @@ function tender_stochastic_sensitivity(
             mip_gap /= 1.01
             mip_gap = max(mip_gap, min_gap)
             println("Reducing MIPGap to ", mip_gap)
-    
-            X_bar = JuMP.value.(Masterproblem[:X])
-            S_bar = JuMP.value.(Masterproblem[:S])
-            I_bar = JuMP.value.(Masterproblem[:I])
-            # X_inf_bar = JuMP.value.(Masterproblem[:X_inf])
-    
-            # additional_cost_MP = 0.0
-
-            # if UNICEF_MODEL
-
-            #     for a in A
-            #         for t in T
-            #             for ω in Ω_test_partial_1
-            #                 additional_cost_MP += beta * S_bar[a,t,ω] / delta[t]
-            #             end
-            #         end
-            #     end
-
-            #     for v in V
-            #         for t in T
-            #             for ω in Ω_test_partial_1
-            #                 additional_cost_MP += h[v] * r_avg[v,t] * I_bar[v,t,ω] / delta[t]
-            #             end
-            #         end
-            #     end
-
-            # elseif SOCIAL_BENEFIT_MODEL
-
-            #     for a in A
-            #         for t in T
-            #             for ω in Ω_test_partial_1
-            #                 additional_cost_MP += beta * S_bar[a,t,ω] / delta[t]
-            #             end
-            #         end
-            #     end
-
-            # else MAX_PROFIT_MODEL
-
-            #     for a in A
-            #         for v in V
-            #             for t  = last(T)
-            #                 for ω in Ω_test_partial_1
-            #                     additional_cost_MP += r_avg[v,t] * S_bar[a,t,ω] / delta[t]
-            #                 end
-            #             end
-            #         end
-            #     end
-
-            # end #end if statements
 
             
             Z_M = JuMP.objective_value(Masterproblem)
@@ -278,6 +229,7 @@ function tender_stochastic_sensitivity(
                 Vc_sub[ω] = Vc_temp
             end
     
+            
             if iter1 == 1
                 global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)
                 Z_M_prev = Z_M
@@ -290,21 +242,7 @@ function tender_stochastic_sensitivity(
                     set_normalized_rhs(obj_lb, Z_M_prev)
                 end
             end
-
-            #heuristic rounding
-            #rounding heuristic for W 
-            # for p in P, (t, tau) in F_time_set
-            #     w_val = W_bar[p, (t, tau)]  # Extract fractional value
-        
-            #     if 0 < w_val < 1  # Apply MIR only to fractional values
-            #         # Compute floor and fractional part
-            #         w_floor = floor(w_val)
-            #         w_frac = w_val - w_floor
-                    
-            #         # Create the MIR cut
-            #         @constraint(Masterproblem, Masterproblem[:W][p, (t, tau)] <= w_floor + w_frac)
-            #     end
-            # end
+            LB = Z_M
     
             Z_S_omega = Dict()
             dual_subproblem = Dict()
@@ -364,7 +302,7 @@ function tender_stochastic_sensitivity(
             JSON.print(f, lb_and_ub_vectors)
             close(f)
     
-            LB = Z_M
+            # LB = Z_M
             global LB_phase1 = LB
     
             println("LB: $LB")
@@ -405,17 +343,17 @@ function tender_stochastic_sensitivity(
         # write_to_file(Masterproblem, "phase2_start_model.lp")
 
         # Restore binary/integer constraints
-        for a in A, (t, tau) in F_time_set
-            set_binary(Masterproblem[:F][a, (t, tau)])
-        end
-    
-        for p in P, t in T
-            set_binary(Masterproblem[:Y][p, t])
-        end
-    
-        # for p in P, (t, tau) in F_time_set
-        #     set_binary(Masterproblem[:W][p, (t, tau)])  # Ensure proper indexing
+        # for a in A, (t, tau) in F_time_set
+        #     set_binary(Masterproblem[:F][a, (t, tau)])
         # end
+    
+        # for p in P, t in T
+        #     set_binary(Masterproblem[:Y][p, t])
+        # end
+    
+        for p in P, (t, tau) in F_time_set
+            set_binary(Masterproblem[:W][p, (t, tau)])  # Ensure proper indexing
+        end
     
         # for v in V, p in P_v[v], t in T, m in keys(m_segments)
         #     set_binary(Masterproblem[:Z][v, p, t, m])
@@ -426,12 +364,14 @@ function tender_stochastic_sensitivity(
         # end
 
         # init warm start values for IP from relaxtion
-        # for a in A, (t, tau) in F_time_set
-        #     set_start_value(Masterproblem[:F][a, (t, tau)], F_bar[a, (t, tau)])
-        # end
+        for a in A, (t, tau) in F_time_set
+            if F_bar[a, (t, tau)] in (0, 1)
+                set_start_value(Masterproblem[:F][a, (t, tau)], F_bar[a, (t, tau)])
+            end
+        end
 
         for p in P, t in T
-            # set_start_value(Masterproblem[:Y][p, t], Y_bar[p, t])
+            set_start_value(Masterproblem[:Y][p, t], Y_bar[p, t])
             set_start_value(Masterproblem[:L][p, t], L_bar[p, t])
             set_start_value(Masterproblem[:L_ddot][p, t], L_bar[p, t])
         end   
@@ -463,7 +403,7 @@ function tender_stochastic_sensitivity(
 
                 Masterproblem = generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial_2, V, P_v, T, F_time_set, 
                 X_tilde_upper, P, s_real_tilde, 1, A, d_real_tilde, l, f_profit, V_p, 
-                starting_points_vect_I, starting_points_vect_S, m_segments, κ, s_real)
+                starting_points_vect_I, starting_points_vect_S, m_segments, κ, s_real, model)
                 set_optimizer_attribute(Masterproblem, "LogFile", source2)
                 println("Optimizing Master Problem")
                 JuMP.optimize!(Masterproblem)
@@ -483,56 +423,6 @@ function tender_stochastic_sensitivity(
                     print(iis_model)
                 end
         
-                X_bar = JuMP.value.(Masterproblem[:X])
-                S_bar = JuMP.value.(Masterproblem[:S])
-                I_bar = JuMP.value.(Masterproblem[:I])
-                # X_inf_bar = JuMP.value.(Masterproblem[:X_inf])
-        
-                # additional_cost_MP = 0.0
-
-                # if UNICEF_MODEL
-
-                #     for a in A
-                #         for t in T
-                #             for ω in Ω_test_partial_1
-                #                 additional_cost_MP += beta * S_bar[a,t,ω] / delta[t]
-                #             end
-                #         end
-                #     end
-
-                #     for v in V
-                #         for t in T
-                #             for ω in Ω_test_partial_1
-                #                 additional_cost_MP += h[v] * r_avg[v,t] * I_bar[v,t,ω] / delta[t]
-                #             end
-                #         end
-                #     end
-
-                # elseif SOCIAL_BENEFIT_MODEL
-
-                #     for a in A
-                #         for t in T
-                #             for ω in Ω_test_partial_1
-                #                 additional_cost_MP += beta * S_bar[a,t,ω] / delta[t]
-                #             end
-                #         end
-                #     end
-
-                # else MAX_PROFIT_MODEL
-
-                #     for a in A
-                #         for v in V
-                #             for t  = last(T)
-                #                 for ω in Ω_test_partial_1
-                #                     additional_cost_MP += r_avg[v,t] * S_bar[a,t,ω] / delta[t]
-                #                 end
-                #             end
-                #         end
-                #     end
-
-                # end #end if statements
-
-                
                 Z_M = JuMP.objective_value(Masterproblem)
                 println("Z_M")
                 println(Z_M)
@@ -585,19 +475,47 @@ function tender_stochastic_sensitivity(
                 S_sub[ω] = S_temp
                 Vc_sub[ω] = Vc_temp
             end
-    
-            if iter1 == 1
-                global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)
-                Z_M_prev = Z_M
-            else
-                if Z_M >= Z_M_prev
-                    set_normalized_rhs(obj_lb, Z_M)
-                    # println(obj_lb)
+
+            if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
+                if iter1 == 1
+                    global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)
                     Z_M_prev = Z_M
                 else
-                    set_normalized_rhs(obj_lb, Z_M_prev)
+                    if Z_M >= Z_M_prev
+                        set_normalized_rhs(obj_lb, Z_M)
+                        # println(obj_lb)
+                        Z_M_prev = Z_M
+                    else
+                        set_normalized_rhs(obj_lb, Z_M_prev)
+                    end
+                end
+            elseif model == "MAX_PROFIT"
+                if iter1 == 1
+                    global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) <= Z_M)
+                    Z_M_prev = Z_M
+                else
+                    if Z_M <= Z_M_prev
+                        set_normalized_rhs(obj_lb, Z_M)
+                        # println(obj_lb)
+                        Z_M_prev = Z_M
+                    else
+                        set_normalized_rhs(obj_lb, Z_M_prev)
+                    end
                 end
             end
+    
+            # if iter1 == 1
+            #     global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)
+            #     Z_M_prev = Z_M
+            # else
+            #     if Z_M >= Z_M_prev
+            #         set_normalized_rhs(obj_lb, Z_M)
+            #         # println(obj_lb)
+            #         Z_M_prev = Z_M
+            #     else
+            #         set_normalized_rhs(obj_lb, Z_M_prev)
+            #     end
+            # end
     
             Z_S_omega = Dict()
             dual_subproblem = Dict()
@@ -639,12 +557,26 @@ function tender_stochastic_sensitivity(
             for ω in Ω_test_partial_2
                 theta_total += p_ω_test_partial_2[ω] * theta_bar[ω]
             end
-    
-            if Z_M - theta_total + Z_S_expected < UB
-                UB = Z_M - theta_total + Z_S_expected
+
+            if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
+                if Z_M - theta_total + Z_S_expected < UB
+                    UB = Z_M - theta_total + Z_S_expected
+                end
+                push!(lb_vector, Z_M)
+                push!(ub_vector, UB)
+            elseif model == "MAX_PROFIT"
+                if Z_M + theta_total - Z_S_expected > LB
+                    LB = Z_M + theta_total - Z_S_expected
+                end
+                push!(ub_vector, Z_M)
+                push!(lb_vector, LB)
             end
-            push!(lb_vector, Z_M)
-            push!(ub_vector, UB)
+    
+            # if Z_M - theta_total + Z_S_expected < UB
+            #     UB = Z_M - theta_total + Z_S_expected
+            # end
+            # push!(lb_vector, Z_M)
+            # push!(ub_vector, UB)
     
             time_elapsed = time() - start_time
             lb_and_ub_vectors["lb"] = lb_vector
@@ -657,7 +589,13 @@ function tender_stochastic_sensitivity(
             JSON.print(f, lb_and_ub_vectors)
             close(f)
     
-            LB = Z_M
+            # LB = Z_M
+
+            if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
+                LB = Z_M
+            elseif model == "MAX_PROFIT"
+                UB = Z_M
+            end
     
             println("LB: $LB")
             println("UB: $UB")

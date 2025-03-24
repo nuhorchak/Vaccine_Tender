@@ -142,27 +142,27 @@ function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, 
     end
 
     # # Constraint (15) McCormick
-    # for p in P
-    #     for t in T
-    #         if Y_bar[p,t]*s_real_tilde[p, t, ω] + K_ddot_bar[p,t] < 1e-1
-    #             c = @constraint(Subproblem, sum(X[v,p,t] for v in V_p[p]) <= round(Y_bar[p,t]*s_real_tilde[p, t, ω] + K_ddot_bar[p,t], digits=0))
-    #         else
-    #             c = @constraint(Subproblem, sum(X[v,p,t] for v in V_p[p]) <= Y_bar[p,t]*s_real_tilde[p, t, ω] + K_ddot_bar[p,t])
-    #         end
-
-    #         set_name(c, "c_15[$((p,t))]")
-    #         push!(cons_15, c)
-    #     end
-    # end
-
-    # Constraint (15) - non McCormick
     for p in P
         for t in T
-            c = @constraint(Subproblem, sum(X[v,p,t] for v in V_p[p]) <= Y_bar[p,t] * (s_real_tilde[p, t, ω] + (sum(κ * s_real[p] * L_bar[p, l] for l in 1:t))))
+            if Y_bar[p,t]*s_real_tilde[p, t, ω] + K_ddot_bar[p,t] < 1e-1
+                c = @constraint(Subproblem, sum(X[v,p,t] for v in V_p[p]) <= round(Y_bar[p,t]*s_real_tilde[p, t, ω] + K_ddot_bar[p,t], digits=0))
+            else
+                c = @constraint(Subproblem, sum(X[v,p,t] for v in V_p[p]) <= Y_bar[p,t]*s_real_tilde[p, t, ω] + K_ddot_bar[p,t])
+            end
+
             set_name(c, "c_15[$((p,t))]")
             push!(cons_15, c)
         end
     end
+
+    # Constraint (15) - non McCormick
+    # for p in P
+    #     for t in T
+    #         c = @constraint(Subproblem, sum(X[v,p,t] for v in V_p[p]) <= Y_bar[p,t] * (s_real_tilde[p, t, ω] + (sum(κ * s_real[p] * L_bar[p, l] for l in 1:t))))
+    #         set_name(c, "c_15[$((p,t))]")
+    #         push!(cons_15, c)
+    #     end
+    # end
 
     # Constraint (16)
     for v in V

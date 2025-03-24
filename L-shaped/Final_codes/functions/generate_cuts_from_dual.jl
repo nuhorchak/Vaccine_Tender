@@ -31,7 +31,7 @@
 
 function generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial_2, V, P_v, T, F_time_set, 
     X_tilde_upper, P, s_real_tilde, tmin, A, d_real_tilde, l, f_profit, V_p, 
-    starting_points_vect_I, starting_points_vect_S, m_segments, κ, s_real)
+    starting_points_vect_I, starting_points_vect_S, m_segments, κ, s_real, model)
 
 
     Q = Masterproblem[:Q]
@@ -84,8 +84,7 @@ function generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial
                     for t in T
                         for tau in T
                             if (t, tau) in F_time_set
-                                # push!(cons14_1_b_By_omega, 0.0)
-                                push!(cons14_b_By_omega, -sum(Q[v,p,(t, tau),m] for m in keys(m_segments)) * (1/W_bar[p,(t,tau)]))
+                                push!(cons14_b_By_omega, -sum(Q[v,p,(t, tau),m] for m in keys(m_segments)))
                                 # push!(cons14_3_b_By_omega, X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] - X_tilde_upper[v,p,(t,tau)])
                                 # push!(cons14_4_b_By_omega, 0.0)
                                 # push!(cons14_5_b_By_omega, X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
@@ -96,19 +95,20 @@ function generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial
             end
 
             # Constraint (15)
-            # for p in P
-            #     for t in T
-            #         c = Y[p,t]*s_real_tilde[p, t, ω] + K_ddot[p,t]
-            #         push!(cons15_b_By_omega, c)
-            #     end
-            # end
-
             for p in P
                 for t in T
-                    c = Y[p,t] * (s_real_tilde[p, t, ω] + (sum(κ * s_real[p] * L[p, l] for l in 1:t)))
+                    c = Y[p,t]*s_real_tilde[p, t, ω] + K_ddot[p,t]
                     push!(cons15_b_By_omega, c)
                 end
             end
+
+            # for p in P
+            #     for t in T
+            #         # c = Y[p,t] * (s_real_tilde[p, t, ω] + (sum(κ * s_real[p] * L[p, l] for l in 1:t)))
+            #         # push!(cons15_b_By_omega, c)
+            #         push!(cons15_b_By_omega, 0.0)
+            #     end
+            # end
 
             # Constraint (16)
             for v in V
@@ -129,14 +129,6 @@ function generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial
                     end
                 end
             end
-
-            # Constraint (12) - constraint removed from problem 
-            # for p in P
-            #     for t in T
-            #         c = Y[p, t] * sum((1 + l[v, p]) * f_profit[v, p, t] for v in V_p[p])
-            #         push!(cons12_b_By_omega, c)
-            #     end
-            # end
 
             # Constraint (18)
             for i in 1:length(starting_points_vect_I)
@@ -162,7 +154,13 @@ function generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial
             for i in 1:length(cons_omega_dict[ω])
                 theta_rhs += (transpose(cons_omega_dict[ω][i]) * dual_subproblem[ω][i])
             end
-            @constraint(Masterproblem, theta[ω] >= theta_rhs)
+
+            if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
+                @constraint(Masterproblem, theta[ω] >= theta_rhs)
+            elseif model == "MAX_PROFIT"
+                @constraint(Masterproblem, theta[ω] <= theta_rhs)
+            end
+            # @constraint(Masterproblem, theta[ω] >= theta_rhs)
             
             println("*** Cut generated! ***")
         end
