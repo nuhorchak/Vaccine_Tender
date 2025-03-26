@@ -39,14 +39,10 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
 
     println("Building master problem")
 
-    # @variable(Masterproblem, 0.0 <= F[a in A, (t, tau) in F_time_set] <= 1.0, Bin)
-    # @variable(Masterproblem, Q[v in V, p in P_v[v], (t, tau) in F_time_set, m in keys(m_segments)] >= 0)
-    # @variable(Masterproblem, 0.0 <= Y[p in P, t in T] <= 1.0, Bin)
-    # @variable(Masterproblem, 0.0 <= W[p in P, (t, tau) in F_time_set] <= 1.0, Bin)
-    @variable(Masterproblem, F[a in A, (t, tau) in F_time_set], Bin)
+    @variable(Masterproblem, 0.0 <= F[a in A, (t, tau) in F_time_set] <= 1.0, Bin)
     @variable(Masterproblem, Q[v in V, p in P_v[v], (t, tau) in F_time_set, m in keys(m_segments)] >= 0)
-    @variable(Masterproblem, Y[p in P, t in T], Bin)
-    @variable(Masterproblem, W[p in P, (t, tau) in F_time_set], Bin)
+    @variable(Masterproblem, 0.0 <= Y[p in P, t in T] <= 1.0, Bin)
+    @variable(Masterproblem, 0.0 <= W[p in P, (t, tau) in F_time_set] <= 1.0, Bin)
     @variable(Masterproblem, L_lower_number <= L[p in P, t in T] <= L_upper_number, Int)
     @variable(Masterproblem, L_hat[p in P, (t, tau) in F_time_set] >= 0)
     @variable(Masterproblem, K_hat[p in P, (t, tau) in F_time_set] >= 0)
@@ -62,7 +58,7 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
     @variable(Masterproblem, Vc[v in V, t in T, ω in Ω_test_partial_1] >= 0)
     @variable(Masterproblem, S[a in A, t in T_initial, ω in Ω_test_partial_1] >= 0)
     # @variable(Masterproblem, 0.0 <= Z[v in V, p in P_v[v], t in T, m in keys(m_segments)] <= 1, Bin)
-    @variable(Masterproblem, Z[v in V, p in P_v[v], t in T, m in keys(m_segments)], Bin)
+    @variable(Masterproblem, 0 <= Z[v in V, p in P_v[v], t in T, m in keys(m_segments)] <= 1.0, Bin)
 
  
 

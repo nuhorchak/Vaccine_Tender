@@ -30,9 +30,9 @@ include(joinpath(functions_directory, "master_problem.jl"))
 include(joinpath(functions_directory, "create_vaccine_data_MMR_only.jl"))
 
 # gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 9e-1, "Heuristics" => 0.5, "PumpPasses" => 10, "GomoryPasses"=>2)#, "Threads" => 8)
-gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "Heuristics" => 0.5, "PumpPasses" => 10, "GomoryPasses"=>2)#, "Threads" => 8) 
-gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-1)#, "Threads" => 8) 
-gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1)#, "Threads" => 8) 
+gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-3, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "Heuristics" => 0.5, "PumpPasses" => 10, "GomoryPasses"=>2)#, "Threads" => 8) 
+gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-3, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-1)#, "Threads" => 8) 
+gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-3, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1)#, "Threads" => 8) 
 
 function tender_stochastic_sensitivity(
     max_horizon_length::Int,
@@ -51,6 +51,8 @@ function tender_stochastic_sensitivity(
 )
 
     model = []
+    global LB_phase1 = 0
+    global UB_phase1 = 0
 
     if UNICEF_MODEL
         model = "UNICEF_GAVI"
@@ -65,8 +67,8 @@ function tender_stochastic_sensitivity(
     # global seed = 22
     unit = 1000
     global total_time = 0
-    global mip_gap = 1e-1  # 5% initial gap
-    global min_gap = 1e-5  # Minimum acceptable gap
+    global mip_gap_start = 1e-1  # 5% initial gap
+    global min_gap = 1e-4  # Minimum acceptable gap
 
     for trial in 1:number_of_trials
         println("trial: $trial")
@@ -126,11 +128,11 @@ function tender_stochastic_sensitivity(
 
 
     
-        relaxation_tol1 = 5e-3
-        relaxation_tol2 = 1e-3
+        relaxation_tol1 = 5e-1
+        relaxation_tol2 = 1e-1
         global iter1 = 1
         global iter2 = 1
-        iter_max = 5000
+        iter_max = 2
     
         Z_M = 0.0
         Z_M_prev = 0.0
@@ -139,6 +141,7 @@ function tender_stochastic_sensitivity(
         ub_vector = []
         lb_and_ub_vectors = Dict()
         opt_cut_list = Vector{Any}()
+        mip_gap = mip_gap_start
         
         # L-shaped method starts - Phase 1
         while iter1 <= iter_max
@@ -171,12 +174,6 @@ function tender_stochastic_sensitivity(
                 end
             end
             
-            # Reduce the MIP gap by half
-            mip_gap /= 1.01
-            mip_gap = max(mip_gap, min_gap)
-            println("Reducing MIPGap to ", mip_gap)
-
-            
             Z_M = JuMP.objective_value(Masterproblem)
             println("Z_M")
             println(Z_M)
@@ -196,6 +193,7 @@ function tender_stochastic_sensitivity(
             I_sub = Dict()
             S_sub = Dict()
             Vc_sub = Dict()
+            
             for ω in Ω_test_partial_1
                 X_temp = Dict()
                 for v in V
@@ -229,21 +227,35 @@ function tender_stochastic_sensitivity(
                 Vc_sub[ω] = Vc_temp
             end
     
-            
-            if iter1 == 1
-                global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)
-                Z_M_prev = Z_M
-            else
-                if Z_M >= Z_M_prev
-                    set_normalized_rhs(obj_lb, Z_M)
-                    # println(obj_lb)
+
+            if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
+                if iter1 == 1
+                    global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)
                     Z_M_prev = Z_M
                 else
-                    set_normalized_rhs(obj_lb, Z_M_prev)
+                    if Z_M >= Z_M_prev
+                        set_normalized_rhs(obj_lb, Z_M)
+                        # println(obj_lb)
+                        Z_M_prev = Z_M
+                    else
+                        set_normalized_rhs(obj_lb, Z_M_prev)
+                    end
+                end
+            elseif model == "MAX_PROFIT"
+                if iter1 == 1
+                    global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) <= Z_M)
+                    Z_M_prev = Z_M
+                else
+                    if Z_M <= Z_M_prev
+                        set_normalized_rhs(obj_ub, Z_M)
+                        # println(obj_lb)
+                        Z_M_prev = Z_M
+                    else
+                        set_normalized_rhs(obj_ub, Z_M_prev)
+                    end
                 end
             end
-            LB = Z_M
-    
+            
             Z_S_omega = Dict()
             dual_subproblem = Dict()
             for ω in Ω_test_partial_2
@@ -252,7 +264,7 @@ function tender_stochastic_sensitivity(
                 V, P_v, T, T_initial, A, P, F_time_set, 1, V_p, X_tilde_upper, s_real, s_real_tilde, d_real_tilde, V_a, starting_points_vect_I, 
                 starting_points_vect_S, r, h, l, zeta_vm, m_segments, κ, UNICEF_MODEL, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL)
 
-                                                                        
+                set_optimizer_attribute(Subproblem, "MIPGap", mip_gap)                                                        
                 optimize!(Subproblem)
                 println("Subproblem Model status: ", termination_status(Subproblem))
     
@@ -285,9 +297,21 @@ function tender_stochastic_sensitivity(
                 theta_total += p_ω_test_partial_2[ω] * theta_bar[ω]
             end
     
-            if Z_M - theta_total + Z_S_expected < UB
-                UB = Z_M - theta_total + Z_S_expected
+
+            if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
+                if Z_M - theta_total + Z_S_expected < UB
+                    UB = Z_M - theta_total + Z_S_expected
+                end
+                push!(lb_vector, Z_M)
+                push!(ub_vector, UB)
+            elseif model == "MAX_PROFIT"
+                if Z_M + theta_total - Z_S_expected > LB
+                    LB = Z_M + theta_total - Z_S_expected
+                end
+                push!(ub_vector, Z_M)
+                push!(lb_vector, LB)
             end
+
             push!(lb_vector, Z_M)
             push!(ub_vector, UB)
     
@@ -302,15 +326,27 @@ function tender_stochastic_sensitivity(
             JSON.print(f, lb_and_ub_vectors)
             close(f)
     
-            # LB = Z_M
-            global LB_phase1 = LB
+            if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
+                LB = Z_M
+                LB_phase1 = LB
+            elseif model == "MAX_PROFIT"
+                UB = Z_M
+                UB_phase1 = UB
+            end
+
+            # Reduce the MIP gap by 10%
+            mip_gap /= 1.1
+            mip_gap = max(mip_gap, min_gap)
+            println("Reducing MIPGap to ", mip_gap)
     
             println("LB: $LB")
             println("UB: $UB")
+
+            println("LB Phase 1: $LB_phase1")
     
             if (UB - LB) / abs(UB) < relaxation_tol1 #|| time_elapsed >=500
 
-                # global LB_phase1 = LB
+                
                 # write_to_file(Masterproblem, "phase1_model.lp")
 
 
@@ -325,11 +361,6 @@ function tender_stochastic_sensitivity(
                 println("Phase 1 L-shaped method converged in $time_elapsed seconds after $iter1 iterations")
                 total_time += time_elapsed
 
-                # global X_sub_warm_start = X_sub
-                # global I_sub_warm_start = I_sub
-                # global Vc_sub_warm_start = Vc_sub
-                # global S_sub_warm_start =S_sub
-
                 break
             end # tolerance level reached, breaking iter1
             iter1 += 1
@@ -341,6 +372,8 @@ function tender_stochastic_sensitivity(
         UB = 1e30
         LB = LB_phase1
         # write_to_file(Masterproblem, "phase2_start_model.lp")
+        mip_gap = mip_gap_start
+        
 
         # Restore binary/integer constraints
         # for a in A, (t, tau) in F_time_set
@@ -387,7 +420,9 @@ function tender_stochastic_sensitivity(
         end
         
         for v in V, p in P_v[v], t in T, m in keys(m_segments)
-            set_start_value(Masterproblem[:Z][v, p, t, m], Z_bar[v, p, t, m])
+            if Z_bar[v, p, t, m] in (0, 1)
+                set_start_value(Masterproblem[:Z][v, p, t, m], Z_bar[v, p, t, m])
+            end
         end
 
         # write_to_file(Masterproblem, "phase2_deleted_cons.lp")
@@ -397,6 +432,7 @@ function tender_stochastic_sensitivity(
 
             if iter2 < 2
                 println("Optimizing Master Problem")
+                set_optimizer_attribute(Masterproblem, "MIPGap", mip_gap)
                 JuMP.optimize!(Masterproblem)
                 println("Masterproblem Model status: ", termination_status(Masterproblem))
             else
@@ -405,6 +441,7 @@ function tender_stochastic_sensitivity(
                 X_tilde_upper, P, s_real_tilde, 1, A, d_real_tilde, l, f_profit, V_p, 
                 starting_points_vect_I, starting_points_vect_S, m_segments, κ, s_real, model)
                 set_optimizer_attribute(Masterproblem, "LogFile", source2)
+                set_optimizer_attribute(Masterproblem, "MIPGap", mip_gap)
                 println("Optimizing Master Problem")
                 JuMP.optimize!(Masterproblem)
                 println("Masterproblem Model status: ", termination_status(Masterproblem))
@@ -495,27 +532,15 @@ function tender_stochastic_sensitivity(
                     Z_M_prev = Z_M
                 else
                     if Z_M <= Z_M_prev
-                        set_normalized_rhs(obj_lb, Z_M)
+                        set_normalized_rhs(obj_ub, Z_M)
                         # println(obj_lb)
                         Z_M_prev = Z_M
                     else
-                        set_normalized_rhs(obj_lb, Z_M_prev)
+                        set_normalized_rhs(obj_ub, Z_M_prev)
                     end
                 end
             end
     
-            # if iter1 == 1
-            #     global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)
-            #     Z_M_prev = Z_M
-            # else
-            #     if Z_M >= Z_M_prev
-            #         set_normalized_rhs(obj_lb, Z_M)
-            #         # println(obj_lb)
-            #         Z_M_prev = Z_M
-            #     else
-            #         set_normalized_rhs(obj_lb, Z_M_prev)
-            #     end
-            # end
     
             Z_S_omega = Dict()
             dual_subproblem = Dict()
@@ -572,12 +597,6 @@ function tender_stochastic_sensitivity(
                 push!(lb_vector, LB)
             end
     
-            # if Z_M - theta_total + Z_S_expected < UB
-            #     UB = Z_M - theta_total + Z_S_expected
-            # end
-            # push!(lb_vector, Z_M)
-            # push!(ub_vector, UB)
-    
             time_elapsed = time() - start_time
             lb_and_ub_vectors["lb"] = lb_vector
             lb_and_ub_vectors["ub"] = ub_vector
@@ -597,6 +616,11 @@ function tender_stochastic_sensitivity(
                 UB = Z_M
             end
     
+            # Reduce the MIP gap by 10%
+            mip_gap /= 1.1
+            mip_gap = max(mip_gap, min_gap)
+            println("Reducing MIPGap to ", mip_gap)
+
             println("LB: $LB")
             println("UB: $UB")
 
@@ -612,11 +636,13 @@ function tender_stochastic_sensitivity(
                 p_ω_test, κ, s_real, s_real_tilde, results_dir, m_segments)
 
 
-                # println("Final Sub Problem status: ", termination_status(Subproblem))
-                # phase2_objective = JuMP.objective_value(Masterproblem)
-                # phase2_run_time = JuMP.solve_time(Masterproblem)
                 println("Phase 2 Objective Value")
-                println(UB)
+                if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
+                    println(UB)
+                elseif model == "MAX_PROFIT"
+                    println(LB)
+                end
+                
                 println("Phase 2 run time")
                 println(time_elapsed)
                 println("Total run time: $total_time")
