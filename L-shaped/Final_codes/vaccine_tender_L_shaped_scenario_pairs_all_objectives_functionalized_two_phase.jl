@@ -132,7 +132,7 @@ function tender_stochastic_sensitivity(
         relaxation_tol2 = 1e-1
         global iter1 = 1
         global iter2 = 1
-        iter_max = 2
+        iter_max = 5
     
         Z_M = 0.0
         Z_M_prev = 0.0
@@ -226,35 +226,48 @@ function tender_stochastic_sensitivity(
                 S_sub[ω] = S_temp
                 Vc_sub[ω] = Vc_temp
             end
-    
 
-            if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
-                if iter1 == 1
-                    global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)
+            if iter1 == 1
+                global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)
+                Z_M_prev = Z_M
+            else
+                if Z_M >= Z_M_prev
+                    set_normalized_rhs(obj_lb, Z_M)
+                    # println(obj_lb)
                     Z_M_prev = Z_M
                 else
-                    if Z_M >= Z_M_prev
-                        set_normalized_rhs(obj_lb, Z_M)
-                        # println(obj_lb)
-                        Z_M_prev = Z_M
-                    else
-                        set_normalized_rhs(obj_lb, Z_M_prev)
-                    end
-                end
-            elseif model == "MAX_PROFIT"
-                if iter1 == 1
-                    global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) <= Z_M)
-                    Z_M_prev = Z_M
-                else
-                    if Z_M <= Z_M_prev
-                        set_normalized_rhs(obj_ub, Z_M)
-                        # println(obj_lb)
-                        Z_M_prev = Z_M
-                    else
-                        set_normalized_rhs(obj_ub, Z_M_prev)
-                    end
+                    set_normalized_rhs(obj_lb, Z_M_prev)
                 end
             end
+    
+
+            # if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
+            #     if iter1 == 1
+            #         global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)
+            #         Z_M_prev = Z_M
+            #     else
+            #         if Z_M >= Z_M_prev
+            #             set_normalized_rhs(obj_lb, Z_M)
+            #             # println(obj_lb)
+            #             Z_M_prev = Z_M
+            #         else
+            #             set_normalized_rhs(obj_lb, Z_M_prev)
+            #         end
+            #     end
+            # elseif model == "MAX_PROFIT"
+            #     if iter1 == 1
+            #         global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) <= Z_M)
+            #         Z_M_prev = Z_M
+            #     else
+            #         if Z_M <= Z_M_prev
+            #             set_normalized_rhs(obj_ub, Z_M)
+            #             # println(obj_lb)
+            #             Z_M_prev = Z_M
+            #         else
+            #             set_normalized_rhs(obj_ub, Z_M_prev)
+            #         end
+            #     end
+            # end
             
             Z_S_omega = Dict()
             dual_subproblem = Dict()
@@ -296,24 +309,29 @@ function tender_stochastic_sensitivity(
             for ω in Ω_test_partial_2
                 theta_total += p_ω_test_partial_2[ω] * theta_bar[ω]
             end
-    
 
-            if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
-                if Z_M - theta_total + Z_S_expected < UB
-                    UB = Z_M - theta_total + Z_S_expected
-                end
-                push!(lb_vector, Z_M)
-                push!(ub_vector, UB)
-            elseif model == "MAX_PROFIT"
-                if Z_M + theta_total - Z_S_expected > LB
-                    LB = Z_M + theta_total - Z_S_expected
-                end
-                push!(ub_vector, Z_M)
-                push!(lb_vector, LB)
+
+            if Z_M - theta_total + Z_S_expected < UB
+                UB = Z_M - theta_total + Z_S_expected
             end
-
             push!(lb_vector, Z_M)
             push!(ub_vector, UB)
+
+    
+
+            # if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
+            #     if Z_M - theta_total + Z_S_expected < UB
+            #         UB = Z_M - theta_total + Z_S_expected
+            #     end
+            #     push!(lb_vector, Z_M)
+            #     push!(ub_vector, UB)
+            # elseif model == "MAX_PROFIT"
+            #     if Z_M + theta_total - Z_S_expected > LB
+            #         LB = Z_M + theta_total - Z_S_expected
+            #     end
+            #     push!(ub_vector, Z_M)
+            #     push!(lb_vector, LB)
+            # end
     
             time_elapsed = time() - start_time
             lb_and_ub_vectors["lb"] = lb_vector
@@ -325,14 +343,18 @@ function tender_stochastic_sensitivity(
             f = open(source, "w")
             JSON.print(f, lb_and_ub_vectors)
             close(f)
+
+            LB = Z_M
+            LB_phase1 = LB
+
     
-            if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
-                LB = Z_M
-                LB_phase1 = LB
-            elseif model == "MAX_PROFIT"
-                UB = Z_M
-                UB_phase1 = UB
-            end
+            # if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
+            #     LB = Z_M
+            #     LB_phase1 = LB
+            # elseif model == "MAX_PROFIT"
+            #     UB = Z_M
+            #     UB_phase1 = UB
+            # end
 
             # Reduce the MIP gap by 10%
             mip_gap /= 1.1
@@ -513,33 +535,47 @@ function tender_stochastic_sensitivity(
                 Vc_sub[ω] = Vc_temp
             end
 
-            if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
-                if iter1 == 1
-                    global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)
+
+            if iter2 == 1
+                global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)
+                Z_M_prev = Z_M
+            else
+                if Z_M >= Z_M_prev
+                    set_normalized_rhs(obj_lb, Z_M)
+                    # println(obj_lb)
                     Z_M_prev = Z_M
                 else
-                    if Z_M >= Z_M_prev
-                        set_normalized_rhs(obj_lb, Z_M)
-                        # println(obj_lb)
-                        Z_M_prev = Z_M
-                    else
-                        set_normalized_rhs(obj_lb, Z_M_prev)
-                    end
-                end
-            elseif model == "MAX_PROFIT"
-                if iter1 == 1
-                    global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) <= Z_M)
-                    Z_M_prev = Z_M
-                else
-                    if Z_M <= Z_M_prev
-                        set_normalized_rhs(obj_ub, Z_M)
-                        # println(obj_lb)
-                        Z_M_prev = Z_M
-                    else
-                        set_normalized_rhs(obj_ub, Z_M_prev)
-                    end
+                    set_normalized_rhs(obj_lb, Z_M_prev)
                 end
             end
+
+            # if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
+            #     if iter1 == 1
+            #         global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)
+            #         Z_M_prev = Z_M
+            #     else
+            #         if Z_M >= Z_M_prev
+            #             set_normalized_rhs(obj_lb, Z_M)
+            #             # println(obj_lb)
+            #             Z_M_prev = Z_M
+            #         else
+            #             set_normalized_rhs(obj_lb, Z_M_prev)
+            #         end
+            #     end
+            # elseif model == "MAX_PROFIT"
+            #     if iter1 == 1
+            #         global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) <= Z_M)
+            #         Z_M_prev = Z_M
+            #     else
+            #         if Z_M <= Z_M_prev
+            #             set_normalized_rhs(obj_ub, Z_M)
+            #             # println(obj_lb)
+            #             Z_M_prev = Z_M
+            #         else
+            #             set_normalized_rhs(obj_ub, Z_M_prev)
+            #         end
+            #     end
+            # end
     
     
             Z_S_omega = Dict()
@@ -583,19 +619,28 @@ function tender_stochastic_sensitivity(
                 theta_total += p_ω_test_partial_2[ω] * theta_bar[ω]
             end
 
-            if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
-                if Z_M - theta_total + Z_S_expected < UB
-                    UB = Z_M - theta_total + Z_S_expected
-                end
-                push!(lb_vector, Z_M)
-                push!(ub_vector, UB)
-            elseif model == "MAX_PROFIT"
-                if Z_M + theta_total - Z_S_expected > LB
-                    LB = Z_M + theta_total - Z_S_expected
-                end
-                push!(ub_vector, Z_M)
-                push!(lb_vector, LB)
+
+
+            if Z_M - theta_total + Z_S_expected < UB
+                UB = Z_M - theta_total + Z_S_expected
             end
+            push!(lb_vector, Z_M)
+            push!(ub_vector, UB)
+
+
+            # if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
+            #     if Z_M - theta_total + Z_S_expected < UB
+            #         UB = Z_M - theta_total + Z_S_expected
+            #     end
+            #     push!(lb_vector, Z_M)
+            #     push!(ub_vector, UB)
+            # elseif model == "MAX_PROFIT"
+            #     if Z_M + theta_total - Z_S_expected > LB
+            #         LB = Z_M + theta_total - Z_S_expected
+            #     end
+            #     push!(ub_vector, Z_M)
+            #     push!(lb_vector, LB)
+            # end
     
             time_elapsed = time() - start_time
             lb_and_ub_vectors["lb"] = lb_vector
@@ -608,13 +653,13 @@ function tender_stochastic_sensitivity(
             JSON.print(f, lb_and_ub_vectors)
             close(f)
     
-            # LB = Z_M
+            LB = Z_M
 
-            if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
-                LB = Z_M
-            elseif model == "MAX_PROFIT"
-                UB = Z_M
-            end
+            # if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
+            #     LB = Z_M
+            # elseif model == "MAX_PROFIT"
+            #     UB = Z_M
+            # end
     
             # Reduce the MIP gap by 10%
             mip_gap /= 1.1
@@ -637,12 +682,7 @@ function tender_stochastic_sensitivity(
 
 
                 println("Phase 2 Objective Value")
-                if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
-                    println(UB)
-                elseif model == "MAX_PROFIT"
-                    println(LB)
-                end
-                
+                println(UB)
                 println("Phase 2 run time")
                 println(time_elapsed)
                 println("Total run time: $total_time")
@@ -657,4 +697,4 @@ function tender_stochastic_sensitivity(
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(10,5,3,3,1,1,1,1, true, true, true, false, false)
+tender_stochastic_sensitivity(10,5,3,3,1,1,1,1, true, true, false, false, true)
