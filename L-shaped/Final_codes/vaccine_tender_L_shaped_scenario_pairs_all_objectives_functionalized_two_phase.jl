@@ -52,7 +52,9 @@ function tender_stochastic_sensitivity(
 
     model = []
     global LB_phase1 = 0
-    global UB_phase1 = 0
+    global trust_delta_all = 0
+    global delta_gap = 99999999999999999999
+
 
     if UNICEF_MODEL
         model = "UNICEF_GAVI"
@@ -128,11 +130,11 @@ function tender_stochastic_sensitivity(
 
 
     
-        relaxation_tol1 = 5e-1
-        relaxation_tol2 = 1e-1
+        relaxation_tol1 = 5e-2
+        relaxation_tol2 = 1e-2
         global iter1 = 1
         global iter2 = 1
-        iter_max = 5
+        iter_max = 500
     
         Z_M = 0.0
         Z_M_prev = 0.0
@@ -155,7 +157,7 @@ function tender_stochastic_sensitivity(
             JuMP.optimize!(Masterproblem)
             # println("Masterproblem Model status: ", termination_status(Masterproblem))
             # Check the solver status
-            ######################################################################3 add to second phase #########################################################
+
             if termination_status(Masterproblem) == MOI.OPTIMAL
                 println("Optimal solution found with MIPGap = ", mip_gap)
                 # break
@@ -238,36 +240,57 @@ function tender_stochastic_sensitivity(
                 else
                     set_normalized_rhs(obj_lb, Z_M_prev)
                 end
-            end
-    
+            end     
 
-            # if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
-            #     if iter1 == 1
-            #         global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)
-            #         Z_M_prev = Z_M
-            #     else
-            #         if Z_M >= Z_M_prev
-            #             set_normalized_rhs(obj_lb, Z_M)
-            #             # println(obj_lb)
-            #             Z_M_prev = Z_M
-            #         else
-            #             set_normalized_rhs(obj_lb, Z_M_prev)
-            #         end
-            #     end
-            # elseif model == "MAX_PROFIT"
-            #     if iter1 == 1
-            #         global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) <= Z_M)
-            #         Z_M_prev = Z_M
-            #     else
-            #         if Z_M <= Z_M_prev
-            #             set_normalized_rhs(obj_ub, Z_M)
-            #             # println(obj_lb)
-            #             Z_M_prev = Z_M
-            #         else
-            #             set_normalized_rhs(obj_ub, Z_M_prev)
-            #         end
-            #     end
-            # end
+            # add trust region constraint (Masterproblem, iter, Z_M, Z_M_prev) - create a function for this - SINGLE TRUST REGION FOR ALL BINARY
+            if iter1 == 1
+                trust_delta_all = (
+                    max_horizon_length * max_tender_length * length(A) +
+                    length(P) * length(T) * 2 +
+                    length(V) * length(P) * length(T) * length(m_segments)
+                ) / 2
+            elseif iter1 >= 2
+                trust_delta_all = ceil((Z_M >= Z_M_prev ? 1.3 : 0.6) * trust_delta_all)
+            end            
+
+            println("Current trust region RHS: $trust_delta_all")
+         
+
+            # add solution elimination constraints (Masterproblem, iter, Z_M, Z_M_prev) - create a function for this - MULTIPLE TRUST REGIONS FOR EACH BINARY
+            if iter1 >= 2
+                println("Generating trust region cuts")
+                # F variable
+                try
+                    unregister(Masterproblem, :trust_region_constr_all)
+                catch e
+                    println("No constraint: ", e)
+                finally
+                    trust_expr_F = sum(
+                        F_bar[a, (t, tau)] == 1 ? (1 - Masterproblem[:F][a, (t, tau)]) :
+                                                Masterproblem[:F][a, (t, tau)]
+                        for a in A, (t, tau) in F_time_set
+                    )
+
+                    trust_expr_Y = sum(
+                            Y_bar[p, t] == 1 ? (1 - Masterproblem[:Y][p, t]) : Masterproblem[:Y][p, t]
+                            for p in P, t in T
+                        )
+
+                    trust_expr_L = sum(
+                        L_bar[p, t] == 1 ? (1 - Masterproblem[:L][p, t]) : Masterproblem[:L][p, t]
+                        for p in P, t in T
+                    )
+
+                    trust_expr_Z = sum(
+                        Z_bar[v, p, t, m] == 1 ? (1 - Masterproblem[:Z][v, p, t, m]) : Masterproblem[:Z][v, p, t, m]
+                        for v in V for p in P_v[v] for t in T for m in keys(m_segments)
+                    )                    
+                    trust_expr_all = trust_expr_F + trust_expr_Y + trust_expr_L + trust_expr_Z
+                    @constraint(Masterproblem, trust_region_constr_all, trust_expr_all <= trust_delta_all)
+                end
+            end
+
+            
             
             Z_S_omega = Dict()
             dual_subproblem = Dict()
@@ -315,23 +338,7 @@ function tender_stochastic_sensitivity(
                 UB = Z_M - theta_total + Z_S_expected
             end
             push!(lb_vector, Z_M)
-            push!(ub_vector, UB)
-
-    
-
-            # if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
-            #     if Z_M - theta_total + Z_S_expected < UB
-            #         UB = Z_M - theta_total + Z_S_expected
-            #     end
-            #     push!(lb_vector, Z_M)
-            #     push!(ub_vector, UB)
-            # elseif model == "MAX_PROFIT"
-            #     if Z_M + theta_total - Z_S_expected > LB
-            #         LB = Z_M + theta_total - Z_S_expected
-            #     end
-            #     push!(ub_vector, Z_M)
-            #     push!(lb_vector, LB)
-            # end
+            push!(ub_vector, UB)        
     
             time_elapsed = time() - start_time
             lb_and_ub_vectors["lb"] = lb_vector
@@ -347,15 +354,6 @@ function tender_stochastic_sensitivity(
             LB = Z_M
             LB_phase1 = LB
 
-    
-            # if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
-            #     LB = Z_M
-            #     LB_phase1 = LB
-            # elseif model == "MAX_PROFIT"
-            #     UB = Z_M
-            #     UB_phase1 = UB
-            # end
-
             # Reduce the MIP gap by 10%
             mip_gap /= 1.1
             mip_gap = max(mip_gap, min_gap)
@@ -365,8 +363,36 @@ function tender_stochastic_sensitivity(
             println("UB: $UB")
 
             println("LB Phase 1: $LB_phase1")
+
+            # if iter1 > 1
+            #     lb_prev = lb_vector[iter1 - 1]
+            #     ub_prev = ub_vector[iter1 - 1]
+            
+            #     lb_curr = lb_vector[iter1]
+            #     ub_curr = ub_vector[iter1]
+            
+            #     # For example, compute gap difference
+            #     gap_prev = (ub_prev - lb_prev) / abs(ub_prev)
+            #     gap_curr = (ub_curr - lb_curr) / abs(ub_curr)
+            
+            #     delta_gap = abs(gap_curr - gap_prev)
+            #     println("GAP: $delta_gap")
+            # end
+
+            # large_gap = delta_gap > 0.0004
+
+            # if large_gap
+            #     println("The gap between successive solutions is large: $delta_gap")
+            # else
+            #     println("The gap is small: $delta_gap")
+            # end
     
-            if (UB - LB) / abs(UB) < relaxation_tol1 #|| time_elapsed >=500
+            if (UB - LB) / abs(UB) < relaxation_tol1 #|| !large_gap
+                # if !large_gap
+                #     println("No more major solution changes")
+                # else
+                #     println("Weve reached phase 1 tolerance")
+                # end
 
                 
                 # write_to_file(Masterproblem, "phase1_model.lp")
@@ -380,7 +406,7 @@ function tender_stochastic_sensitivity(
                 p_ω_test, κ, s_real, s_real_tilde, results_dir, m_segments)
 
 
-                println("Phase 1 L-shaped method converged in $time_elapsed seconds after $iter1 iterations")
+                println("Phase 1 L-shaped method completed in $time_elapsed seconds after $iter1 iterations")
                 total_time += time_elapsed
 
                 break
@@ -548,34 +574,56 @@ function tender_stochastic_sensitivity(
                     set_normalized_rhs(obj_lb, Z_M_prev)
                 end
             end
+       
+            
+            # add trust region constraint (Masterproblem, iter, Z_M, Z_M_prev) - create a function for this - SINGLE TRUST REGION FOR ALL BINARY
+            if iter2 == 1
+                trust_delta_all = (
+                    max_horizon_length * max_tender_length * length(A) +
+                    length(P) * length(T) * 2 +
+                    length(V) * length(P) * length(T) * length(m_segments)
+                ) / 2
+            elseif iter2 >= 2
+                trust_delta_all = ceil((Z_M >= Z_M_prev ? 1.3 : 0.6) * trust_delta_all)
+            end            
 
-            # if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
-            #     if iter1 == 1
-            #         global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)
-            #         Z_M_prev = Z_M
-            #     else
-            #         if Z_M >= Z_M_prev
-            #             set_normalized_rhs(obj_lb, Z_M)
-            #             # println(obj_lb)
-            #             Z_M_prev = Z_M
-            #         else
-            #             set_normalized_rhs(obj_lb, Z_M_prev)
-            #         end
-            #     end
-            # elseif model == "MAX_PROFIT"
-            #     if iter1 == 1
-            #         global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) <= Z_M)
-            #         Z_M_prev = Z_M
-            #     else
-            #         if Z_M <= Z_M_prev
-            #             set_normalized_rhs(obj_ub, Z_M)
-            #             # println(obj_lb)
-            #             Z_M_prev = Z_M
-            #         else
-            #             set_normalized_rhs(obj_ub, Z_M_prev)
-            #         end
-            #     end
-            # end
+            println("Current trust region RHS: $trust_delta_all")
+         
+
+            # add solution elimination constraints (Masterproblem, iter, Z_M, Z_M_prev) - create a function for this - MULTIPLE TRUST REGIONS FOR EACH BINARY
+            if iter2 >= 2
+                println("Generating trust region cuts")
+                # F variable
+                try
+                    unregister(Masterproblem, :trust_region_constr_all)
+                catch e
+                    println("No constraint: ", e)
+                finally
+                    trust_expr_F = sum(
+                        F_bar[a, (t, tau)] == 1 ? (1 - Masterproblem[:F][a, (t, tau)]) :
+                                                Masterproblem[:F][a, (t, tau)]
+                        for a in A, (t, tau) in F_time_set
+                    )
+
+                    trust_expr_Y = sum(
+                            Y_bar[p, t] == 1 ? (1 - Masterproblem[:Y][p, t]) : Masterproblem[:Y][p, t]
+                            for p in P, t in T
+                        )
+
+                    trust_expr_L = sum(
+                        L_bar[p, t] == 1 ? (1 - Masterproblem[:L][p, t]) : Masterproblem[:L][p, t]
+                        for p in P, t in T
+                    )
+
+                    trust_expr_Z = sum(
+                        Z_bar[v, p, t, m] == 1 ? (1 - Masterproblem[:Z][v, p, t, m]) : Masterproblem[:Z][v, p, t, m]
+                        for v in V for p in P_v[v] for t in T for m in keys(m_segments)
+                    )                    
+                    trust_expr_all = trust_expr_F + trust_expr_Y + trust_expr_L + trust_expr_Z
+                    @constraint(Masterproblem, trust_region_constr_all, trust_expr_all <= trust_delta_all)
+                end
+            end
+            
     
     
             Z_S_omega = Dict()
@@ -627,20 +675,6 @@ function tender_stochastic_sensitivity(
             push!(lb_vector, Z_M)
             push!(ub_vector, UB)
 
-
-            # if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
-            #     if Z_M - theta_total + Z_S_expected < UB
-            #         UB = Z_M - theta_total + Z_S_expected
-            #     end
-            #     push!(lb_vector, Z_M)
-            #     push!(ub_vector, UB)
-            # elseif model == "MAX_PROFIT"
-            #     if Z_M + theta_total - Z_S_expected > LB
-            #         LB = Z_M + theta_total - Z_S_expected
-            #     end
-            #     push!(ub_vector, Z_M)
-            #     push!(lb_vector, LB)
-            # end
     
             time_elapsed = time() - start_time
             lb_and_ub_vectors["lb"] = lb_vector
@@ -655,12 +689,6 @@ function tender_stochastic_sensitivity(
     
             LB = Z_M
 
-            # if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
-            #     LB = Z_M
-            # elseif model == "MAX_PROFIT"
-            #     UB = Z_M
-            # end
-    
             # Reduce the MIP gap by 10%
             mip_gap /= 1.1
             mip_gap = max(mip_gap, min_gap)
@@ -670,8 +698,10 @@ function tender_stochastic_sensitivity(
             println("UB: $UB")
 
             #cut generation complete conditions
-            if (UB - LB) / abs(UB) < relaxation_tol2 #|| time_elapsed >=500
-                println("Phase 2 L-shaped method converged in $time_elapsed seconds after $iter2 iterations")
+            if (UB - LB) / abs(UB) < relaxation_tol2 
+
+
+                println("Phase 2 L-shaped method completed in $time_elapsed seconds after $iter2 iterations")
                 total_time += time_elapsed
                 model_type = "L-shaped-phase2"
                 save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_sub,I_sub,Vc_sub,S_sub,Z_bar, model_type, A, T, T_initial, 

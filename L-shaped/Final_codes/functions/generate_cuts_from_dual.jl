@@ -155,12 +155,12 @@ function generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial
                 theta_rhs += (transpose(cons_omega_dict[ω][i]) * dual_subproblem[ω][i])
             end
 
-            if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
-                @constraint(Masterproblem, theta[ω] >= theta_rhs)
-            elseif model == "MAX_PROFIT"
-                @constraint(Masterproblem, theta[ω] <= theta_rhs)
-            end
-            # @constraint(Masterproblem, theta[ω] >= theta_rhs)
+            # if model == "UNICEF_GAVI" || model == "SOCIAL_BENEFIT"
+            #     @constraint(Masterproblem, theta[ω] >= theta_rhs)
+            # elseif model == "MAX_PROFIT"
+            #     @constraint(Masterproblem, theta[ω] <= theta_rhs)
+            # end
+            @constraint(Masterproblem, theta[ω] >= theta_rhs)
             
             println("*** Cut generated! ***")
         end
