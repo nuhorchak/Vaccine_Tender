@@ -54,6 +54,7 @@ function tender_stochastic_sensitivity(
     global LB_phase1 = 0
     global trust_delta_all = 0
     global delta_gap = 99999999999999999999
+    global gap_counter = 0
 
 
     if UNICEF_MODEL
@@ -255,9 +256,16 @@ function tender_stochastic_sensitivity(
 
             println("Current trust region RHS: $trust_delta_all")
          
+            #when do we stop using the trust region method - DONE, write this
+            #when do we stop phase 1 and move to phase 2 - DONE, write this
 
-            # add solution elimination constraints (Masterproblem, iter, Z_M, Z_M_prev) - create a function for this - MULTIPLE TRUST REGIONS FOR EACH BINARY
-            if iter1 >= 2
+            #remove scenario from MP once we solve it once!
+            # - store bounds?
+            # - how does the model react?
+            # - test by limiting the counter to 3
+
+            # add solution elimination constraints (Masterproblem, iter, Z_M, Z_M_prev) - create a function for this - SINGLE TRUST REGIONS FOR EACH BINARY
+            if iter1 >= 2 && (mip_gap > min_gap)
                 println("Generating trust region cuts")
                 # F variable
                 try
@@ -265,28 +273,30 @@ function tender_stochastic_sensitivity(
                 catch e
                     println("No constraint: ", e)
                 finally
-                    trust_expr_F = sum(
-                        F_bar[a, (t, tau)] == 1 ? (1 - Masterproblem[:F][a, (t, tau)]) :
-                                                Masterproblem[:F][a, (t, tau)]
-                        for a in A, (t, tau) in F_time_set
-                    )
+                    if mip_gap >= min_gap
+                        trust_expr_F = sum(
+                            F_bar[a, (t, tau)] == 1 ? (1 - Masterproblem[:F][a, (t, tau)]) :
+                                                    Masterproblem[:F][a, (t, tau)]
+                            for a in A, (t, tau) in F_time_set
+                        )
 
-                    trust_expr_Y = sum(
-                            Y_bar[p, t] == 1 ? (1 - Masterproblem[:Y][p, t]) : Masterproblem[:Y][p, t]
+                        trust_expr_Y = sum(
+                                Y_bar[p, t] == 1 ? (1 - Masterproblem[:Y][p, t]) : Masterproblem[:Y][p, t]
+                                for p in P, t in T
+                            )
+
+                        trust_expr_L = sum(
+                            L_bar[p, t] == 1 ? (1 - Masterproblem[:L][p, t]) : Masterproblem[:L][p, t]
                             for p in P, t in T
                         )
 
-                    trust_expr_L = sum(
-                        L_bar[p, t] == 1 ? (1 - Masterproblem[:L][p, t]) : Masterproblem[:L][p, t]
-                        for p in P, t in T
-                    )
-
-                    trust_expr_Z = sum(
-                        Z_bar[v, p, t, m] == 1 ? (1 - Masterproblem[:Z][v, p, t, m]) : Masterproblem[:Z][v, p, t, m]
-                        for v in V for p in P_v[v] for t in T for m in keys(m_segments)
-                    )                    
-                    trust_expr_all = trust_expr_F + trust_expr_Y + trust_expr_L + trust_expr_Z
-                    @constraint(Masterproblem, trust_region_constr_all, trust_expr_all <= trust_delta_all)
+                        trust_expr_Z = sum(
+                            Z_bar[v, p, t, m] == 1 ? (1 - Masterproblem[:Z][v, p, t, m]) : Masterproblem[:Z][v, p, t, m]
+                            for v in V for p in P_v[v] for t in T for m in keys(m_segments)
+                        )                    
+                        trust_expr_all = trust_expr_F + trust_expr_Y + trust_expr_L + trust_expr_Z
+                        @constraint(Masterproblem, trust_region_constr_all, trust_expr_all <= trust_delta_all)
+                    end
                 end
             end
 
@@ -364,38 +374,40 @@ function tender_stochastic_sensitivity(
 
             println("LB Phase 1: $LB_phase1")
 
-            # if iter1 > 1
-            #     lb_prev = lb_vector[iter1 - 1]
-            #     ub_prev = ub_vector[iter1 - 1]
+            if iter1 > 1
+                lb_prev = lb_vector[iter1 - 1]
+                ub_prev = ub_vector[iter1 - 1]
             
-            #     lb_curr = lb_vector[iter1]
-            #     ub_curr = ub_vector[iter1]
+                lb_curr = lb_vector[iter1]
+                ub_curr = ub_vector[iter1]
             
-            #     # For example, compute gap difference
-            #     gap_prev = (ub_prev - lb_prev) / abs(ub_prev)
-            #     gap_curr = (ub_curr - lb_curr) / abs(ub_curr)
+                # For example, compute gap difference
+                gap_prev = (ub_prev - lb_prev) / abs(ub_prev)
+                gap_curr = (ub_curr - lb_curr) / abs(ub_curr)
             
-            #     delta_gap = abs(gap_curr - gap_prev)
-            #     println("GAP: $delta_gap")
-            # end
+                delta_gap = abs(gap_curr - gap_prev)
+                println("GAP: $delta_gap")
+            end
 
-            # large_gap = delta_gap > 0.0004
+            large_gap = delta_gap > 0.00004
 
-            # if large_gap
-            #     println("The gap between successive solutions is large: $delta_gap")
-            # else
-            #     println("The gap is small: $delta_gap")
-            # end
+            if large_gap
+                println("The gap between successive solutions is greater than tolerance: $delta_gap")
+                gap_counter = 0
+            else
+                println("The gap is small: $delta_gap")
+                gap_counter += 1
+                println("Successive Gap Count: $gap_counter")
+            end
     
-            if (UB - LB) / abs(UB) < relaxation_tol1 #|| !large_gap
-                # if !large_gap
-                #     println("No more major solution changes")
-                # else
-                #     println("Weve reached phase 1 tolerance")
-                # end
-
-                
-                # write_to_file(Masterproblem, "phase1_model.lp")
+            if (UB - LB) / abs(UB) < relaxation_tol1 || gap_counter > 10 || iter1 > iter_max
+                if (UB - LB) / abs(UB) < relaxation_tol1
+                    println("Tolerance reached - Phase 1")
+                elseif gap_counter > 10
+                    println("Solution stabilitized, tolerance not reached")
+                elseif iter1 > iter_max
+                    println("Max iterations reached")
+                end
 
 
                 model_type = "L-shaped-phase1"
@@ -475,7 +487,7 @@ function tender_stochastic_sensitivity(
 
         # write_to_file(Masterproblem, "phase2_deleted_cons.lp")
                 
-        while iter2 <= iter_max
+        while iter2 <= iter_max 
             println("Phase 2 iteration: $iter2")
 
             if iter2 < 2
@@ -591,7 +603,7 @@ function tender_stochastic_sensitivity(
          
 
             # add solution elimination constraints (Masterproblem, iter, Z_M, Z_M_prev) - create a function for this - MULTIPLE TRUST REGIONS FOR EACH BINARY
-            if iter2 >= 2
+            if iter2 >= 2 && (mip_gap > min_gap)
                 println("Generating trust region cuts")
                 # F variable
                 try
@@ -599,28 +611,30 @@ function tender_stochastic_sensitivity(
                 catch e
                     println("No constraint: ", e)
                 finally
-                    trust_expr_F = sum(
-                        F_bar[a, (t, tau)] == 1 ? (1 - Masterproblem[:F][a, (t, tau)]) :
-                                                Masterproblem[:F][a, (t, tau)]
-                        for a in A, (t, tau) in F_time_set
-                    )
+                    if mip_gap >= min_gap
+                        trust_expr_F = sum(
+                            F_bar[a, (t, tau)] == 1 ? (1 - Masterproblem[:F][a, (t, tau)]) :
+                                                    Masterproblem[:F][a, (t, tau)]
+                            for a in A, (t, tau) in F_time_set
+                        )
 
-                    trust_expr_Y = sum(
-                            Y_bar[p, t] == 1 ? (1 - Masterproblem[:Y][p, t]) : Masterproblem[:Y][p, t]
+                        trust_expr_Y = sum(
+                                Y_bar[p, t] == 1 ? (1 - Masterproblem[:Y][p, t]) : Masterproblem[:Y][p, t]
+                                for p in P, t in T
+                            )
+
+                        trust_expr_L = sum(
+                            L_bar[p, t] == 1 ? (1 - Masterproblem[:L][p, t]) : Masterproblem[:L][p, t]
                             for p in P, t in T
                         )
 
-                    trust_expr_L = sum(
-                        L_bar[p, t] == 1 ? (1 - Masterproblem[:L][p, t]) : Masterproblem[:L][p, t]
-                        for p in P, t in T
-                    )
-
-                    trust_expr_Z = sum(
-                        Z_bar[v, p, t, m] == 1 ? (1 - Masterproblem[:Z][v, p, t, m]) : Masterproblem[:Z][v, p, t, m]
-                        for v in V for p in P_v[v] for t in T for m in keys(m_segments)
-                    )                    
-                    trust_expr_all = trust_expr_F + trust_expr_Y + trust_expr_L + trust_expr_Z
-                    @constraint(Masterproblem, trust_region_constr_all, trust_expr_all <= trust_delta_all)
+                        trust_expr_Z = sum(
+                            Z_bar[v, p, t, m] == 1 ? (1 - Masterproblem[:Z][v, p, t, m]) : Masterproblem[:Z][v, p, t, m]
+                            for v in V for p in P_v[v] for t in T for m in keys(m_segments)
+                        )                    
+                        trust_expr_all = trust_expr_F + trust_expr_Y + trust_expr_L + trust_expr_Z
+                        @constraint(Masterproblem, trust_region_constr_all, trust_expr_all <= trust_delta_all)
+                    end
                 end
             end
             
@@ -698,7 +712,7 @@ function tender_stochastic_sensitivity(
             println("UB: $UB")
 
             #cut generation complete conditions
-            if (UB - LB) / abs(UB) < relaxation_tol2 
+            if (UB - LB) / abs(UB) < relaxation_tol2 || iter2 > iter_max
 
 
                 println("Phase 2 L-shaped method completed in $time_elapsed seconds after $iter2 iterations")
@@ -727,4 +741,4 @@ function tender_stochastic_sensitivity(
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(10,5,3,3,1,1,1,1, true, true, false, false, true)
+tender_stochastic_sensitivity(10,5,3,3,1,1,1,1, true, true, true, false, false)
