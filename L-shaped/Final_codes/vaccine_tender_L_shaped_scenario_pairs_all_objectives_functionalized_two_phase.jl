@@ -250,19 +250,15 @@ function tender_stochastic_sensitivity(
                     length(P) * length(T) * 2 +
                     length(V) * length(P) * length(T) * length(m_segments)
                 ) / 2
-            elseif iter1 >= 2
+                println("Starting trust region RHS: $trust_delta_all")
+            elseif iter1 >= 2 && (mip_gap > min_gap)
                 trust_delta_all = ceil((Z_M >= Z_M_prev ? 1.3 : 0.6) * trust_delta_all)
+                println("Current trust region RHS: $trust_delta_all")
             end            
 
-            println("Current trust region RHS: $trust_delta_all")
          
             #when do we stop using the trust region method - DONE, write this
             #when do we stop phase 1 and move to phase 2 - DONE, write this
-
-            #remove scenario from MP once we solve it once!
-            # - store bounds?
-            # - how does the model react?
-            # - test by limiting the counter to 3
 
             # add solution elimination constraints (Masterproblem, iter, Z_M, Z_M_prev) - create a function for this - SINGLE TRUST REGIONS FOR EACH BINARY
             if iter1 >= 2 && (mip_gap > min_gap)
@@ -400,7 +396,7 @@ function tender_stochastic_sensitivity(
                 println("Successive Gap Count: $gap_counter")
             end
     
-            if (UB - LB) / abs(UB) < relaxation_tol1 || gap_counter > 10 || iter1 > iter_max
+            if (UB - LB) / abs(UB) < relaxation_tol1 || gap_counter > 10 || iter1 >= iter_max
                 if (UB - LB) / abs(UB) < relaxation_tol1
                     println("Tolerance reached - Phase 1")
                 elseif gap_counter > 10
@@ -593,14 +589,14 @@ function tender_stochastic_sensitivity(
                 trust_delta_all = (
                     max_horizon_length * max_tender_length * length(A) +
                     length(P) * length(T) * 2 +
-                    length(V) * length(P) * length(T) * length(m_segments)
+                    length(V) * length(P) * length(T) * length(m_segments) +
+                    length(P) * length(T) * 2
                 ) / 2
-            elseif iter2 >= 2
+                println("Starting trust region RHS: $trust_delta_all")
+            elseif iter2 >= 2 && (mip_gap > min_gap)
                 trust_delta_all = ceil((Z_M >= Z_M_prev ? 1.3 : 0.6) * trust_delta_all)
+                println("Current trust region RHS: $trust_delta_all")
             end            
-
-            println("Current trust region RHS: $trust_delta_all")
-         
 
             # add solution elimination constraints (Masterproblem, iter, Z_M, Z_M_prev) - create a function for this - MULTIPLE TRUST REGIONS FOR EACH BINARY
             if iter2 >= 2 && (mip_gap > min_gap)
@@ -631,14 +627,19 @@ function tender_stochastic_sensitivity(
                         trust_expr_Z = sum(
                             Z_bar[v, p, t, m] == 1 ? (1 - Masterproblem[:Z][v, p, t, m]) : Masterproblem[:Z][v, p, t, m]
                             for v in V for p in P_v[v] for t in T for m in keys(m_segments)
-                        )                    
-                        trust_expr_all = trust_expr_F + trust_expr_Y + trust_expr_L + trust_expr_Z
+                        )
+                        
+                        trust_expr_W = sum(
+                            F_bar[a, (t, tau)] == 1 ? (1 - Masterproblem[:W][p, (t, tau)]) :
+                                                    Masterproblem[:F][a, (t, tau)]
+                            for p in P, (t, tau) in F_time_set
+                        )
+
+                        trust_expr_all = trust_expr_F + trust_expr_Y + trust_expr_L + trust_expr_Z + trust_expr_W
                         @constraint(Masterproblem, trust_region_constr_all, trust_expr_all <= trust_delta_all)
                     end
                 end
             end
-            
-    
     
             Z_S_omega = Dict()
             dual_subproblem = Dict()
@@ -712,7 +713,7 @@ function tender_stochastic_sensitivity(
             println("UB: $UB")
 
             #cut generation complete conditions
-            if (UB - LB) / abs(UB) < relaxation_tol2 || iter2 > iter_max
+            if (UB - LB) / abs(UB) < relaxation_tol2 || iter2 >= iter_max
 
 
                 println("Phase 2 L-shaped method completed in $time_elapsed seconds after $iter2 iterations")
