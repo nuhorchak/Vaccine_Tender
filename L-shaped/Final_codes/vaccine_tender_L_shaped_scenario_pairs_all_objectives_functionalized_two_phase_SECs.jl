@@ -70,8 +70,8 @@ function tender_stochastic_sensitivity(
     end
 
     # value to scale coefficients for faster computation
-    global seed = rand(1:9999999)
-    # global seed = 22
+    # global seed = rand(1:9999999)
+    global seed = 22
     unit = 1000
     global total_time = 0
     global mip_gap_start = 2e-1  # 20% initial gap
@@ -700,7 +700,7 @@ function tender_stochastic_sensitivity(
                 println("GAP: $delta_gap")
             end
 
-            large_gap = delta_gap > 0.00004
+            large_gap = delta_gap > 0.0004
 
             if large_gap
                 println("The gap between successive solutions is greater than tolerance: $delta_gap")

@@ -342,14 +342,14 @@ function tender_stochastic_sensitivity(
             #     end
             # end
 
-            if iter1 >= 2 && (mip_gap >= min_gap)
-                println("Generating solution elimination constraint for F[a,(t,tau)]")        
-                mismatch_sum = sum(1 - Masterproblem[:F][a, (t, tau)] for a in A, (t, tau) in F_time_set if F_bar[a, (t, tau)] == 1) +
-                sum(Masterproblem[:F][a, (t, tau)] for a in A, (t, tau) in F_time_set if F_bar[a, (t, tau)] == 0)
+            # if iter1 >= 2 && (mip_gap >= min_gap)
+            #     println("Generating solution elimination constraint for F[a,(t,tau)]")        
+            #     mismatch_sum = sum(1 - Masterproblem[:F][a, (t, tau)] for a in A, (t, tau) in F_time_set if F_bar[a, (t, tau)] == 1) +
+            #     sum(Masterproblem[:F][a, (t, tau)] for a in A, (t, tau) in F_time_set if F_bar[a, (t, tau)] == 0)
  
-                @constraint(Masterproblem, mismatch_sum >= 1)
+            #     @constraint(Masterproblem, mismatch_sum >= 1)
          
-            end
+            # end
 
             
             Z_S_omega = Dict()
@@ -450,7 +450,7 @@ function tender_stochastic_sensitivity(
                 println("Successive Gap Count: $gap_counter")
             end
     
-            if (UB - LB) / abs(UB) < relaxation_tol1 || gap_counter > 10 || iter1 >= iter_max || feasible_solution == false
+            if (UB - LB) / abs(UB) < relaxation_tol1 || gap_counter > 10 || iter1 >= iter_max
 
                 if (UB - LB) / abs(UB) < relaxation_tol1
                     println("Tolerance reached - Phase 1")

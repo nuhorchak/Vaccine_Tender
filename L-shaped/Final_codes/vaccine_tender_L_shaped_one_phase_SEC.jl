@@ -27,7 +27,7 @@ include(joinpath(functions_directory, "select_random_scenarios.jl"))
 include(joinpath(functions_directory, "create_vaccine_data.jl"))
 include(joinpath(functions_directory, "sub_problem.jl"))
 include(joinpath(functions_directory, "master_problem.jl"))
-include(joinpath(functions_directory, "create_vaccine_data_MMR_only.jl"))
+# include(joinpath(functions_directory, "create_vaccine_data_MMR_only.jl"))
 
 # gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 9e-1, "Heuristics" => 0.5, "PumpPasses" => 10, "GomoryPasses"=>2)#, "Threads" => 8)
 gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-3, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "Heuristics" => 0.5, "PumpPasses" => 10, "GomoryPasses"=>2)#, "Threads" => 8) 
@@ -70,8 +70,8 @@ function tender_stochastic_sensitivity(
     end
 
     # value to scale coefficients for faster computation
-    global seed = rand(1:9999999)
-    # global seed = 22
+    # global seed = rand(1:9999999)
+    global seed = 1
     unit = 1000
     global total_time = 0
     global mip_gap_start = 2e-1  # 20% initial gap
@@ -108,28 +108,6 @@ function tender_stochastic_sensitivity(
                                         X_tilde_upper, A_p, s_real_tilde, d_real_tilde, 1, f_profit, V_a, L_ddot_upper, l, overlap_decision, m_segments, zeta_vm, phi_vm_lower, phi_vm_upper, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL)
 
         # write_to_file(Masterproblem, "pre_start_model.lp")
-
-        # Relax constraints for integer and binary variables
-        # for a in A, (t, tau) in F_time_set
-        #     unset_binary(Masterproblem[:F][a, (t, tau)])
-        # end
-    
-        # for p in P, t in T
-        #     unset_binary(Masterproblem[:Y][p, t])
-        # end
-    
-        # for p in P, (t, tau) in F_time_set
-        #     unset_binary(Masterproblem[:W][p, (t, tau)])  # Ensure proper indexing
-        # end
-    
-        # for v in V, p in P_v[v], t in T, m in keys(m_segments)
-        #     unset_binary(Masterproblem[:Z][v, p, t, m])
-        # end
-    
-        # for p in P, t in T
-        #     unset_integer(Masterproblem[:L][p, t])
-        # end
-    
         LB = 0
         UB = 1e30 #high number to start large gap for L-shaped method (which uses infinity)
 
