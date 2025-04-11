@@ -10,15 +10,16 @@ import JSON
 import MathOptInterface
 
 current_directory = @__DIR__
-functions_directory = joinpath(current_directory, "functions")
-data_dir = joinpath(current_directory, "data")
+#functions_directory = joinpath(current_directory, "functions")
+#data_dir = joinpath(current_directory, "data")
+functions_directory = joinpath(current_directory, "..", "functions")
+data_dir = joinpath(current_directory, "..", "data")
 results_dir = joinpath(current_directory, "results")
 
 # Include all the function files
 include(joinpath(functions_directory, "create_check_params.jl"))
 include(joinpath(functions_directory, "deterministic_equivalent.jl"))
 include(joinpath(functions_directory, "generate_cuts_from_dual.jl"))
-include(joinpath(functions_directory, "generate_knapsack_cut_from_dual.jl"))
 include(joinpath(functions_directory, "load_model_starting_points.jl"))
 include(joinpath(functions_directory, "initialize_parameters.jl"))
 include(joinpath(functions_directory, "process_scenario_data.jl"))
@@ -28,7 +29,7 @@ include(joinpath(functions_directory, "select_random_scenarios.jl"))
 include(joinpath(functions_directory, "create_vaccine_data.jl"))
 include(joinpath(functions_directory, "sub_problem.jl"))
 include(joinpath(functions_directory, "master_problem.jl"))
-# include(joinpath(functions_directory, "create_vaccine_data_MMR_only.jl"))
+include(joinpath(functions_directory, "create_vaccine_data_MMR_only.jl"))
 
 # gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 9e-1, "Heuristics" => 0.5, "PumpPasses" => 10, "GomoryPasses"=>2)#, "Threads" => 8)
 gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-3, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "Heuristics" => 0.5, "PumpPasses" => 10, "GomoryPasses"=>2)#, "Threads" => 8) 
@@ -71,8 +72,8 @@ function tender_stochastic_sensitivity(
     end
 
     # value to scale coefficients for faster computation
-    # global seed = rand(1:9999999)
-    global seed = 1
+    global seed = rand(1:9999999)
+    # global seed = 22
     unit = 1000
     global total_time = 0
     global mip_gap_start = 2e-1  # 20% initial gap
@@ -109,6 +110,28 @@ function tender_stochastic_sensitivity(
                                         X_tilde_upper, A_p, s_real_tilde, d_real_tilde, 1, f_profit, V_a, L_ddot_upper, l, overlap_decision, m_segments, zeta_vm, phi_vm_lower, phi_vm_upper, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL)
 
         # write_to_file(Masterproblem, "pre_start_model.lp")
+
+        # Relax constraints for integer and binary variables
+        # for a in A, (t, tau) in F_time_set
+        #     unset_binary(Masterproblem[:F][a, (t, tau)])
+        # end
+    
+        # for p in P, t in T
+        #     unset_binary(Masterproblem[:Y][p, t])
+        # end
+    
+        # for p in P, (t, tau) in F_time_set
+        #     unset_binary(Masterproblem[:W][p, (t, tau)])  # Ensure proper indexing
+        # end
+    
+        # for v in V, p in P_v[v], t in T, m in keys(m_segments)
+        #     unset_binary(Masterproblem[:Z][v, p, t, m])
+        # end
+    
+        # for p in P, t in T
+        #     unset_integer(Masterproblem[:L][p, t])
+        # end
+    
         LB = 0
         UB = 1e30 #high number to start large gap for L-shaped method (which uses infinity)
 
@@ -133,18 +156,9 @@ function tender_stochastic_sensitivity(
         # L-shaped method starts - Phase 1
         while iter1 <= iter_max
             println("Phase 1 iteration: $iter1")
-            #generate benders cuts
             Masterproblem = generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial_2, V, P_v, T, F_time_set, 
             X_tilde_upper, P, s_real_tilde, 1, A, d_real_tilde, l, f_profit, V_p, 
             starting_points_vect_I, starting_points_vect_S, m_segments, κ, s_real, model)
-
-            #generate knapsack cut
-            if iter1 > 1
-                Masterproblem = generate_knapsack_cut_from_dual(Masterproblem, dual_subproblem, Ω_test_partial_2, p_ω_test_partial_2, V, P_v, T, F_time_set, 
-                X_tilde_upper, P, s_real_tilde, 1, A, d_real_tilde, l, f_profit, V_p, 
-                starting_points_vect_I, starting_points_vect_S, m_segments, κ, s_real, model, UB)
-            end
-
             set_optimizer_attribute(Masterproblem, "LogFile", source1)
             set_optimizer_attribute(Masterproblem, "MIPGap", mip_gap)
             println("Solving MP after cuts!")
@@ -265,6 +279,16 @@ function tender_stochastic_sensitivity(
                         end
                     end
                 end   
+    
+                if iter1 >= 2 && (mip_gap >= min_gap)
+                    println("Generating solution elimination constraint for F[a,(t,tau)]")        
+                    mismatch_sum = sum(1 - Masterproblem[:F][a, (t, tau)] for a in A, (t, tau) in F_time_set if F_bar[a, (t, tau)] == 1) +
+                    sum(Masterproblem[:F][a, (t, tau)] for a in A, (t, tau) in F_time_set if F_bar[a, (t, tau)] == 0)
+     
+                    @constraint(Masterproblem, mismatch_sum >= 1)
+             
+                end
+    
                 
                 Z_S_omega = Dict()
                 dual_subproblem = Dict()
@@ -294,18 +318,6 @@ function tender_stochastic_sensitivity(
                     dual_subproblem[ω] = dual_vector_omega
                     Z_S_omega[ω] = JuMP.objective_value(Subproblem)
                 end #end dual solving
-
-                
-
-                # generate solution eliminiation constraint for scenario where missed doses > threashold
-                if iter1 >= 2 && 
-                    println("Generating solution elimination constraint for F[a,(t,tau)]")        
-                    mismatch_sum = sum(1 - Masterproblem[:F][a, (t, tau)] for a in A, (t, tau) in F_time_set if F_bar[a, (t, tau)] == 1) +
-                    sum(Masterproblem[:F][a, (t, tau)] for a in A, (t, tau) in F_time_set if F_bar[a, (t, tau)] == 0)
-     
-                    @constraint(Masterproblem, mismatch_sum >= 1)
-                end
-
         
                 # update UB
                 Z_S_expected = sum(p_ω_test_partial_2[ω] * Z_S_omega[ω] for ω in Ω_test_partial_2)
