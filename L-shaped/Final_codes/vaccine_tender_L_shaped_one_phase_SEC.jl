@@ -17,7 +17,8 @@ results_dir = joinpath(current_directory, "results")
 # Include all the function files
 include(joinpath(functions_directory, "create_check_params.jl"))
 include(joinpath(functions_directory, "deterministic_equivalent.jl"))
-include(joinpath(functions_directory, "generate_cuts_from_dual.jl"))
+# include(joinpath(functions_directory, "generate_cuts_from_dual.jl")) 
+include(joinpath(functions_directory, "generate_deepest_cut_from_dual.jl"))
 include(joinpath(functions_directory, "generate_knapsack_cut_from_dual.jl"))
 include(joinpath(functions_directory, "load_model_starting_points.jl"))
 include(joinpath(functions_directory, "initialize_parameters.jl"))
@@ -77,6 +78,7 @@ function tender_stochastic_sensitivity(
     global total_time = 0
     global mip_gap_start = 2e-1  # 20% initial gap
     global min_gap = 1e-2  # 1% Minimum acceptable gap
+    global epsilon = 1
 
     for trial in 1:number_of_trials
         println("trial: $trial")
@@ -133,6 +135,8 @@ function tender_stochastic_sensitivity(
         # L-shaped method starts - Phase 1
         while iter1 <= iter_max
             println("Phase 1 iteration: $iter1")
+            write_to_file(Masterproblem, "model_iter_$(iter1).lp")
+
             #generate benders cuts
             Masterproblem = generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial_2, V, P_v, T, F_time_set, 
             X_tilde_upper, P, s_real_tilde, 1, A, d_real_tilde, l, f_profit, V_p, 
@@ -144,6 +148,38 @@ function tender_stochastic_sensitivity(
                 X_tilde_upper, P, s_real_tilde, 1, A, d_real_tilde, l, f_profit, V_p, 
                 starting_points_vect_I, starting_points_vect_S, m_segments, κ, s_real, model, UB)
             end
+
+            # generate solution eliminiation constraint for scenario where missed doses > threashold
+            if iter1 > 1
+                println("Generating solution elimination constraint for F[a,(t,tau)]")        
+                mismatch_sum = sum(1 - Masterproblem[:F][a, (t, tau)] for a in A, (t, tau) in F_time_set if F_bar[a, (t, tau)] == 1) +
+                sum(Masterproblem[:F][a, (t, tau)] for a in A, (t, tau) in F_time_set if F_bar[a, (t, tau)] == 0)
+    
+                @constraint(Masterproblem, mismatch_sum >= 1)
+            end
+
+            # generate cut for UB using epsilon
+            if iter1 > 1
+                epsilon = max(1e-2 * abs(UB), 1)  # use 1e-3, not 10e-4
+                println("Generating feasibility seeking cut, with epsilon: $epsilon") 
+                # RHS_sum = sum(g[t] * Masterproblem[:F][a, (t, tau)] / delta[t]
+                #                 for (t, tau) in F_time_set, a in A if (a, t, tau) ∉ starting_points_vect_F) +
+                #             sum(r_avg[v1, t] * (1 - zeta_vm[v1, m]) * Masterproblem[:Q][v1, p, (t, tau), m] / delta[t]
+                #                 for v1 in V, (t, tau) in F_time_set, m in keys(m_segments), p in P_v[v]) +
+                #             sum(p_ω_test[ω] * Masterproblem[:theta][ω] for ω in Ω_test_partial_2)
+            
+                # @constraint(Masterproblem, UB - epsilon >= RHS_sum)
+                rhs_expr = @expression(Masterproblem,
+                sum(g[t] * Masterproblem[:F][a, (t, tau)] / delta[t]
+                    for (t, tau) in F_time_set, a in A if (a, t, tau) ∉ starting_points_vect_F) +
+                sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * Masterproblem[:Q][v,p,(t, tau),m] / delta[t]
+                    for v in V, p in P_v[v], (t, tau) in F_time_set, m in keys(m_segments)) +
+                sum(p_ω_test[ω] * Masterproblem[:theta][ω] for ω in Ω_test_partial_2)
+            )
+            
+            
+                @constraint(Masterproblem, UB - epsilon >= rhs_expr)
+            end 
 
             set_optimizer_attribute(Masterproblem, "LogFile", source1)
             set_optimizer_attribute(Masterproblem, "MIPGap", mip_gap)
@@ -295,18 +331,7 @@ function tender_stochastic_sensitivity(
                     Z_S_omega[ω] = JuMP.objective_value(Subproblem)
                 end #end dual solving
 
-                
-
-                # generate solution eliminiation constraint for scenario where missed doses > threashold
-                if iter1 >= 2 && 
-                    println("Generating solution elimination constraint for F[a,(t,tau)]")        
-                    mismatch_sum = sum(1 - Masterproblem[:F][a, (t, tau)] for a in A, (t, tau) in F_time_set if F_bar[a, (t, tau)] == 1) +
-                    sum(Masterproblem[:F][a, (t, tau)] for a in A, (t, tau) in F_time_set if F_bar[a, (t, tau)] == 0)
-     
-                    @constraint(Masterproblem, mismatch_sum >= 1)
-                end
-
-        
+      
                 # update UB
                 Z_S_expected = sum(p_ω_test_partial_2[ω] * Z_S_omega[ω] for ω in Ω_test_partial_2)
         
@@ -320,7 +345,9 @@ function tender_stochastic_sensitivity(
                     UB = Z_M - theta_total + Z_S_expected
                 end
                 push!(lb_vector, Z_M)
-                push!(ub_vector, UB)        
+                push!(ub_vector, UB) 
+                
+               
         
                 time_elapsed = time() - start_time
                 lb_and_ub_vectors["lb"] = lb_vector
