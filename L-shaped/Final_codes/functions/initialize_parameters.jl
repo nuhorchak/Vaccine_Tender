@@ -35,7 +35,7 @@ function initialize_parameters(
     L_upper_number = allowable_capacity_increase_number
     delta = [(1+0.03)^t for t in 1:tmax]
 
-    inf_penalty = 100
+    # inf_penalty = 100
     # Unvaccinated children penalty
     beta = 10
 

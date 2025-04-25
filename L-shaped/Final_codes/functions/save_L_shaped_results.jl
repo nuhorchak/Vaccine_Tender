@@ -308,7 +308,7 @@ L_shaped_output = Dict()
         close(f)
     end
 
-    if model_type == "L-shaped-phase2" || model_type == "DE model"
+    if model_type == "L-shaped-phase1" || model_type == "DE model"
 
 
         sensitivity_output = Dict()

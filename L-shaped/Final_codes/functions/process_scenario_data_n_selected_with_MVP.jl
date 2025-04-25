@@ -17,6 +17,7 @@ function process_scenario_data_n_selected_with_MVP(
     num_MP_scenarios::Int,  # New input parameter
     MVP::Bool,               # New binary flag
     seed::Int,
+    unit::Int,
 )
 
 
@@ -41,7 +42,7 @@ function process_scenario_data_n_selected_with_MVP(
     # total_scenarios = length(selected_scenario_probs)
     # random_scenarios = select_random_scenarios(1, ceil(Int, length(selected_scenario_pairs) / total_capacity_scenarios), number_of_demand_scenarios, total_capacity_scenarios, 22)
 
-    unit = 1000
+    # unit = 1000
     Ω_test = random_scenarios
 
     d_real_tilde = Dict()
