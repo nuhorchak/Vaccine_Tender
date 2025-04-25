@@ -318,34 +318,34 @@ function tender_stochastic_sensitivity(
                     Vc_sub[ω] = Vc_temp
                 end
     
-                # if model == "MAX_PROFIT"
-                #     if iter1 == 1
-                #         global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)  # still using -profit
-                #         Z_M_prev = Z_M
-                #     else
-                #         # Since we minimize -profit, a *less negative* Z_M is better
-                #         if Z_M <= Z_M_prev
-                #             set_normalized_rhs(obj_lb, Z_M)  # tighten constraint to better (less negative) value
-                #             Z_M_prev = Z_M
-                #         else
-                #             set_normalized_rhs(obj_lb, Z_M_prev)  # keep previous tighter bound
-                #         end
-                #     end
+                if model == "MAX_PROFIT"
+                    if iter1 == 1
+                        global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)  # still using -profit
+                        Z_M_prev = Z_M
+                    else
+                        # Since we minimize -profit, a *less negative* Z_M is better
+                        if Z_M <= Z_M_prev
+                            set_normalized_rhs(obj_lb, Z_M)  # tighten constraint to better (less negative) value
+                            Z_M_prev = Z_M
+                        else
+                            set_normalized_rhs(obj_lb, Z_M_prev)  # keep previous tighter bound
+                        end
+                    end
                     
-                # else
-                #     if iter1 == 1
-                #         global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)
-                #         Z_M_prev = Z_M
-                #     else
-                #         if Z_M >= Z_M_prev
-                #             set_normalized_rhs(obj_lb, Z_M)
-                #             # println(obj_lb)
-                #             Z_M_prev = Z_M
-                #         else
-                #             set_normalized_rhs(obj_lb, Z_M_prev)
-                #         end
-                #     end
-                # end
+                else
+                    if iter1 == 1
+                        global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)
+                        Z_M_prev = Z_M
+                    else
+                        if Z_M >= Z_M_prev
+                            set_normalized_rhs(obj_lb, Z_M)
+                            # println(obj_lb)
+                            Z_M_prev = Z_M
+                        else
+                            set_normalized_rhs(obj_lb, Z_M_prev)
+                        end
+                    end
+                end
 
                 
                 Z_S_omega = Dict()
