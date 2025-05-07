@@ -1,0 +1,264 @@
+trial: 1
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Building master problem
+Max profit model with capacity extension/discounts
+Phase 1 iteration: 1
+Solving MP after cuts!
+Set parameter FeasibilityTol to value 0.001
+Set parameter PumpPasses to value 10
+Set parameter NumericFocus to value 1
+Set parameter GomoryPasses to value 2
+Set parameter MIPGap to value 0.2
+Set parameter Heuristics to value 0.5
+Optimal solution found with MIPGap = 0.2
+Z_M
+5.813626132458905e11
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Max Profit model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.2
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Max Profit model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.2
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Max Profit model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.2
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Max Profit model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.2
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Max Profit model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.2
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Max Profit model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.2
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Max Profit model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.2
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Max Profit model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.2
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.18181818181818182
+LB: -5.813626132458905e11
+UB: -5.2865081956242346e11
+The difference between successive solutions is greater than tolerance: 99999999999999999999
+Phase 1 iteration: 2
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 9.222704303504778e10
+Total Demand: 4.65138546495121e10
+Ratio of Missed doses to demand: 1.9827864994202362
+Generating solution elimination constraint for F[a,(t,tau)]
+Generating feasibility seeking cut, with epsilon: 5.286508195624235e9
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.18181818181818182
+Z_M
+5.2328674770442676e11
+---------------- F Flips in iteration 2: 98 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Max Profit model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8181818181818182e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Max Profit model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8181818181818182e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Max Profit model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8181818181818182e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Max Profit model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8181818181818182e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Max Profit model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8181818181818182e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Max Profit model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8181818181818182e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Max Profit model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8181818181818182e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Max Profit model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8181818181818182e-01
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.1652892561983471
+LB: -5.2328674770442676e11
+UB: -5.2865081956242346e11
+GAP: 0.10985675873828113
+The difference between successive solutions is greater than tolerance: 0.10985675873828113
+Tolerance reached - Phase 1
+total_tender_length: 305.0
+total_number_of_tenders: 113
+avg_tender_length: 2.6991150442477876
+total_overlapped: 185.0
+total_cap_increase (%)
+Dict{Any, Any}("Sanofi" => 200.0, "Pfizer" => 200.0, "AJ_Vaccines" => 0.0, "Serum_Institute" => 200.0, "China_National" => 160.0, "BB_NCIPD" => 140.0, "Merck_Sharp" => 200.0, "Bilthoven" => 80.0, "Haffkine_Bio" => 180.0, "Biological_E" => 200.0, "LG_Chem" => 180.0, "Panacea_Biotec" => 100.0, "Bharat_Biotech" => 200.0, "GSK" => 200.0, "PT_Bio" => 180.0)
+total_cap_increase_category (%)
+Dict{Any, Any}("Medium" => 185.0, "Small" => 85.0, "Large" => 200.0)
+cap_usage
+Dict{Any, Any}("Sanofi" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Pfizer" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "AJ_Vaccines" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Serum_Institute" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "China_National" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "BB_NCIPD" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Merck_Sharp" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Bilthoven" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Haffkine_Bio" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Biological_E" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "LG_Chem" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Panacea_Biotec" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Bharat_Biotech" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "GSK" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "PT_Bio" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0))
+cap_usage_range
+Dict{Any, Any}("Sanofi" => [0.0, 0.0], "Pfizer" => [0.0, 0.0], "AJ_Vaccines" => [0.0, 0.0], "Serum_Institute" => [0.0, 0.0], "China_National" => [0.0, 0.0], "BB_NCIPD" => [0.0, 0.0], "Merck_Sharp" => [0.0, 0.0], "Bilthoven" => [0.0, 0.0], "Haffkine_Bio" => [0.0, 0.0], "Biological_E" => [0.0, 0.0], "LG_Chem" => [0.0, 0.0], "Panacea_Biotec" => [0.0, 0.0], "Bharat_Biotech" => [0.0, 0.0], "GSK" => [0.0, 0.0], "PT_Bio" => [0.0, 0.0])
+cap_usage_expected
+Dict{Any, Any}("Sanofi" => 0.0, "Pfizer" => 0.0, "AJ_Vaccines" => 0.0, "Serum_Institute" => 0.0, "China_National" => 0.0, "BB_NCIPD" => 0.0, "Merck_Sharp" => 0.0, "Bilthoven" => 0.0, "Haffkine_Bio" => 0.0, "Biological_E" => 0.0, "LG_Chem" => 0.0, "Panacea_Biotec" => 0.0, "Bharat_Biotech" => 0.0, "GSK" => 0.0, "PT_Bio" => 0.0)
+cap_usage_category
+Dict{Any, Any}("Sanofi" => Dict{Any, Any}(34 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 20 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 13 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 9 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 14 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 8 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "Pfizer" => Dict{Any, Any}(34 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 20 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 13 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 9 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 14 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 8 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "AJ_Vaccines" => Dict{Any, Any}(34 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 20 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 13 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 9 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 14 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 8 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "Serum_Institute" => Dict{Any, Any}(34 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 20 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 13 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 9 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 14 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 8 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "China_National" => Dict{Any, Any}(34 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 20 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 13 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 9 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 14 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 8 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "BB_NCIPD" => Dict{Any, Any}(34 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 20 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 13 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 9 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 14 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 8 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "Merck_Sharp" => Dict{Any, Any}(34 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 20 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 13 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 9 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 14 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 8 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "Bilthoven" => Dict{Any, Any}(34 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 20 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 13 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 9 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 14 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 8 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "Haffkine_Bio" => Dict{Any, Any}(34 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 20 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 13 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 9 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 14 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 8 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "Biological_E" => Dict{Any, Any}(34 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 20 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 13 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 9 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 14 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 8 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "LG_Chem" => Dict{Any, Any}(34 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 20 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 13 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 9 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 14 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 8 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "Panacea_Biotec" => Dict{Any, Any}(34 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 20 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 13 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 9 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 14 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 8 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "Bharat_Biotech" => Dict{Any, Any}(34 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 20 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 13 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 9 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 14 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 8 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "GSK" => Dict{Any, Any}(34 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 20 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 13 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 9 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 14 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 8 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "PT_Bio" => Dict{Any, Any}(34 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 20 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 13 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 9 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 14 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 8 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)))
+cap_usage_category_overall
+Dict{Any, Any}("Sanofi" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "Pfizer" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "AJ_Vaccines" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "Serum_Institute" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "China_National" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "BB_NCIPD" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "Merck_Sharp" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "Bilthoven" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "Haffkine_Bio" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "Biological_E" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "LG_Chem" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "Panacea_Biotec" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "Bharat_Biotech" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "GSK" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "PT_Bio" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0))
+unvac_children
+Dict{Any, Any}("PCV" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Measles" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Mumps" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "HPV" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Hib" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Pertussis" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Rotavirus" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Polio" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Diphtheria" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Hepatitis_B" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Tetanus" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Rubella" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0))
+unvac_children_range
+Dict{Any, Any}("PCV" => [0.0, 0.0], "Measles" => [0.0, 0.0], "Mumps" => [0.0, 0.0], "HPV" => [0.0, 0.0], "Hib" => [0.0, 0.0], "Pertussis" => [0.0, 0.0], "Rotavirus" => [0.0, 0.0], "Polio" => [0.0, 0.0], "Diphtheria" => [0.0, 0.0], "Hepatitis_B" => [0.0, 0.0], "Tetanus" => [0.0, 0.0], "Rubella" => [0.0, 0.0])
+unvac_children_expected
+Dict{Any, Any}("PCV" => 0.0, "Measles" => 0.0, "Mumps" => 0.0, "HPV" => 0.0, "Hib" => 0.0, "Pertussis" => 0.0, "Rotavirus" => 0.0, "Polio" => 0.0, "Diphtheria" => 0.0, "Hepatitis_B" => 0.0, "Tetanus" => 0.0, "Rubella" => 0.0)
+category_S_expected_dict
+Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0)
+unvac_children_range_category
+Dict{Any, Any}("MMR-based" => [0.0, 0.0], "Single" => [0.0, 0.0], "Td-based" => [0.0, 0.0])
+inv_vaccine
+Dict{Any, Any}("PCV" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "DTwP-Hib" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "IPV" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Hexa" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "HPV" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Hib" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "M" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "DT" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "HepB" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "MMR" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Td" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Rotavirus" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "TT" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "MR" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "Penta" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "DTwP" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0), "OPV" => Dict{Any, Any}(34 => 0.0, 22 => 0.0, 6 => 0.0, 20 => 0.0, 13 => 0.0, 9 => 0.0, 31 => 0.0, 14 => 0.0, 8 => 0.0))
+inv_vaccine_range
+Dict{Any, Any}("PCV" => [0.0, 0.0], "DTwP-Hib" => [0.0, 0.0], "IPV" => [0.0, 0.0], "Hexa" => [0.0, 0.0], "HPV" => [0.0, 0.0], "Hib" => [0.0, 0.0], "M" => [0.0, 0.0], "DT" => [0.0, 0.0], "HepB" => [0.0, 0.0], "MMR" => [0.0, 0.0], "Td" => [0.0, 0.0], "Rotavirus" => [0.0, 0.0], "TT" => [0.0, 0.0], "MR" => [0.0, 0.0], "Penta" => [0.0, 0.0], "DTwP" => [0.0, 0.0], "OPV" => [0.0, 0.0])
+inv_vaccine_expected
+Dict{Any, Any}("PCV" => 0.0, "DTwP-Hib" => 0.0, "IPV" => 0.0, "Hexa" => 0.0, "HPV" => 0.0, "Hib" => 0.0, "M" => 0.0, "DT" => 0.0, "HepB" => 0.0, "MMR" => 0.0, "Td" => 0.0, "Rotavirus" => 0.0, "TT" => 0.0, "MR" => 0.0, "Penta" => 0.0, "DTwP" => 0.0, "OPV" => 0.0)
+category_I_expected_dict
+Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0)
+Phase 1 L-shaped method completed in 328.36794781684875 seconds after 2 iterations

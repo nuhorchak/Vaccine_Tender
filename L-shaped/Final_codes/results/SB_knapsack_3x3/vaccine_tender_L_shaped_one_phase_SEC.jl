@@ -11,14 +11,17 @@ import MathOptInterface as MOI
 
 
 current_directory = @__DIR__
-functions_directory = joinpath(current_directory, "functions")
-data_dir = joinpath(current_directory, "data")
+#functions_directory = joinpath(current_directory, "functions")
+#data_dir = joinpath(current_directory, "data")
+functions_directory = joinpath(current_directory, "..", "functions")
+data_dir = joinpath(current_directory, "..", "data")
 results_dir = joinpath(current_directory, "results")
 
 # Include all the function files
 include(joinpath(functions_directory, "create_check_params.jl"))
 include(joinpath(functions_directory, "deterministic_equivalent.jl"))
 include(joinpath(functions_directory, "generate_cuts_from_dual.jl")) 
+# include(joinpath(functions_directory, "generate_deepest_cut_from_dual.jl"))
 include(joinpath(functions_directory, "generate_knapsack_cut_from_dual.jl"))
 include(joinpath(functions_directory, "load_model_starting_points.jl"))
 include(joinpath(functions_directory, "initialize_parameters.jl"))
@@ -28,8 +31,6 @@ include(joinpath(functions_directory, "save_L_shaped_results.jl"))
 include(joinpath(functions_directory, "select_random_scenarios.jl"))
 include(joinpath(functions_directory, "create_vaccine_data.jl"))
 include(joinpath(functions_directory, "sub_problem.jl"))
-include(joinpath(functions_directory, "dual_sub_problem.jl"))
-include(joinpath(functions_directory, "update_core_points.jl"))
 include(joinpath(functions_directory, "master_problem.jl"))
 # include(joinpath(functions_directory, "create_vaccine_data_MMR_only.jl"))
 
@@ -59,7 +60,7 @@ function tender_stochastic_sensitivity(
     global trust_delta_all = 0
     global delta_gap = 99999999999999999999
     global gap_counter = 0
-    # global feasible_solution = true
+    global feasible_solution = true
 
     global F_bars = []
     global num_flips_F = []
@@ -90,7 +91,7 @@ function tender_stochastic_sensitivity(
         ################################################### INITIALIZE NECESSARY PARAMS ###################################################
         #load vaccine dict data
         A, V, A_v, P, P_v, V_a, V_p, P_a, A_p, capacity_category, vaccine_category, antigen_category = create_vaccine_data()
-        T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, beta, zeta_vm, phi_vm_lower, phi_vm_upper, m_segments, λ = initialize_parameters(data_dir, unit, scaled_capacity, max_horizon_length, max_tender_length, P, V, P_v, V_p, allowable_capacity_increase_number)
+        T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, beta, zeta_vm, phi_vm_lower, phi_vm_upper, m_segments = initialize_parameters(data_dir, unit, scaled_capacity, max_horizon_length, max_tender_length, P, V, P_v, V_p, allowable_capacity_increase_number)
         Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2, partial_scenario, s_real_tilde, d_real_tilde, random_scenarios = process_scenario_data_n_selected_with_MVP(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number, 1, false, seed,unit)
         X_tilde_lower, X_tilde_upper, L_ddot_lower, L_ddot_upper, L_hat_lower, L_hat_upper, L_check_lower, L_check_upper = create_check_params(V, P, P_v, T, F_time_set, s_real, κ, L_upper_number)
         
@@ -127,7 +128,6 @@ function tender_stochastic_sensitivity(
         Z_M = 0.0
         Z_M_prev = 0.0
         dual_subproblem = []
-        dual_subproblem_MMW = []
         lb_vector = []
         ub_vector = []
         lb_and_ub_vectors = Dict()
@@ -140,73 +140,16 @@ function tender_stochastic_sensitivity(
             println("Phase 1 iteration: $iter1")
             # write_to_file(Masterproblem, "model_iter_$(iter1).lp")
 
-            if iter1 > 1
-                #solve M-M-W dual sub problem
-                for ω in Ω_test_partial_2
-                    # println("scenario: $ω")
-
-                    #############################################################################################################################
-                    # Need to get correct inputs. *_core are good, check others with *_hat_bar - for starting I and S
-                    ############################################################################################################################
-                    # need to collect vector of dual sub problem solutions as dual_subproblem_MMW for input into generate cuts and generate knapsack
-
-                    I_hat = Dict(v => amt for (v, amt) in starting_points_vect_I)
-                    S_hat = Dict(a => amt for (a, amt) in starting_points_vect_S)
-
-                    dualsubproblem = dual_sub_problem(Q_core, Y_core, L_core, Q_bar, Y_bar, L_bar, I_hat, S_hat, Z_S_expected,
-                    s_tilde, beta, κ, V, P_v, T, A, A_v, r_bar, m_segments, gurobi_solver_no_presolve, model_type)
-
-                    set_optimizer_attribute(dualsubproblem, "MIPGap", mip_gap)                                                        
-                    optimize!(dualsubproblem)
-                    println("Dual Subproblem Model status: ", termination_status(dualsubproblem))
-
-                    # Initialize separate vectors for each dual variable
-                    π_2_vec = []
-                    π_3_vec = []
-                    π_4_vec = []
-                    π_5_vec = []
-                    π_6_vec = []
-                    π_7_vec = []
-
-                    # π_2[v,p,t,tau]
-                    for v in V, p in P_v[v], t in T, tau in T
-                        push!(π_2_vec, value(dualsubproblem[:π_2][v, p, (t, tau)]))
-                    end
-
-                    # π_3[p,t]
-                    for v in V, p in P_v[v], t in T
-                        push!(π_3_vec, value(dualsubproblem[:π_3][p, t]))
-                    end
-
-                    # π_4[v,t]
-                    for v in V, t in T
-                        push!(π_4_vec, value(dualsubproblem[:π_4][v, t]))
-                    end
-
-                    # π_5[a,t]
-                    for a in A, t in T
-                        push!(π_5_vec, value(dualsubproblem[:π_5][a, t]))
-                    end
-
-                    # π_6[v]
-                    for v in V
-                        push!(π_6_vec, value(dualsubproblem[:π_6][v]))
-                    end
-
-                    # π_7[a]
-                    for a in A
-                        push!(π_7_vec, value(dualsubproblem[:π_7][a]))
-                    end
-
-                    # Combine into master vector
-                    dual_vector_MMW = [π_2_vec, π_3_vec, π_4_vec, π_5_vec, π_6_vec, π_7_vec]
-                    dual_subproblem_MMW[ω] = dual_vector_MMW
-                end #end dual solving
-            end
+            # #generate benders cuts
+            # if iter1 > 1
+            #     Masterproblem = generate_deepst_cut_from_dual(Masterproblem, dual_subproblem, Ω_test_partial_2, V, P_v, T, F_time_set, 
+            #     X_tilde_upper, P, s_real_tilde, 1, A, d_real_tilde, l, f_profit, V_p, 
+            #     starting_points_vect_I, starting_points_vect_S, m_segments, κ, s_real, model, LB)
+            # end
 
             # #generate benders cuts
             if iter1 > 1
-                Masterproblem = generate_cuts_from_dual(Masterproblem, dual_subproblem_MMW, Ω_test_partial_2, V, P_v, T, F_time_set, 
+                Masterproblem = generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial_2, V, P_v, T, F_time_set, 
                 X_tilde_upper, P, s_real_tilde, 1, A, d_real_tilde, l, f_profit, V_p, 
                 starting_points_vect_I, starting_points_vect_S, m_segments, κ, s_real, model)
             end
@@ -376,8 +319,7 @@ function tender_stochastic_sensitivity(
                     S_sub[ω] = S_temp
                     Vc_sub[ω] = Vc_temp
                 end
-
-
+    
                 if iter1 == 1
                     global obj_lb = @constraint(Masterproblem, objective_function(Masterproblem) >= Z_M)
                     Z_M_prev = Z_M
@@ -390,7 +332,6 @@ function tender_stochastic_sensitivity(
                         set_normalized_rhs(obj_lb, Z_M_prev)
                     end
                 end
-
                 
                 Z_S_omega = Dict()
                 dual_subproblem = Dict()
@@ -435,14 +376,9 @@ function tender_stochastic_sensitivity(
                     UB = Z_M - theta_total + Z_S_expected
                 end
                 push!(lb_vector, Z_M)
-                push!(ub_vector, UB)
-
-                #update core points for MMW pareto optimal cuts
-                Q_core, Y_core, L_core = update_core_points(
-                    iter1, λ,
-                    Q_bar, Y_bar, L_bar, s_real, κ,
-                    V, P_v, P, T, F_time_set, m_segments, L_lower_number
-                )
+                push!(ub_vector, UB) 
+                
+               
         
                 time_elapsed = time() - start_time
                 lb_and_ub_vectors["lb"] = lb_vector
@@ -540,6 +476,7 @@ function tender_stochastic_sensitivity(
                 total_time += time_elapsed
 
                 break
+                
             end
     
             iter1 += 1
@@ -547,4 +484,4 @@ function tender_stochastic_sensitivity(
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(10,5,3,3,1,1,1,2, true, true, true, false, false)
+tender_stochastic_sensitivity(10,5,3,3,1,1,1,2, true, true, false, true, false)
