@@ -1,0 +1,4395 @@
+trial: 1
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Building master problem
+Social benefit model with capacity extension/discounts
+Phase 1 iteration: 1
+Solving MP after cuts!
+Set parameter FeasibilityTol to value 0.001
+Set parameter PumpPasses to value 10
+Set parameter NumericFocus to value 1
+Set parameter GomoryPasses to value 2
+Set parameter MIPGap to value 0.2
+Set parameter Heuristics to value 0.5
+Optimal solution found with MIPGap = 0.2
+Z_M
+1.5581447894688856e7
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.2
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.2
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.2
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.2
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.2
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.2
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.2
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.2
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.18181818181818182
+LB: 1.5581447894688856e7
+UB: 6.320815859537508e8
+The difference between successive solutions is greater than tolerance: 99999999999999999999
+Phase 1 iteration: 2
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 8.162499577467018e7
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.00217873159888541
+Generating feasibility seeking cut, with epsilon: 6.320815859537508e6
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.18181818181818182
+Z_M
+1.5581447894688902e7
+---------------- F Flips in iteration 2: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8181818181818182e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8181818181818182e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8181818181818182e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8181818181818182e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8181818181818182e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8181818181818182e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8181818181818182e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8181818181818182e-01
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.1652892561983471
+LB: 1.5581447894688902e7
+UB: 5.99167880632253e8
+GAP: 0.0013541380001367287
+The difference between successive solutions is greater than tolerance: 0.0013541380001367287
+Phase 1 iteration: 3
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 7.69641085331061e7
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.0020543233558507593
+Generating feasibility seeking cut, with epsilon: 5.991678806322531e6
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.1652892561983471
+Z_M
+1.5581447894688914e7
+---------------- F Flips in iteration 3: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.6528925619834711e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.6528925619834711e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.6528925619834711e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.6528925619834711e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.6528925619834711e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.6528925619834711e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.6528925619834711e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.6528925619834711e-01
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.15026296018031554
+LB: 1.5581447894688914e7
+UB: 5.99167880632253e8
+GAP: 1.1102230246251565e-16
+The difference is small: 1.1102230246251565e-16
+Successive difference Count: 1
+Phase 1 iteration: 4
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 8.282807961010985e7
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.0022108442715232943
+Generating feasibility seeking cut, with epsilon: 5.991678806322531e6
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.15026296018031554
+Z_M
+1.5581447894688915e7
+---------------- F Flips in iteration 4: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.5026296018031554e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.5026296018031554e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.5026296018031554e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.5026296018031554e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.5026296018031554e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.5026296018031554e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.5026296018031554e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.5026296018031554e-01
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.13660269107301412
+LB: 1.5581447894688915e7
+UB: 5.99167880632253e8
+GAP: 0.0
+The difference is small: 0.0
+Successive difference Count: 2
+Phase 1 iteration: 5
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 8.829456546916075e7
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.0023567555253364353
+Generating feasibility seeking cut, with epsilon: 5.991678806322531e6
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.13660269107301412
+Z_M
+1.5581447894688915e7
+---------------- F Flips in iteration 5: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.3660269107301412e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.3660269107301412e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.3660269107301412e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.3660269107301412e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.3660269107301412e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.3660269107301412e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.3660269107301412e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.3660269107301412e-01
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.124184264611831
+LB: 1.5581447894688915e7
+UB: 5.768911743759128e8
+GAP: 0.0010041911064717635
+The difference between successive solutions is greater than tolerance: 0.0010041911064717635
+Phase 1 iteration: 6
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 7.429808340472251e7
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.001983161904196089
+Generating feasibility seeking cut, with epsilon: 5.768911743759128e6
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.124184264611831
+Z_M
+1.5581447894688915e7
+---------------- F Flips in iteration 6: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.124184264611831
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.124184264611831
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.124184264611831
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.124184264611831
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.124184264611831
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.124184264611831
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.124184264611831
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.124184264611831
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.11289478601075545
+LB: 1.5581447894688915e7
+UB: 5.768911743759128e8
+GAP: 0.0
+The difference is small: 0.0
+Successive difference Count: 1
+Phase 1 iteration: 7
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 8.477339226151693e7
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.002262768490362242
+Generating feasibility seeking cut, with epsilon: 5.768911743759128e6
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.11289478601075545
+Z_M
+1.5581447894688912e7
+---------------- F Flips in iteration 7: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.1289478601075545e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.1289478601075545e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.1289478601075545e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.1289478601075545e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.1289478601075545e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.1289478601075545e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.1289478601075545e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.1289478601075545e-01
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.10263162364614131
+LB: 1.5581447894688912e7
+UB: 5.710224269457821e8
+GAP: 0.00027759150450523684
+The difference between successive solutions is greater than tolerance: 0.00027759150450523684
+Phase 1 iteration: 8
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 7.327858183900696e7
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.0019559494032304605
+Generating feasibility seeking cut, with epsilon: 5.710224269457821e6
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.10263162364614131
+Z_M
+1.5581447894688915e7
+---------------- F Flips in iteration 8: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.0263162364614131e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.0263162364614131e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.0263162364614131e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.0263162364614131e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.0263162364614131e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.0263162364614131e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.0263162364614131e-01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.0263162364614131e-01
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.09330147604194663
+LB: 1.5581447894688915e7
+UB: 5.710224269457821e8
+GAP: 0.0
+The difference is small: 0.0
+Successive difference Count: 1
+Phase 1 iteration: 9
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 7.681874591376108e7
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.0020504433417808288
+Generating feasibility seeking cut, with epsilon: 5.710224269457821e6
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.09330147604194663
+Z_M
+1.5581447894688917e7
+---------------- F Flips in iteration 9: 47 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 9.3301476041946635e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 9.3301476041946635e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 9.3301476041946635e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 9.3301476041946635e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 9.3301476041946635e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 9.3301476041946635e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 9.3301476041946635e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 9.3301476041946635e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.08481952367449694
+LB: 1.5581447894688917e7
+UB: 1.7989804319330215e8
+GAP: 0.059325731060503095
+The difference between successive solutions is greater than tolerance: 0.059325731060503095
+Phase 1 iteration: 10
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 2.2889896838473767e7
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.0006109763444874317
+Generating feasibility seeking cut, with epsilon: 1.7989804319330216e6
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.08481952367449694
+Z_M
+1.5581447894688925e7
+---------------- F Flips in iteration 10: 63 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 8.4819523674496938e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 8.4819523674496938e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 8.4819523674496938e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 8.4819523674496938e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 8.4819523674496938e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 8.4819523674496938e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 8.4819523674496938e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 8.4819523674496938e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.0771086578859063
+LB: 1.5581447894688925e7
+UB: 1.7989804319330215e8
+GAP: 1.1102230246251565e-16
+The difference is small: 1.1102230246251565e-16
+Successive difference Count: 1
+Phase 1 iteration: 11
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 3.133227690486916e7
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.0008363200648256552
+Generating feasibility seeking cut, with epsilon: 1.7989804319330216e6
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.0771086578859063
+Z_M
+1.5581447894688927e7
+---------------- F Flips in iteration 11: 67 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.0771086578859063
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.0771086578859063
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.0771086578859063
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.0771086578859063
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.0771086578859063
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.0771086578859063
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.0771086578859063
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.0771086578859063
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.07009877989627845
+LB: 1.5581447894688927e7
+UB: 1.7989804319330215e8
+GAP: 0.0
+The difference is small: 0.0
+Successive difference Count: 2
+Phase 1 iteration: 12
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 3.406836832688786e7
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.0009093517235965502
+Generating feasibility seeking cut, with epsilon: 1.7989804319330216e6
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.07009877989627845
+Z_M
+1.5581447894688927e7
+---------------- F Flips in iteration 12: 77 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 7.0098779896278454e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 7.0098779896278454e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 7.0098779896278454e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 7.0098779896278454e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 7.0098779896278454e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 7.0098779896278454e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 7.0098779896278454e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 7.0098779896278454e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.06372616354207132
+LB: 1.5581447894688927e7
+UB: 1.420807121735602e8
+GAP: 0.023053513393988645
+The difference between successive solutions is greater than tolerance: 0.023053513393988645
+Phase 1 iteration: 13
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 1.8256023810543135e7
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.00048728916392027196
+Generating feasibility seeking cut, with epsilon: 1.4208071217356022e6
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.06372616354207132
+Z_M
+1.5581447894688927e7
+---------------- F Flips in iteration 13: 80 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 6.3726163542071321e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 6.3726163542071321e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 6.3726163542071321e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 6.3726163542071321e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 6.3726163542071321e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 6.3726163542071321e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 6.3726163542071321e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 6.3726163542071321e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.05793287594733756
+LB: 1.5581447894688927e7
+UB: 1.420807121735602e8
+GAP: 0.0
+The difference is small: 0.0
+Successive difference Count: 1
+Phase 1 iteration: 14
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 2.5786413031282395e7
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.0006882900557600975
+Generating feasibility seeking cut, with epsilon: 1.4208071217356022e6
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.05793287594733756
+Z_M
+1.5975626370171737e7
+---------------- F Flips in iteration 14: 62 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 5.7932875947337557e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 5.7932875947337557e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 5.7932875947337557e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 5.7932875947337557e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 5.7932875947337557e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 5.7932875947337557e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 5.7932875947337557e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 5.7932875947337557e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.05266625086121596
+LB: 1.5975626370171737e7
+UB: 1.420807121735602e8
+GAP: 0.0027743278412153405
+The difference between successive solutions is greater than tolerance: 0.0027743278412153405
+Phase 1 iteration: 15
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 6.882791042850342e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.018371522339774477
+Generating feasibility seeking cut, with epsilon: 1.4208071217356022e6
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.05266625086121596
+Z_M
+1.5975626370171737e7
+---------------- F Flips in iteration 15: 89 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 5.2666250861215957e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 5.2666250861215957e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 5.2666250861215957e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 5.2666250861215957e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 5.2666250861215957e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 5.2666250861215957e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 5.2666250861215957e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 5.2666250861215957e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.047878409873832684
+LB: 1.5975626370171737e7
+UB: 7.805479243050204e7
+GAP: 0.09223144702065422
+The difference between successive solutions is greater than tolerance: 0.09223144702065422
+Phase 1 iteration: 16
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 1.0057881397451034e7
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.0002684646266807952
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.047878409873832684
+Z_M
+1.5975626370171735e7
+---------------- F Flips in iteration 16: 65 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 4.7878409873832684e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 4.7878409873832684e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 4.7878409873832684e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 4.7878409873832684e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 4.7878409873832684e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 4.7878409873832684e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 4.7878409873832684e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 4.7878409873832684e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.04352582715802971
+LB: 1.5975626370171735e7
+UB: 7.805479243050204e7
+GAP: 1.1102230246251565e-16
+The difference is small: 1.1102230246251565e-16
+Successive difference Count: 1
+Phase 1 iteration: 17
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 2.2603316956625775e7
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.0006033269640707919
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.04352582715802971
+Z_M
+1.5975626370171737e7
+---------------- F Flips in iteration 17: 81 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 4.3525827158029710e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 4.3525827158029710e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 4.3525827158029710e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 4.3525827158029710e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 4.3525827158029710e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 4.3525827158029710e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 4.3525827158029710e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 4.3525827158029710e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.03956893378002701
+LB: 1.5975626370171737e7
+UB: 7.805479243050204e7
+GAP: 1.1102230246251565e-16
+The difference is small: 1.1102230246251565e-16
+Successive difference Count: 2
+Phase 1 iteration: 18
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 1.6468363087377355e7
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.0004395729849645081
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.03956893378002701
+Z_M
+7.55666071555399e7
+---------------- F Flips in iteration 18: 87 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.9568933780027009e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.9568933780027009e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.9568933780027009e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.9568933780027009e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.9568933780027009e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.9568933780027009e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.9568933780027009e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.9568933780027009e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.03597175798184273
+LB: 7.55666071555399e7
+UB: 7.805479243050204e7
+GAP: 0.7634506342250083
+The difference between successive solutions is greater than tolerance: 0.7634506342250083
+Phase 1 iteration: 19
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 4.542936252053403e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.01212598992518698
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.03597175798184273
+Z_M
+7.556660715554157e7
+---------------- F Flips in iteration 19: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.5971757981842732e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.5971757981842732e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.5971757981842732e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.5971757981842732e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.5971757981842732e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.5971757981842732e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.5971757981842732e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.5971757981842732e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.032701598165311575
+LB: 7.556660715554157e7
+UB: 7.805479243050204e7
+GAP: 2.137873211793817e-14
+The difference is small: 2.137873211793817e-14
+Successive difference Count: 1
+Phase 1 iteration: 20
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 2.7999943723499995e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.007473735413819585
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.032701598165311575
+Z_M
+7.556660715554157e7
+---------------- F Flips in iteration 20: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.2701598165311575e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.2701598165311575e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.2701598165311575e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.2701598165311575e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.2701598165311575e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.2701598165311575e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.2701598165311575e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 3.2701598165311575e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.029728725604828702
+LB: 7.556660715554157e7
+UB: 7.805479243050204e7
+GAP: 0.0
+The difference is small: 0.0
+Successive difference Count: 2
+Phase 1 iteration: 21
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 2.2491818159844115e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.006003508419959251
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.029728725604828702
+Z_M
+7.55666071555416e7
+---------------- F Flips in iteration 21: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.9728725604828702e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.9728725604828702e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.9728725604828702e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.9728725604828702e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.9728725604828702e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.9728725604828702e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.9728725604828702e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.9728725604828702e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.027026114186207907
+LB: 7.55666071555416e7
+UB: 7.805479243050204e7
+GAP: 3.8163916471489756e-16
+The difference is small: 3.8163916471489756e-16
+Successive difference Count: 3
+Phase 1 iteration: 22
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 2.126172170392173e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.005675171494148748
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.027026114186207907
+Z_M
+7.55666071555416e7
+---------------- F Flips in iteration 22: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.7026114186207907e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.7026114186207907e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.7026114186207907e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.7026114186207907e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.7026114186207907e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.7026114186207907e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.7026114186207907e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.7026114186207907e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.024569194714734458
+LB: 7.55666071555416e7
+UB: 7.805479243050204e7
+GAP: 0.0
+The difference is small: 0.0
+Successive difference Count: 4
+Phase 1 iteration: 23
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 2.0604319539925689e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.005499697933105294
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.024569194714734458
+Z_M
+7.55666071555416e7
+---------------- F Flips in iteration 23: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.4569194714734458e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.4569194714734458e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.4569194714734458e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.4569194714734458e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.4569194714734458e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.4569194714734458e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.4569194714734458e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.4569194714734458e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.022335631558849506
+LB: 7.55666071555416e7
+UB: 7.805479243050204e7
+GAP: 0.0
+The difference is small: 0.0
+Successive difference Count: 5
+Phase 1 iteration: 24
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 1.6974029610909775e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.004530702185369293
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.022335631558849506
+Z_M
+7.556677684450641e7
+---------------- F Flips in iteration 24: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.2335631558849506e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.2335631558849506e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.2335631558849506e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.2335631558849506e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.2335631558849506e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.2335631558849506e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.2335631558849506e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.2335631558849506e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.020305119598954095
+LB: 7.556677684450641e7
+UB: 7.805479243050204e7
+GAP: 2.1739724049008036e-6
+The difference is small: 2.1739724049008036e-6
+Successive difference Count: 6
+Phase 1 iteration: 25
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 1.8172885028901628e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.004850700264007402
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.020305119598954095
+Z_M
+7.556677684450638e7
+---------------- F Flips in iteration 25: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.0305119598954095e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.0305119598954095e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.0305119598954095e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.0305119598954095e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.0305119598954095e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.0305119598954095e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.0305119598954095e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 2.0305119598954095e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.01845919963541281
+LB: 7.556677684450638e7
+UB: 7.805479243050204e7
+GAP: 3.8163916471489756e-16
+The difference is small: 3.8163916471489756e-16
+Successive difference Count: 7
+Phase 1 iteration: 26
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 1.6979308844299725e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.004532111316542338
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.01845919963541281
+Z_M
+7.556677684450637e7
+---------------- F Flips in iteration 26: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8459199635412812e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8459199635412812e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8459199635412812e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8459199635412812e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8459199635412812e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8459199635412812e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8459199635412812e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.8459199635412812e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.016781090577648008
+LB: 7.556677684450637e7
+UB: 7.805479243050204e7
+GAP: 1.942890293094024e-16
+The difference is small: 1.942890293094024e-16
+Successive difference Count: 8
+Phase 1 iteration: 27
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 1.659071972493677e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.00442838924154508
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.016781090577648008
+Z_M
+7.55704769916167e7
+---------------- F Flips in iteration 27: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.6781090577648008e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.6781090577648008e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.6781090577648008e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.6781090577648008e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.6781090577648008e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.6781090577648008e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.6781090577648008e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.6781090577648008e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.015255536888770915
+LB: 7.55704769916167e7
+UB: 7.805479243050204e7
+GAP: 4.7404483377783135e-5
+The difference between successive solutions is greater than tolerance: 4.7404483377783135e-5
+Phase 1 iteration: 28
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 1.5115401893756476e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.0040345979100190246
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.015255536888770915
+Z_M
+7.557047699161673e7
+---------------- F Flips in iteration 28: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.5255536888770915e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.5255536888770915e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.5255536888770915e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.5255536888770915e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.5255536888770915e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.5255536888770915e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.5255536888770915e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.5255536888770915e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.013868669898882649
+LB: 7.557047699161673e7
+UB: 7.805479243050204e7
+GAP: 3.8163916471489756e-16
+The difference is small: 3.8163916471489756e-16
+Successive difference Count: 1
+Phase 1 iteration: 29
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 1.477267985488035e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.0039431186604769915
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.013868669898882649
+Z_M
+7.557047699161674e7
+---------------- F Flips in iteration 29: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.3868669898882649e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.3868669898882649e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.3868669898882649e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.3868669898882649e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.3868669898882649e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.3868669898882649e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.3868669898882649e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.3868669898882649e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.012607881726256953
+LB: 7.557047699161674e7
+UB: 7.805479243050204e7
+GAP: 1.942890293094024e-16
+The difference is small: 1.942890293094024e-16
+Successive difference Count: 2
+Phase 1 iteration: 30
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 1.450371030949449e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.003871325401303326
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.012607881726256953
+Z_M
+7.55704769916167e7
+---------------- F Flips in iteration 30: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.2607881726256953e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.2607881726256953e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.2607881726256953e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.2607881726256953e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.2607881726256953e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.2607881726256953e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.2607881726256953e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.2607881726256953e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.011461710660233593
+LB: 7.55704769916167e7
+UB: 7.805479243050204e7
+GAP: 5.759281940243e-16
+The difference is small: 5.759281940243e-16
+Successive difference Count: 3
+Phase 1 iteration: 31
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 1.5233903934651875e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.004066228434294205
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.011461710660233593
+Z_M
+7.557047699161676e7
+---------------- F Flips in iteration 31: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.1461710660233593e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.1461710660233593e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.1461710660233593e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.1461710660233593e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.1461710660233593e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.1461710660233593e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.1461710660233593e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.1461710660233593e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.01041973696384872
+LB: 7.557047699161676e7
+UB: 7.805479243050204e7
+GAP: 7.632783294297951e-16
+The difference is small: 7.632783294297951e-16
+Successive difference Count: 4
+Phase 1 iteration: 32
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 1.469319348701689e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.003921902186319636
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.01041973696384872
+Z_M
+7.557047699161673e7
+---------------- F Flips in iteration 32: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.0419736963848720e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.0419736963848720e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.0419736963848720e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.0419736963848720e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.0419736963848720e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.0419736963848720e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.0419736963848720e-02
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 1.0419736963848720e-02
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.01
+LB: 7.557047699161673e7
+UB: 7.805479243050204e7
+GAP: 3.8163916471489756e-16
+The difference is small: 3.8163916471489756e-16
+Successive difference Count: 5
+Phase 1 iteration: 33
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 1.4526828320448616e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.0038774960528900264
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.01
+Z_M
+7.557047699161679e7
+---------------- F Flips in iteration 33: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.01
+LB: 7.557047699161679e7
+UB: 7.805479243050204e7
+GAP: 7.632783294297951e-16
+The difference is small: 7.632783294297951e-16
+Successive difference Count: 6
+Phase 1 iteration: 34
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 1.420012033860029e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.0037902912699794076
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.01
+Z_M
+7.557047699161679e7
+---------------- F Flips in iteration 34: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.01
+LB: 7.557047699161679e7
+UB: 7.805479243050204e7
+GAP: 0.0
+The difference is small: 0.0
+Successive difference Count: 7
+Phase 1 iteration: 35
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 1.2908402592023411e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.0034455064103174073
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.01
+Z_M
+7.557047699161679e7
+---------------- F Flips in iteration 35: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.01
+LB: 7.557047699161679e7
+UB: 7.805479243050204e7
+GAP: 0.0
+The difference is small: 0.0
+Successive difference Count: 8
+Phase 1 iteration: 36
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 1.6007591863457888e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.004272740951957202
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.01
+Z_M
+7.557047699161679e7
+---------------- F Flips in iteration 36: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.01
+LB: 7.557047699161679e7
+UB: 7.805479243050204e7
+GAP: 0.0
+The difference is small: 0.0
+Successive difference Count: 9
+Phase 1 iteration: 37
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 1.349391657031146e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.0036017916013888836
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.01
+Z_M
+7.55704769916168e7
+---------------- F Flips in iteration 37: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.01
+LB: 7.55704769916168e7
+UB: 7.805479243050204e7
+GAP: 1.942890293094024e-16
+The difference is small: 1.942890293094024e-16
+Successive difference Count: 10
+Phase 1 iteration: 38
+Generating cuts from dual
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+*** Cut generated! ***
+Generating knapsack cut from dual
+*** Knapsack Cut generated! ***
+Total Missed doses: 1.4031782133836555e8
+Total Demand: 3.746445675843123e10
+Ratio of Missed doses to demand: 0.0037453584938686607
+Generating feasibility seeking cut, with epsilon: 780547.9243050205
+Solving MP after cuts!
+Optimal solution found with MIPGap = 0.01
+Z_M
+7.55704769916168e7
+---------------- F Flips in iteration 38: 0 ------------------
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Building sub problem
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.001
+Condition: Min Unvax Model
+Set parameter FeasibilityTol to value 0.001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.01
+Subproblem Model status: OPTIMAL
+Reducing MIPGap to 0.01
+LB: 7.55704769916168e7
+UB: 7.805479243050204e7
+GAP: 0.0
+The difference is small: 0.0
+Successive difference Count: 11
+Solution stabilitized, tolerance not reached
+total_tender_length: 193.0
+total_number_of_tenders: 67
+avg_tender_length: 2.8805970149253732
+total_overlapped: 73.0
+total_cap_increase (%)
+Dict{Any, Any}("Sanofi" => 200.0, "Pfizer" => 200.0, "AJ_Vaccines" => 200.0, "Serum_Institute" => 200.0, "China_National" => 200.0, "BB_NCIPD" => 200.0, "Merck_Sharp" => 200.0, "Bilthoven" => 200.0, "Haffkine_Bio" => 200.0, "Biological_E" => 200.0, "LG_Chem" => 200.0, "Panacea_Biotec" => 200.0, "Bharat_Biotech" => 200.0, "GSK" => 200.0, "PT_Bio" => 190.0)
+total_cap_increase_category (%)
+Dict{Any, Any}("Medium" => 198.75, "Small" => 200.0, "Large" => 200.0)
+cap_usage
+Dict{Any, Any}("Sanofi" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Pfizer" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "AJ_Vaccines" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Serum_Institute" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "China_National" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "BB_NCIPD" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Merck_Sharp" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Bilthoven" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Haffkine_Bio" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Biological_E" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "LG_Chem" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Panacea_Biotec" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Bharat_Biotech" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "GSK" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "PT_Bio" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0))
+cap_usage_range
+Dict{Any, Any}("Sanofi" => [0.0, 0.0], "Pfizer" => [0.0, 0.0], "AJ_Vaccines" => [0.0, 0.0], "Serum_Institute" => [0.0, 0.0], "China_National" => [0.0, 0.0], "BB_NCIPD" => [0.0, 0.0], "Merck_Sharp" => [0.0, 0.0], "Bilthoven" => [0.0, 0.0], "Haffkine_Bio" => [0.0, 0.0], "Biological_E" => [0.0, 0.0], "LG_Chem" => [0.0, 0.0], "Panacea_Biotec" => [0.0, 0.0], "Bharat_Biotech" => [0.0, 0.0], "GSK" => [0.0, 0.0], "PT_Bio" => [0.0, 0.0])
+cap_usage_expected
+Dict{Any, Any}("Sanofi" => 0.0, "Pfizer" => 0.0, "AJ_Vaccines" => 0.0, "Serum_Institute" => 0.0, "China_National" => 0.0, "BB_NCIPD" => 0.0, "Merck_Sharp" => 0.0, "Bilthoven" => 0.0, "Haffkine_Bio" => 0.0, "Biological_E" => 0.0, "LG_Chem" => 0.0, "Panacea_Biotec" => 0.0, "Bharat_Biotech" => 0.0, "GSK" => 0.0, "PT_Bio" => 0.0)
+cap_usage_category
+Dict{Any, Any}("Sanofi" => Dict{Any, Any}(22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 11 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 27 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 18 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 30 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 28 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 17 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "Pfizer" => Dict{Any, Any}(22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 11 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 27 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 18 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 30 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 28 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 17 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "AJ_Vaccines" => Dict{Any, Any}(22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 11 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 27 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 18 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 30 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 28 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 17 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "Serum_Institute" => Dict{Any, Any}(22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 11 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 27 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 18 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 30 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 28 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 17 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "China_National" => Dict{Any, Any}(22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 11 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 27 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 18 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 30 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 28 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 17 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "BB_NCIPD" => Dict{Any, Any}(22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 11 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 27 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 18 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 30 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 28 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 17 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "Merck_Sharp" => Dict{Any, Any}(22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 11 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 27 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 18 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 30 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 28 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 17 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "Bilthoven" => Dict{Any, Any}(22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 11 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 27 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 18 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 30 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 28 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 17 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "Haffkine_Bio" => Dict{Any, Any}(22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 11 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 27 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 18 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 30 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 28 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 17 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "Biological_E" => Dict{Any, Any}(22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 11 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 27 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 18 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 30 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 28 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 17 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "LG_Chem" => Dict{Any, Any}(22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 11 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 27 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 18 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 30 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 28 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 17 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "Panacea_Biotec" => Dict{Any, Any}(22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 11 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 27 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 18 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 30 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 28 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 17 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "Bharat_Biotech" => Dict{Any, Any}(22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 11 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 27 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 18 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 30 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 28 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 17 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "GSK" => Dict{Any, Any}(22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 11 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 27 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 18 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 30 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 28 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 17 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)), "PT_Bio" => Dict{Any, Any}(22 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 6 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 11 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 27 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 18 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 31 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 30 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 28 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN), 17 => Dict{Any, Any}("MMR-based" => NaN, "Single" => NaN, "Td-based" => NaN)))
+cap_usage_category_overall
+Dict{Any, Any}("Sanofi" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "Pfizer" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "AJ_Vaccines" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "Serum_Institute" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "China_National" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "BB_NCIPD" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "Merck_Sharp" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "Bilthoven" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "Haffkine_Bio" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "Biological_E" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "LG_Chem" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "Panacea_Biotec" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "Bharat_Biotech" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "GSK" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0), "PT_Bio" => Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0))
+unvac_children
+Dict{Any, Any}("PCV" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Measles" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Mumps" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "HPV" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Hib" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Pertussis" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Rotavirus" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Polio" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Diphtheria" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Hepatitis_B" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Tetanus" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Rubella" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0))
+unvac_children_range
+Dict{Any, Any}("PCV" => [0.0, 0.0], "Measles" => [0.0, 0.0], "Mumps" => [0.0, 0.0], "HPV" => [0.0, 0.0], "Hib" => [0.0, 0.0], "Pertussis" => [0.0, 0.0], "Rotavirus" => [0.0, 0.0], "Polio" => [0.0, 0.0], "Diphtheria" => [0.0, 0.0], "Hepatitis_B" => [0.0, 0.0], "Tetanus" => [0.0, 0.0], "Rubella" => [0.0, 0.0])
+unvac_children_expected
+Dict{Any, Any}("PCV" => 0.0, "Measles" => 0.0, "Mumps" => 0.0, "HPV" => 0.0, "Hib" => 0.0, "Pertussis" => 0.0, "Rotavirus" => 0.0, "Polio" => 0.0, "Diphtheria" => 0.0, "Hepatitis_B" => 0.0, "Tetanus" => 0.0, "Rubella" => 0.0)
+category_S_expected_dict
+Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0)
+unvac_children_range_category
+Dict{Any, Any}("MMR-based" => [0.0, 0.0], "Single" => [0.0, 0.0], "Td-based" => [0.0, 0.0])
+inv_vaccine
+Dict{Any, Any}("PCV" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "DTwP-Hib" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "IPV" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Hexa" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "HPV" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Hib" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "M" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "DT" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "HepB" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "MMR" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Td" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Rotavirus" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "TT" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "MR" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "Penta" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "DTwP" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0), "OPV" => Dict{Any, Any}(22 => 0.0, 6 => 0.0, 11 => 0.0, 27 => 0.0, 18 => 0.0, 31 => 0.0, 30 => 0.0, 28 => 0.0, 17 => 0.0))
+inv_vaccine_range
+Dict{Any, Any}("PCV" => [0.0, 0.0], "DTwP-Hib" => [0.0, 0.0], "IPV" => [0.0, 0.0], "Hexa" => [0.0, 0.0], "HPV" => [0.0, 0.0], "Hib" => [0.0, 0.0], "M" => [0.0, 0.0], "DT" => [0.0, 0.0], "HepB" => [0.0, 0.0], "MMR" => [0.0, 0.0], "Td" => [0.0, 0.0], "Rotavirus" => [0.0, 0.0], "TT" => [0.0, 0.0], "MR" => [0.0, 0.0], "Penta" => [0.0, 0.0], "DTwP" => [0.0, 0.0], "OPV" => [0.0, 0.0])
+inv_vaccine_expected
+Dict{Any, Any}("PCV" => 0.0, "DTwP-Hib" => 0.0, "IPV" => 0.0, "Hexa" => 0.0, "HPV" => 0.0, "Hib" => 0.0, "M" => 0.0, "DT" => 0.0, "HepB" => 0.0, "MMR" => 0.0, "Td" => 0.0, "Rotavirus" => 0.0, "TT" => 0.0, "MR" => 0.0, "Penta" => 0.0, "DTwP" => 0.0, "OPV" => 0.0)
+category_I_expected_dict
+Dict{Any, Any}("MMR-based" => 0.0, "Single" => 0.0, "Td-based" => 0.0)
+Phase 1 L-shaped method completed in 11766.001406908035 seconds after 38 iterations

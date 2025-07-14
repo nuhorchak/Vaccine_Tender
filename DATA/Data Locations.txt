@@ -1,0 +1,14 @@
+Original demand - Research/data/Linksbridge_Ark-2023/Demand_Chart refactored. _09072023
+Production Capacity - Vaccine Tender/DATA/production_capacity_scenarios
+Capacity Builder (from vaccine demand) - Vaccine Tender/DATA/cap_builder
+
+Scenario Pair building: Vaccine_Tender\Model Files\L-Shaped\data_generation_codes
+Build initial data pairings - generate_demand_capacity_pairs_new_demand_base_cap_pandemic
+build paired data for model - pair_dict_generator_new_demand_base_capacity_pandemic
+
+OLD - Forecast data in Vaccine Tender ARCHIVE
+
+Demand - Linksbridge
+Account for population in LIC - 2.7% increase (source: https://data.worldbank.org/country/low-income)
+nOPV - Biological E, 500 mil/yr (source: https://www.cidrap.umn.edu/polio/who-prequalifies-biological-e-novel-oral-polio-vaccine)
+		(source: https://www.biologicale.com/news.html)

@@ -1,0 +1,12 @@
+    Updating registry at `~/.julia/registries/General.toml`
+   Resolving package versions...
+  No Changes to `/scrfs/storage/uhorchak/home/.julia/environments/v1.10/Project.toml`
+  No Changes to `/scrfs/storage/uhorchak/home/.julia/environments/v1.10/Manifest.toml`
+ERROR: LoadError: UndefVarError: `time_elapsed` not defined
+Stacktrace:
+ [1] tender_stochastic_sensitivity(max_horizon_length::Int64, max_tender_length::Int64, number_of_demand_scenarios::Int64, total_capacity_scenarios::Int64, number_of_trials::Int64, initial_inventory_rate::Int64, scaled_capacity::Int64, allowable_capacity_increase_number::Int64, overlap_decision::Bool, capacity_extension_decision::Bool, UNICEF_MODEL::Bool, SOCIAL_BENEFIT_MODEL::Bool, MAX_PROFIT_MODEL::Bool)
+   @ Main /scrfs/storage/uhorchak/home/model/base_testing/MP_knapsack/vaccine_tender_L_shaped_one_phase_SEC.jl:480
+ [2] top-level scope
+   @ /scrfs/storage/uhorchak/home/model/base_testing/MP_knapsack/vaccine_tender_L_shaped_one_phase_SEC.jl:492
+in expression starting at /scrfs/storage/uhorchak/home/model/base_testing/MP_knapsack/vaccine_tender_L_shaped_one_phase_SEC.jl:492
+srun: error: c1420: task 0: Exited with exit code 1
