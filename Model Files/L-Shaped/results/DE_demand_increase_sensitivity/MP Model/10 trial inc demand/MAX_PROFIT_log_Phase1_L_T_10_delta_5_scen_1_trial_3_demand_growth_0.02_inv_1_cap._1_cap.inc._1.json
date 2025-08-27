@@ -1,9 +1,9 @@
 
-Gurobi 11.0.2 (linux64) logging started Tue 08 Jul 2025 11:12:44 CDT
+Gurobi 11.0.2 (linux64) logging started Thu 17 Jul 2025 10:34:12 CDT
 
 Set parameter LogFile to value "/scrfs/storage/uhorchak/home/model/base_testing/DE_MP_base_10_trials/results/MAX_PROFIT_log_Phase1_L_T_10_delta_5_scen_1_trial_3_demand_growth_0.02_inv_1_cap._1_cap.inc._1.json"
 
-Gurobi 11.0.2 (linux64) logging started Tue 08 Jul 2025 11:12:44 CDT
+Gurobi 11.0.2 (linux64) logging started Thu 17 Jul 2025 10:34:12 CDT
 
 Set parameter LogFile to value "/scrfs/storage/uhorchak/home/model/base_testing/DE_MP_base_10_trials/results/MAX_PROFIT_log_Phase1_L_T_10_delta_5_scen_1_trial_3_demand_growth_0.02_inv_1_cap._1_cap.inc._1.json"
 Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "CentOS Linux 7 (Core)")
@@ -23,7 +23,7 @@ Coefficient statistics:
 Warning: Model contains large matrix coefficient range
 Warning: Model contains large rhs
 Presolve removed 7819 rows and 4027 columns
-Presolve time: 0.14s
+Presolve time: 0.17s
 Presolved: 13562 rows, 7402 columns, 64431 nonzeros
 Variable types: 5366 continuous, 2036 integer (1072 binary)
 Found heuristic solution: objective -7.44854e+10
@@ -61,21 +61,21 @@ H  325   119                    -3.23262e+11 -3.282e+11  1.53%   968   24s
 H  339   119                    -3.23298e+11 -3.282e+11  1.52%   944   24s
    429   179 -3.282e+11   18  788 -3.233e+11 -3.282e+11  1.52%   824   25s
   1109   611 -3.278e+11   32  533 -3.233e+11 -3.282e+11  1.52%   521   30s
-  1849   767 -3.282e+11   13  949 -3.233e+11 -3.282e+11  1.52%   478   35s
+  1709   752 -3.282e+11   12  961 -3.233e+11 -3.282e+11  1.52%   489   35s
   2442   860 -3.270e+11   14  887 -3.233e+11 -3.282e+11  1.52%   470   40s
 H 2641   907                    -3.23339e+11 -3.282e+11  1.51%   485   42s
   2898  1007 -3.241e+11   28  531 -3.233e+11 -3.282e+11  1.51%   488   45s
 H 2923  1007                    -3.23344e+11 -3.282e+11  1.50%   484   45s
 * 3076  1005              66    -3.23355e+11 -3.282e+11  1.50%   483   46s
-H 3357   984                    -3.23468e+11 -3.282e+11  1.47%   491   48s
-H 3368   984                    -3.23481e+11 -3.282e+11  1.46%   491   48s
-H 3381   984                    -3.23506e+11 -3.282e+11  1.45%   492   48s
+H 3357   984                    -3.23468e+11 -3.282e+11  1.47%   491   49s
+H 3368   984                    -3.23481e+11 -3.282e+11  1.46%   491   49s
+H 3381   984                    -3.23506e+11 -3.282e+11  1.45%   492   49s
   3420  1013     cutoff   16      -3.235e+11 -3.282e+11  1.45%   496   50s
   4133  1005     cutoff   18      -3.235e+11 -3.277e+11  1.30%   499   55s
   4883   842     cutoff   24      -3.235e+11 -3.254e+11  0.57%   513   60s
-  6551   947     cutoff   22      -3.235e+11 -3.242e+11  0.20%   453   66s
+  5963   902     cutoff   26      -3.235e+11 -3.244e+11  0.27%   478   65s
  10200  1583 -3.235e+11   46   92 -3.235e+11 -3.238e+11  0.09%   319   70s
- 17493     0     cutoff   45      -3.235e+11 -3.235e+11  0.01%   206   75s
+ 15654   159     cutoff   40      -3.235e+11 -3.236e+11  0.03%   224   75s
 
 Cutting planes:
   Learned: 22
@@ -92,7 +92,7 @@ Cutting planes:
   BQP: 64
   PSD: 68
 
-Explored 17684 nodes (3627279 simplex iterations) in 75.20 seconds (88.54 work units)
+Explored 17684 nodes (3627279 simplex iterations) in 75.46 seconds (88.54 work units)
 Thread count was 32 (of 32 available processors)
 
 Solution count 10: -3.23506e+11 -3.23481e+11 -3.23468e+11 ... -3.22461e+11
@@ -101,4 +101,4 @@ No other solutions better than -3.23506e+11
 Optimal solution found (tolerance 1.00e-04)
 Best objective -3.235055711053e+11, best bound -3.235055711053e+11, gap 0.0000%
 
-User-callback calls 40895, time in user-callback 0.01 sec
+User-callback calls 40896, time in user-callback 0.02 sec

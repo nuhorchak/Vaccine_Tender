@@ -143,7 +143,8 @@ function process_scenario_data_n_selected_with_MVP2_demand_scaling(
         total_capacity = 0.0
         for p in P
             for t in T
-                s_real_tilde[p, t, ω] = round(scenario_pairs["$ω"]["capacity"]["$t"]["$p"] * scaled_capacity / unit, digits=0)
+                scaled_capacity_multiplier = t == 1 ? 1.0 : (1 + scaled_capacity)
+                s_real_tilde[p, t, ω] = round(scenario_pairs["$ω"]["capacity"]["$t"]["$p"] * (1 + scaled_capacity_multiplier) / unit, digits=0)
                 total_capacity += s_real_tilde[p, t, ω]
             end
         end

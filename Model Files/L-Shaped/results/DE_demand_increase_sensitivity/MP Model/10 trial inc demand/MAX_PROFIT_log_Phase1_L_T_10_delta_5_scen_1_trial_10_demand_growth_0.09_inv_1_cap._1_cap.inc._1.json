@@ -1,9 +1,9 @@
 
-Gurobi 11.0.2 (linux64) logging started Tue 08 Jul 2025 11:24:05 CDT
+Gurobi 11.0.2 (linux64) logging started Thu 17 Jul 2025 10:45:33 CDT
 
 Set parameter LogFile to value "/scrfs/storage/uhorchak/home/model/base_testing/DE_MP_base_10_trials/results/MAX_PROFIT_log_Phase1_L_T_10_delta_5_scen_1_trial_10_demand_growth_0.09_inv_1_cap._1_cap.inc._1.json"
 
-Gurobi 11.0.2 (linux64) logging started Tue 08 Jul 2025 11:24:05 CDT
+Gurobi 11.0.2 (linux64) logging started Thu 17 Jul 2025 10:45:33 CDT
 
 Set parameter LogFile to value "/scrfs/storage/uhorchak/home/model/base_testing/DE_MP_base_10_trials/results/MAX_PROFIT_log_Phase1_L_T_10_delta_5_scen_1_trial_10_demand_growth_0.09_inv_1_cap._1_cap.inc._1.json"
 Gurobi Optimizer version 11.0.2 build v11.0.2rc0 (linux64 - "CentOS Linux 7 (Core)")
@@ -28,7 +28,7 @@ Presolved: 13562 rows, 7402 columns, 64431 nonzeros
 Variable types: 5366 continuous, 2036 integer (1072 binary)
 Found heuristic solution: objective -4.92448e+10
 
-Root relaxation: objective -3.298726e+11, 11236 iterations, 0.66 seconds (0.60 work units)
+Root relaxation: objective -3.298726e+11, 11236 iterations, 0.63 seconds (0.60 work units)
 
     Nodes    |    Current Node    |     Objective Bounds      |     Work
  Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
@@ -42,25 +42,25 @@ H    0     0                    -3.03485e+11 -3.227e+11  6.35%     -    3s
      0     0 -3.175e+11    0 1122 -3.035e+11 -3.175e+11  4.62%     -    3s
      0     0 -3.175e+11    0 1122 -3.035e+11 -3.175e+11  4.62%     -    3s
      0     0 -3.160e+11    0 1156 -3.035e+11 -3.160e+11  4.13%     -    4s
-     0     0 -3.143e+11    0 1146 -3.035e+11 -3.143e+11  3.56%     -    4s
+     0     0 -3.143e+11    0 1146 -3.035e+11 -3.143e+11  3.56%     -    5s
      0     0 -3.142e+11    0 1144 -3.035e+11 -3.142e+11  3.55%     -    5s
      0     0 -3.142e+11    0 1147 -3.035e+11 -3.142e+11  3.55%     -    5s
      0     0 -3.142e+11    0 1148 -3.035e+11 -3.142e+11  3.55%     -    5s
-     0     0 -3.135e+11    0 1189 -3.035e+11 -3.135e+11  3.31%     -    5s
-     0     0 -3.132e+11    0 1195 -3.035e+11 -3.132e+11  3.22%     -    5s
+     0     0 -3.135e+11    0 1189 -3.035e+11 -3.135e+11  3.31%     -    6s
+     0     0 -3.132e+11    0 1195 -3.035e+11 -3.132e+11  3.22%     -    6s
      0     0 -3.132e+11    0 1194 -3.035e+11 -3.132e+11  3.22%     -    6s
      0     0 -3.131e+11    0 1190 -3.035e+11 -3.131e+11  3.18%     -    6s
-     0     0 -3.129e+11    0 1186 -3.035e+11 -3.129e+11  3.10%     -    6s
+     0     0 -3.129e+11    0 1186 -3.035e+11 -3.129e+11  3.10%     -    7s
      0     0 -3.129e+11    0 1159 -3.035e+11 -3.129e+11  3.10%     -    7s
      0     2 -3.129e+11    0 1148 -3.035e+11 -3.129e+11  3.10%     -    7s
      7    10     cutoff    3      -3.035e+11 -3.129e+11  3.10%  2019   10s
-H   42    32                    -3.03637e+11 -3.129e+11  3.04%  1503   12s
+H   42    32                    -3.03637e+11 -3.129e+11  3.04%  1503   13s
    185   160 -3.046e+11   10 1006 -3.036e+11 -3.129e+11  3.04%   703   15s
 H  217   177                    -3.06516e+11 -3.129e+11  2.08%   719   18s
 H  219   177                    -3.06525e+11 -3.129e+11  2.07%   722   18s
 H  227   177                    -3.06603e+11 -3.129e+11  2.05%   717   18s
    294   150 -3.129e+11   12 1019 -3.066e+11 -3.129e+11  2.05%   632   20s
-   666   348 -3.082e+11   16  909 -3.066e+11 -3.129e+11  2.05%   659   25s
+   594   319 -3.088e+11   15  965 -3.066e+11 -3.129e+11  2.05%   687   25s
 H 1361   754                    -3.06610e+11 -3.129e+11  2.04%   474   29s
   1498   801 -3.067e+11   37   96 -3.066e+11 -3.129e+11  2.04%   455   30s
 H 1572   801                    -3.06625e+11 -3.129e+11  2.04%   452   30s
@@ -93,7 +93,7 @@ Cutting planes:
   BQP: 101
   PSD: 55
 
-Explored 8643 nodes (3249505 simplex iterations) in 64.32 seconds (76.35 work units)
+Explored 8643 nodes (3249505 simplex iterations) in 64.52 seconds (76.35 work units)
 Thread count was 32 (of 32 available processors)
 
 Solution count 10: -3.06852e+11 -3.06852e+11 -3.06841e+11 ... -3.0661e+11
@@ -102,4 +102,4 @@ No other solutions better than -3.06852e+11
 Optimal solution found (tolerance 1.00e-04)
 Best objective -3.068520877042e+11, best bound -3.068520877042e+11, gap 0.0000%
 
-User-callback calls 23182, time in user-callback 0.01 sec
+User-callback calls 23316, time in user-callback 0.01 sec

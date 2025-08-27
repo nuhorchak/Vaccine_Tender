@@ -66,7 +66,9 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
     @variable(model, K_ddot[p in P, t in T] >= 0)
     @variable(model, K_hat[p in P, (t, tau) in F_time_set] >= 0)
     @variable(model, K_check[p in P, (t, tau) in F_time_set] >= 0)
-    @variable(model, Z[v in V, p in P_v[v], t in T, m in keys(m_segments)] >= 0, Bin) 
+    @variable(model, Z[v in V, p in P_v[v], t in T, m in keys(m_segments)] >= 0, Bin)
+    @variable(model, Y_tilde[ p in P, t in T] >= 0)
+    @variable(model, N[p in P, (t,tau) in F_time_set] >= 0)
 
     ################################################### OBJECTIVE FUNCTION AND CONSTRAINTS ####################################################
 
@@ -181,26 +183,67 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
         end
     end
 
-     # Constraint (8) 
-     if max_profit #ROI with prodiction capacity consideration for max profit - need to fix this
+     # Constraint (8) McCormick
+     if max_profit #ROI with prodiction capacity consideration for max profit 
         for p in P
             for t in T
                 # @constraint(model, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) for v in V_p[p], m in m_segments) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set )) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] + Γ[p] * L[p, t] for v in V_p[p])
                 # @constraint(model, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * Q[v1, p, (t, tau), m1] for v in V_p[p], m in m_segments, (t, tau) in F_time_set, v1 in V_p[p], m1 in eachindex(m_segments)) >= sum((1 + l[v,p])*f[v,p,t]*Y[p,t] + Γ[p] * L[p, t] for v in V_p[p]))
-                sum_expr = @expression(model, sum(r_avg[v, t] * (1 - zeta_vm[v, m]) * Q[v, p, (t, tau), m] for v in V_p[p], m in keys(m_segments), (t,tau) in F_time_set))
+                sum_expr = @expression(model, sum(r_avg[v, t] * (1 - zeta_vm[v, m]) * Q[v, p, (t, tau), m] for v in V_p[p], m in keys(m_segments)))
                 rhs_expr = @expression(model, sum((1 + l[v,p])*f_profit[v,p,t]*Y[p,t] + Γ[p] * L[p, t] for v in V_p[p]))
                 @constraint(model, sum_expr >= rhs_expr)
             end
         end
     elseif UNICEF_MODEL #ROI without production capacity increases considered
+        #new formulation without mccormick
+        # for p in P
+        #     for (t,tau) in F_time_set
+        #         sum_expr = @expression(model, sum(r_avg[v, t] * (1 - zeta_vm[v, m]) * Q[v, p, (t, tau), m] for v in V_p[p], m in keys(m_segments)))
+        #         rhs_expr = @expression(model, W[p,(t,tau)] * sum((1 + l[v, p]) * f_profit[v, p, t] * Y[p, t] for v in V_p[p], t in t:tau))
+        #         @constraint(model, sum_expr >= rhs_expr)
+        #     end
+        # end
+
+        #old formulation
+        # for p in P
+        #     for t in T
+        #         sum_expr = @expression(model, sum(r_avg[v, t] * (1 - zeta_vm[v, m]) * Q[v, p, (t, tau), m] for v in V_p[p], m in keys(m_segments), (t,tau) in F_time_set))
+        #         rhs_expr = @expression(model, sum((1 + l[v, p]) * f_profit[v, p, t] * Y[p, t] for v in V_p[p]))
+        #         @constraint(model, sum_expr >= rhs_expr)
+        #     end
+        # end
+
+        #new McCormick formulation
+        # for p in P
+        #     for (t,tau) in F_time_set
+        #         # Use a different variable name for the inner time index, e.g., t_inner
+        #         Y_and_coefficients = @expression(model, sum((1 + l[v, p]) * f_profit[v, p, t_inner] * Y[p, t_inner] for v in V_p[p], t_inner in t:tau))
+        #         sum_coefficients = @expression(model, sum((1 + l[v, p]) * f_profit[v, p, t_inner] for v in V_p[p], t_inner in t:tau))
+        # # #         # @constraint(model, sum(r_avg[v, t] * (1 - zeta_vm[v, m]) * Q[v, p, (t, tau), m] for v in V_p[p], m in keys(m_segments)) >= N[p,(t,tau)])
+        # # #         # @constraint(model, Y_tilde[p,t] == Y_and_coefficients)
+        # # #         # @constraint(model, N[p,(t,tau)] >= Y_tilde[p,t] + (W[p,(t,tau)] * sum_coefficients) - sum_coefficients)
+        # # #         # @constraint(model, N[p,(t,tau)] <= Y_tilde[p,t])
+        # # #         # @constraint(model, N[p,(t,tau)] <= (W[p,(t,tau)] * sum_coefficients))
+
+        #         @constraint(model, sum(r_avg[v, t] * (1 - zeta_vm[v, m]) * Q[v, p, (t, tau), m] for v in V_p[p], m in keys(m_segments)) >= N[p,(t,tau)])
+        #         # @constraint(model, Y_tilde[p,t] == Y_and_coefficients)
+        #         @constraint(model, N[p,(t,tau)] >= Y_and_coefficients + (W[p,(t,tau)] * sum_coefficients) - sum_coefficients)
+        #         @constraint(model, N[p,(t,tau)] <= Y_and_coefficients)
+        #         @constraint(model, N[p,(t,tau)] <= (W[p,(t,tau)] * sum_coefficients))
+        #     end
+        # end
+
+        #new formulation without Y
+
+        lhs_exprs = Dict()
+        rhs_exprs = Dict()
+        constraints = Dict()
         for p in P
-            for t in T
-                # @constraint(model,
-                # sum(r_avg[v,t] * (1 - zeta_vm[v,m] for v in V_p[p], m in m_segments) * sum(Q[v, p, (t, tau), m] for (t, tau) in F_time_set)) >= sum((1 + l[v,p]) * f[v,p,t] * Y[p,t] for v in V_p[p]) for v in V_p[p])
-                # sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * Q[v1, p, (t, tau), m1] for v in V_p[p], m in m_segments, (t, tau) in F_time_set, v1 in V_p[p], m1 in eachindex(m_segments)) >= sum((1 + l[v,p]) * f[v,p,t] * Y[p,t] for v in V_p[p]) for v in V_p[p]))
-                sum_expr = @expression(model, sum(r_avg[v, t] * (1 - zeta_vm[v, m]) * Q[v, p, (t, tau), m] for v in V_p[p], m in keys(m_segments), (t,tau) in F_time_set))
-                rhs_expr = @expression(model, sum((1 + l[v, p]) * f_profit[v, p, t] * Y[p, t] for v in V_p[p]))
-                @constraint(model, sum_expr >= rhs_expr)
+            for (t,tau) in F_time_set
+                lhs_exprs = @expression(model, sum(r_avg[v, t] * (1 - zeta_vm[v, m]) * Q[v, p, (t, tau), m] for v in V_p[p], m in keys(m_segments)))
+                rhs_exprs = @expression(model, sum((1 + l[v, p]) * (f_profit[v, p, t]/1e5) * W[p, (t,tau)] for v in V_p[p], m in keys(m_segments))) # f_profit[v, p, t]
+                c = @constraint(model, lhs_exprs >= rhs_exprs)
+                set_name(c, "revenue_constraint[$(p),$(t),$(tau)]")
             end
         end
     end
@@ -208,9 +251,9 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
     # Constraint (9)
     for v in V
         for p in P_v[v]
-            for t in T
+            for (t, tau) in F_time_set
                 for m in keys(m_segments)
-                    @constraint(model, phi_vm_lower[v,m] * Z[v,p,t,m] <= sum(Q[v,p,(t,tau),m] for (t, tau) in F_time_set))
+                    @constraint(model, phi_vm_lower[v,m] * Z[v,p,t,m] <= Q[v,p,(t,tau),m]) #sum(Q[v,p,(t,tau),m] for (t, tau) in F_time_set))
                 end
             end
         end
@@ -220,9 +263,9 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
     # Constraint (10)
     for v in V
         for p in P_v[v]
-            for t in T
+            for (t, tau) in F_time_set
                 for m in keys(m_segments)
-                    @constraint(model, phi_vm_upper[v,m] * Z[v,p,t,m] >= sum(Q[v,p,(t,tau),m] for (t, tau) in F_time_set))
+                    @constraint(model, phi_vm_upper[v,m] * Z[v,p,t,m] >= Q[v,p,(t,tau),m]) #sum(Q[v,p,(t,tau),m] for (t, tau) in F_time_set))
                 end
             end
         end
@@ -330,55 +373,7 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
             @constraint(model, S[a,0,ω] == amount)
         end
     end
-    
-    # for a in A
-    #     for (t, tau) in F_time_set
-    #         if F_bar[a,(t,tau)] == 0.0 || F_bar[a,(t,tau)] == 1.0
-    #             # @constraint(model, F[a,(t,tau)] == F_bar[a,(t,tau)])
-    #             set_start_value(F[a,(t,tau)], F_bar[a,(t,tau)])
-    #         end
-    #     end
-    # end
 
-    # for p in P
-    #     for t in T
-    #         if Y_bar[p,t] == 0.0 || Y_bar[p,t] == 1.0
-    #             # @constraint(model, Y[p,t] == Y_bar[p,t])
-    #             set_start_value(Y[p,t], Y_bar[p,t])
-    #         end
-    #     end
-    # end
-
-    # for p in P
-    #     for (t, tau) in F_time_set
-    #         if W_bar[p,(t,tau)] == 0.0 || W_bar[p,(t,tau)] == 1.0
-    #             # @constraint(model, W[p,(t,tau)] == W_bar[p,(t,tau)])
-    #             set_start_value(W[p,(t,tau)], W_bar[p,(t,tau)])
-    #         end
-    #     end
-    # end
-
-    # for p in P
-    #     for t in T
-    #         if L_bar[p,t] == 0.0 || L_bar[p,t] == 1.0 || L_bar[p,t] == 2.0 || L_bar[p,t] == 3.0 || L_bar[p,t] == 4.0 || L_bar[p,t] == 5.0
-    #             # @constraint(model, L[p,t] == L_bar[p,t])
-    #             set_start_value(L[p,t], L_bar[p,t])
-    #         end
-    #     end
-    # end
-
-    # for v in V
-    #     for p in P_v[v]
-    #         for t in T
-    #             for m in keys(m_segments)
-    #                 if Z_bar[v,p,t,m] == 0 || Z_bar[v,p,t,m] == 1.0
-    #                     # @constraint(model,Z[v,p,t,m] == Z_bar[v,p,t,m])
-    #                     set_start_value(Z[v,p,t,m], Z_bar[v,p,t,m])
-    #                 end
-    #             end
-    #         end
-    #     end
-    # end
 
     return model
 end

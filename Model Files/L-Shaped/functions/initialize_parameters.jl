@@ -156,7 +156,7 @@ function initialize_parameters(
     for p in P
         for v in V_p[p]
             for t in T
-                f_profit[v, p, t] = s_real[p] / length(V_p[p]) * r_producer_avg[p] / 2
+                f_profit[v, p, t] = s_real[p] / length(V_p[p]) * r_producer_avg[p]  / 2
             end
         end
     end
@@ -180,17 +180,21 @@ function initialize_parameters(
 
     # Define the m values to cycle through for Q, Z, lambda_m
 
-    # m_segments = [0.01, 0.02, 0.05]
-    # lower_breaks_values = [0, 1.04e8, 3.68e8]
-    # upper_breaks_values = [1.04e8, 3.68e8, 99999999999999999999999999999999999]
+    m_segments = [0.00, 0.01]
+    lower_breaks_values = [0, 1.041e4]
+    upper_breaks_values = [1.04e4, 99999999999999999999999999999999999]
 
-    # m_segments = [0.0, 0.01, 0.02, 0.05]
-    # lower_bounds = [0.0, 8.59e7, 3.05e8, 5.46e8]
-    # upper_bounds = [8.59e7, 3.05e8, 5.46e8, 999999999999999999999999999999]
+    # m_segments = [0.00, 0.01, 0.02]
+    # lower_breaks_values = [0, 1.041e4, 3.69e6]
+    # upper_breaks_values = [1.04e4, 3.68e6, 99999999999999999999999999999999999]
 
-    m_segments = [0]
-    lower_breaks_values = [0]
-    upper_breaks_values = [99999999999999999999]
+    # m_segments = [0.0, 0.01, 0.02, 0.04]
+    # lower_breaks_values = [0.0, 1.041e4, 3.69e6, 5.47e8]
+    # upper_breaks_values = [1.04e4, 3.68e6, 5.46e8, 999999999999999999999999999999]
+
+    # m_segments = [0]
+    # lower_breaks_values = [0]
+    # upper_breaks_values = [99999999999999999999]
 
     zeta_vm = Dict()
     phi_vm_lower = Dict()

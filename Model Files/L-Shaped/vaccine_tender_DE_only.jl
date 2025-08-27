@@ -3,7 +3,7 @@ using Gurobi
 using Random
 using Dualization
 using Plots
-using DataFrames
+using DataFrames, XLSX
 using CSV
 import XLSX
 import JSON
@@ -181,6 +181,8 @@ end
         L_OBJ = 0.0
         Y_OBJ = 0.0
         obj_manual = 0.0
+        LHS_value=Float64[]
+        RHS_value=Float64[]
 
         # Term 1: Tender duration cost
         for (t, tau) in F_time_set, a in A
@@ -189,19 +191,49 @@ end
             end
         end
         
-        # Term 2: Procurement cost (apply filtering on Q > 0)
-        for (t, tau) in F_time_set, v in V, p in P_v[v], m in keys(m_segments)
-            q_val = value(Deterministic_Equivalent[:Q][v, p, (t, tau), m])
-            if q_val > 0
-                Q_OBJ += r_avg[v, t] * (1 - zeta_vm[v, m]) * q_val / delta[t]
+        if UNICEF_MODEL
+            # Term 2: Procurement cost (apply filtering on Q > 0)
+            for (t, tau) in F_time_set, v in V, p in P_v[v], m in keys(m_segments)
+                q_val = value(Deterministic_Equivalent[:Q][v, p, (t, tau), m])
+                if q_val > 0
+                    Q_OBJ += r_avg[v, t] * (1 - zeta_vm[v, m]) * q_val / delta[t]
+                end
+            end
+        elseif SOCIAL_BENEFIT_MODEL
+            # Term 2: Procurement cost (apply filtering on Q > 0)
+            for (t, tau) in F_time_set, v in V, p in P_v[v], m in keys(m_segments)
+                q_val = value(Deterministic_Equivalent[:Q][v, p, (t, tau), m])
+                if q_val > 0
+                    Q_OBJ += r_avg[v, t] * (1 - zeta_vm[v, m]) * q_val / delta[t]
+                end
+            end
+        else
+            # Term 2: Procurement cost (apply filtering on Q > 0)
+            for (t, tau) in F_time_set, v in V, p in P_v[v], m in keys(m_segments)
+                q_val = value(Deterministic_Equivalent[:Q][v, p, (t, tau), m])
+                if q_val > 0
+                    Q_OBJ += -r_avg[v, t] * (1 - zeta_vm[v, m]) * q_val / delta[t]
+                end
             end
         end
-        
-        # Term 3: Missed dose penalty
-        for a in A, t in T
-            S_OBJ += 1 * beta * value(Deterministic_Equivalent[:S][a, t, 1]) / delta[t]
+
+        if UNICEF_MODEL
+            # Term 3: Missed dose penalty
+            for a in A, t in T
+                S_OBJ += 1 * beta * value(Deterministic_Equivalent[:S][a, t, 1]) / delta[t]
+            end
+        elseif SOCIAL_BENEFIT_MODEL
+            # Term 3: Missed dose penalty
+            for a in A, t in T
+                S_OBJ += 1 * beta * value(Deterministic_Equivalent[:S][a, t, 1]) / delta[t]
+            end
+        else
+            # Term 3: Final period weighted revenue
+            for a in A, v in V
+                S_OBJ += 1 * (r_avg[v, last(T)] * value(Deterministic_Equivalent[:S][a, last(T), 1])) / delta[last(T)]
+            end
         end
-        
+
         # Term 4: Inventory holding cost
         for v in V, t in T
             I_OBJ += 1 * h[v] * r_avg[v, t] * value(Deterministic_Equivalent[:I][v, t, 1]) / delta[t]
@@ -217,23 +249,83 @@ end
             Y_OBJ += f_profit[v,p,t] * value(Deterministic_Equivalent[:Y][p,t]) / delta[t]
         end
 
+        results = DataFrame(
+            p = String[],
+            t = Int[],
+            tau = Int[],
+            Q = Float64[],
+            W = Float64[],
+            ravg = Float64[],
+            zetavm = Float64[],
+            used_segments = Vector{Int}[],   # store vectors directly
+            vaccines = Vector{String}[],
+            lhs = Float64[],
+            rhs = Float64[],
+            rhs_adjusted = Float64[]
+        )
+
+        used_segments = []
+        vaccines = []
+
+
         if UNICEF_MODEL
             obj_manual = F_OBJ + Q_OBJ + S_OBJ + I_OBJ
             println("F Objective value: ", F_OBJ)
             println("Q Objective value: ", Q_OBJ)
             println("S Objective value: ", S_OBJ)
             println("I Objective value: ", I_OBJ)
-            println("I Objective value: ", L_OBJ)
-            println("I Objective value: ", Y_OBJ)
+            println("L Objective value: ", L_OBJ)
+            println("Y Objective value: ", Y_OBJ)
             println("Total Objective value: ", obj_manual)
+
+            # producer_profits = Dict{String, Float64}()
+
+            # for p in P
+            #     total_profit_p = 0.0
+            #     for v in V_p[p]
+            #         for (t,tau) in F_time_set
+            #             for m in keys(m_segments)
+            #                 total_profit_p += r_avg[v, t] * (1 - zeta_vm[v, m]) * Deterministic_Equivalent[:Q][v, p, (t, tau), m]
+            #             end
+            #         end
+            #     end
+            #     producer_profits[p] = value(total_profit_p)
+            # end
+
+            # # Define the filename for the Excel file
+            # num_m_segments = length(keys(m_segments))
+            # filename = "producer_profits_$(num_m_segments)_segments.xlsx"
+
+            # # Write the data to the Excel file
+            # XLSX.openxlsx(filename, mode="w") do xf
+            #     sheet = xf[1]
+                
+            #     # Write the column headers
+            #     sheet["A1"] = "Producer"
+            #     sheet["B1"] = "Total Profit"
+                
+            #     # Use a counter to track the row number
+            #     row = 2
+                
+            #     # Loop through the dictionary and write each key-value pair to a new row
+            #     for (p, profit) in producer_profits
+            #         sheet["A$(row)"] = p
+            #         sheet["B$(row)"] = profit
+            #         row += 1
+            #     end
+            # end
+
+            # println("Successfully saved producer_profits to $(filename)")
+            # println("Profits: ", producer_profits)
+            
         elseif SOCIAL_BENEFIT_MODEL
             obj_manual = S_OBJ
             println("F Objective value: ", F_OBJ)
             println("Q Objective value: ", Q_OBJ)
             println("S Objective value: ", S_OBJ)
             println("I Objective value: ", I_OBJ)
-            println("I Objective value: ", L_OBJ)
-            println("I Objective value: ", Y_OBJ)
+            println("L Objective value: ", L_OBJ)
+            println("Y Objective value: ", Y_OBJ)
             println("Total Objective value: ", obj_manual)
         else
             obj_manual = Q_OBJ + S_OBJ + L_OBJ + Y_OBJ
@@ -241,8 +333,8 @@ end
             println("Q Objective value: ", Q_OBJ)
             println("S Objective value: ", S_OBJ)
             println("I Objective value: ", I_OBJ)
-            println("I Objective value: ", L_OBJ)
-            println("I Objective value: ", Y_OBJ)
+            println("Y Objective value: ", L_OBJ)
+            println("L Objective value: ", Y_OBJ)
             println("Total Objective value: ", obj_manual)
         end
         
@@ -251,4 +343,4 @@ end
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(10,5,1,1,1,1,1,1, true, true, false, false, true)
+tender_stochastic_sensitivity(5,5,1,1,1,1,1,1, true, true, true, false, false)

@@ -21,7 +21,7 @@ function process_scenario_data_n_selected_with_MVP2(
     unit::Int,
     seed::Int,
 )
-    scenario_pair_probs_path = joinpath(data_dir, "scenario_pair_probabilities_new_1_scenario.json")
+    scenario_pair_probs_path = joinpath(data_dir, "scenario_pair_probabilities_new.json")
     scenario_pair_probs = JSON.parsefile(scenario_pair_probs_path)
 
     # Convert keys to integers and sort them to maintain order
@@ -101,7 +101,7 @@ function process_scenario_data_n_selected_with_MVP2(
     selected_scenario_probs = Dict(string(k) => scenario_pair_probs[string(k)] for k in selected_keys)
 
     # Load scenario pairs
-    scenario_pairs_path = joinpath(data_dir, "scenario_pairs_new_1_scenario.json")
+    scenario_pairs_path = joinpath(data_dir, "scenario_pairs_new.json")
     scenario_pairs = JSON.parsefile(scenario_pairs_path)
     selected_scenario_pairs = Dict(string(k) => scenario_pairs[string(k)] for k in selected_keys)
 

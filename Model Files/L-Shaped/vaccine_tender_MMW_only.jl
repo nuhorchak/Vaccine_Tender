@@ -32,7 +32,8 @@ include(joinpath(functions_directory, "save_L_shaped_results.jl"))
 include(joinpath(functions_directory, "select_random_scenarios.jl"))
 include(joinpath(functions_directory, "create_vaccine_data.jl"))
 include(joinpath(functions_directory, "sub_problem.jl"))
-include(joinpath(functions_directory, "dual_sub_problem_2.jl"))
+include(joinpath(functions_directory, "dual_sub_problem_MMW.jl"))
+include(joinpath(functions_directory, "dual_sub_problem_main.jl"))
 include(joinpath(functions_directory, "update_core_points.jl"))
 include(joinpath(functions_directory, "master_problem.jl"))
 # include(joinpath(functions_directory, "create_vaccine_data_MMR_only.jl"))
@@ -179,6 +180,7 @@ function tender_stochastic_sensitivity(
                 end
                 
                 # println("Theta: $(JuMP.value.(Masterproblem[:theta]))")
+                global W_bar = JuMP.value.(Masterproblem[:W])
                 global F_bar = JuMP.value.(Masterproblem[:F])
                 global Y_bar = JuMP.value.(Masterproblem[:Y])
                 global Q_bar = JuMP.value.(Masterproblem[:Q])
@@ -245,36 +247,34 @@ function tender_stochastic_sensitivity(
 
                 
                 Z_S_omega = Dict()
-                dual_subproblem = Dict()
-                println("Solving Sub Problem")
+                # dual_subproblem = Dict()
+                println("Solving Primal and Dual Sub Problem")
                 for ω in Ω_test_partial_2
                     println("SP scenario:: $ω")
-                    #need to change to dual sub problem
-                    Subproblem, cons_14, cons_15, cons_16, cons_17, cons_18, cons_19 = sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω, beta, f_profit, delta, r_avg, gurobi_solver_no_presolve,
-                    V, P_v, T, T_initial, A, P, F_time_set, 1, V_p, X_tilde_upper, s_real, s_real_tilde, d_real_tilde, V_a, starting_points_vect_I, 
-                    starting_points_vect_S, r, h, l, zeta_vm, m_segments, κ, UNICEF_MODEL, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL)
-    
-                    set_optimizer_attribute(Subproblem, "MIPGap", 1e-10)                                                        
-                    optimize!(Subproblem)
-                    println("Subproblem Model status: ", termination_status(Subproblem))
-        
-                    X_sub[ω] = JuMP.value.(Subproblem[:X])
-                    I_sub[ω] = JuMP.value.(Subproblem[:I])
-                    S_sub[ω] = JuMP.value.(Subproblem[:S])
-                    Vc_sub[ω] = JuMP.value.(Subproblem[:Vc])
-        
-                    constr14 = JuMP.dual.(cons_14)
-                    constr15 = JuMP.dual.(cons_15)
-                    constr16 = JuMP.dual.(cons_16)
-                    constr17 = JuMP.dual.(cons_17)
-                    constr18 = JuMP.dual.(cons_18)
-                    constr19 = JuMP.dual.(cons_19)
+                    #primal sub problem
+                    # Subproblem, cons_14, cons_15, cons_16, cons_17, cons_18, cons_19 = sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, ω, beta, f_profit, delta, r_avg, gurobi_solver_no_presolve,
+                    # V, P_v, T, T_initial, A, P, F_time_set, 1, V_p, X_tilde_upper, s_real, s_real_tilde, d_real_tilde, V_a, starting_points_vect_I, 
+                    # starting_points_vect_S, r, h, l, zeta_vm, m_segments, κ, UNICEF_MODEL, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL)
 
-        
-                    dual_vector_omega = [constr14, constr15, constr16, constr17, constr18, constr19]
-                    dual_subproblem[ω] = dual_vector_omega
-                    Z_S_omega[ω] = JuMP.objective_value(Subproblem)
-                    println("Sub OBJ: $(JuMP.objective_value(Subproblem))")
+                    dualsubproblem_main = dual_sub_problem_main(Q_bar, Y_bar, L_bar, W_bar, K_ddot_bar, I_hat, S_hat, Z_S_omega, F_time_set, h, delta, Δ, starting_points_vect_I, starting_points_vect_S,
+                    s_real_tilde, d_real_tilde, s_real, ω, beta, κ, V, P, P_v, V_p, T, A, A_v, r_avg, m_segments, gurobi_solver_no_presolve, model)
+    
+                    # println("Solving Sub Problem")
+                    # set_optimizer_attribute(Subproblem, "MIPGap", 1e-10)                                                        
+                    # optimize!(Subproblem)
+                    # println("Subproblem Model status: ", termination_status(Subproblem))
+                    # # Z_S_omega[ω] = JuMP.objective_value(Subproblem)
+                    
+
+                    println("Solving Dual Subproblem")
+                    set_optimizer_attribute(dualsubproblem_main, "MIPGap", 1e-10)                                                        
+                    optimize!(dualsubproblem_main)
+                    println("Dual Subproblem Model status: ", termination_status(dualsubproblem_main))
+                    Z_S_omega[ω] = JuMP.objective_value(dualsubproblem_main)
+
+                    # println("Comparing results!")
+                    # println("Sub OBJ: $(JuMP.objective_value(Subproblem))")
+                    println("Dual Sub OBJ: $(JuMP.objective_value(dualsubproblem_main))")
                 end #end dual solving
 
                 # global Z_S_expected = sum(p_ω_test_partial_2[ω] * Z_S_omega[ω] for ω in Ω_test_partial_2)
@@ -296,7 +296,7 @@ function tender_stochastic_sensitivity(
 
                     ############################################################################################################################        
 
-                    dualsubproblem = dual_sub_problem(Q_core, Y_core, L_core, W_core, K_ddot_core, Q_bar, Y_bar, L_bar, W_bar, K_ddot_bar, I_hat, S_hat, Z_S_omega, F_time_set, h,
+                    dualsubproblem = dual_sub_problem_MMW(Q_core, Y_core, L_core, W_core, K_ddot_core, Q_bar, Y_bar, L_bar, W_bar, K_ddot_bar, I_hat, S_hat, Z_S_omega, F_time_set, h,
                     delta, Δ, starting_points_vect_I, starting_points_vect_S, s_real_tilde, d_real_tilde, s_real, ω, beta, κ, V, P, P_v, V_p, T, A, A_v, r_avg, m_segments, gurobi_solver_no_presolve, model, true, Z_S_expected)
 
                     set_optimizer_attribute(dualsubproblem, "MIPGap", 1e-10)
@@ -448,9 +448,11 @@ function tender_stochastic_sensitivity(
                     theta_total += p_ω_test_partial_2[ω] * theta_bar[ω]
                 end
     
-                if Z_M - theta_total + Z_MMW_expected < UB
-                    UB = Z_M - theta_total + Z_MMW_expected
-                end  
+                # if Z_M - theta_total + Z_MMW_expected < UB
+                #     UB = Z_M - theta_total + Z_MMW_expected
+                # end  
+                UB = min(UB, Z_M - theta_total + Z_S_expected)
+
 
                 @assert LB >= UB + 1e-6 "Warning: LB > UB detected at iter $iter1"
                 push!(lb_vector, Z_M)
