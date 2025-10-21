@@ -19,33 +19,50 @@ Generates data structures related to antigens, vaccines, producers, and their re
 """
 function create_vaccine_data()
     # List of antigens
-    A = ["Measles", "Mumps", "Rubella", "Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib", "Polio", "HPV", "Rotavirus", "PCV"]
+    A = ["Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib", "Polio", "HPV", "Rotavirus", "PCV"]
+    # ["Measles", "Mumps", "Rubella", "Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib", "Polio", "HPV", "Rotavirus", "PCV"]
 
     # List of vaccines
-    V = ["M", "MR", "MMR", "TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "Penta", "Hexa", "HPV", "Rotavirus", "PCV"] #"Hib",
+    V = ["TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "Penta", "Hexa", "HPV", "Rotavirus", "PCV"] #"Hib",
+    # ["M", "MR", "MMR", "TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "Penta", "Hexa", "HPV", "Rotavirus", "PCV"]
 
     # Mapping of vaccines to antigens
     A_v = Dict(
-        "M" => ["Measles"], "MR" => ["Measles", "Rubella"], "MMR" => ["Measles", "Mumps", "Rubella"], "TT" => ["Tetanus"],
+        "TT" => ["Tetanus"],
         "HepB" => ["Hepatitis_B"], "IPV" => ["Polio"], "OPV" => ["Polio"], "DT" => ["Diphtheria", "Tetanus"],
         "Td" => ["Diphtheria", "Tetanus"], "DTwP" => ["Diphtheria", "Tetanus", "Pertussis"], "DTwP-Hib" => ["Diphtheria", "Tetanus", "Pertussis", "Hib"],
         "Penta" => ["Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib"], "Hexa" => ["Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib", "Polio"],
         "HPV" => ["HPV"], "Rotavirus" => ["Rotavirus"], "PCV" => ["PCV"] # "Hib" => ["Hib"],
     )
 
+    #     A_v = Dict(
+    #     "M" => ["Measles"], "MR" => ["Measles", "Rubella"], "MMR" => ["Measles", "Mumps", "Rubella"], "TT" => ["Tetanus"],
+    #     "HepB" => ["Hepatitis_B"], "IPV" => ["Polio"], "OPV" => ["Polio"], "DT" => ["Diphtheria", "Tetanus"],
+    #     "Td" => ["Diphtheria", "Tetanus"], "DTwP" => ["Diphtheria", "Tetanus", "Pertussis"], "DTwP-Hib" => ["Diphtheria", "Tetanus", "Pertussis", "Hib"],
+    #     "Penta" => ["Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib"], "Hexa" => ["Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib", "Polio"],
+    #     "HPV" => ["HPV"], "Rotavirus" => ["Rotavirus"], "PCV" => ["PCV"] # "Hib" => ["Hib"],
+    # )
     # List of producers
     P = ["AJ_Vaccines", "BB_NCIPD", "China_National", "Bharat_Biotech", "Bilthoven", "Biological_E", "GSK", "Haffkine_Bio",
          "LG_Chem", "Merck_Sharp", "Panacea_Biotec", "PT_Bio", "Sanofi", "Serum_Institute", "Pfizer"]
 
     # Mapping of vaccines to producers
     P_v = Dict(
-        "M" => ["Serum_Institute", "PT_Bio"], "MR" => ["Serum_Institute", "Biological_E"], "MMR" => ["Serum_Institute", "GSK"],
         "TT" => ["Serum_Institute", "PT_Bio", "BB_NCIPD", "Biological_E"], "HepB" => ["Serum_Institute", "LG_Chem"],
         "IPV" => ["LG_Chem", "AJ_Vaccines", "Bilthoven", "Sanofi"], "OPV" => ["Serum_Institute", "PT_Bio", "GSK", "Sanofi", "Panacea_Biotec", "China_National", "Bharat_Biotech", "Haffkine_Bio"],
         "DT" => ["PT_Bio", "BB_NCIPD"], "Td" => ["Serum_Institute", "PT_Bio", "BB_NCIPD", "Biological_E"], "DTwP" => ["Serum_Institute", "Biological_E"],
         "DTwP-Hib" => ["Serum_Institute"], "Penta" => ["Serum_Institute", "PT_Bio", "Biological_E", "LG_Chem", "Panacea_Biotec"], "Hexa" => ["Sanofi"],
         "HPV" => ["GSK", "Merck_Sharp", "China_National"], "Rotavirus" => ["Serum_Institute", "GSK", "Bharat_Biotech"], "PCV" => ["Serum_Institute", "GSK", "Pfizer"]
     ) # "Hib" => ["Serum_Institute"],
+
+    #     P_v = Dict(
+    #     "M" => ["Serum_Institute", "PT_Bio"], "MR" => ["Serum_Institute", "Biological_E"], "MMR" => ["Serum_Institute", "GSK"],
+    #     "TT" => ["Serum_Institute", "PT_Bio", "BB_NCIPD", "Biological_E"], "HepB" => ["Serum_Institute", "LG_Chem"],
+    #     "IPV" => ["LG_Chem", "AJ_Vaccines", "Bilthoven", "Sanofi"], "OPV" => ["Serum_Institute", "PT_Bio", "GSK", "Sanofi", "Panacea_Biotec", "China_National", "Bharat_Biotech", "Haffkine_Bio"],
+    #     "DT" => ["PT_Bio", "BB_NCIPD"], "Td" => ["Serum_Institute", "PT_Bio", "BB_NCIPD", "Biological_E"], "DTwP" => ["Serum_Institute", "Biological_E"],
+    #     "DTwP-Hib" => ["Serum_Institute"], "Penta" => ["Serum_Institute", "PT_Bio", "Biological_E", "LG_Chem", "Panacea_Biotec"], "Hexa" => ["Sanofi"],
+    #     "HPV" => ["GSK", "Merck_Sharp", "China_National"], "Rotavirus" => ["Serum_Institute", "GSK", "Bharat_Biotech"], "PCV" => ["Serum_Institute", "GSK", "Pfizer"]
+    # ) # "Hib" => ["Serum_Institute"],
 
     # Derived mappings
     V_a = Dict(a => [v for v in keys(A_v) if a in A_v[v]] for a in A)
@@ -67,10 +84,11 @@ function create_vaccine_data()
     )
 
     antigen_category = Dict(
-        "MMR-based" => ["Measles", "Mumps", "Rubella"],
         "Td-based" => ["Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib", "Polio"],
         "Single" => ["HPV", "Rotavirus", "PCV"]
     )
+
+            # "MMR-based" => ["Measles", "Mumps", "Rubella"],
 
     return A, V, A_v, P, P_v, V_a, V_p, P_a, A_p, capacity_category, vaccine_category, antigen_category
 end

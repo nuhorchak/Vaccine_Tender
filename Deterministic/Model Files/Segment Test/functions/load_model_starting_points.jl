@@ -46,7 +46,7 @@ function load_model_starting_points(file_path::String, initial_inventory_rate::I
     I_df = DataFrame(data, column_names)
     for row in eachrow(I_df)
         if row.Vaccine in V
-            push!(starting_points_vect_I, (row.Vaccine, round(row.Amount * initial_inventory_rate / unit, digits=0)))
+            push!(starting_points_vect_I, (row.Vaccine, round(row.Amount * initial_inventory_rate / unit, digits=10)))
         end
     end
     # for row in 2:total_row_I

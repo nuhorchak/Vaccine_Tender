@@ -10,6 +10,7 @@ import JSON
 import MathOptInterface
 
 current_directory = @__DIR__
+println(current_directory)
 functions_directory = joinpath(current_directory, "functions")
 data_dir = joinpath(current_directory, "data")
 # functions_directory = joinpath(current_directory, "..", "functions")
@@ -30,9 +31,9 @@ include(joinpath(functions_directory, "create_vaccine_data.jl"))
 include(joinpath(functions_directory, "sub_problem.jl"))
 include(joinpath(functions_directory, "master_problem.jl"))
 
-gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1)#, "Threads" => 32) 
-gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-4)#, "Threads" => 32) 
-gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1)#, "Threads" => 32) 
+gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-4)#, "Threads" => 32) 
+gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1.5e-2)#8.5e-2)#, "Threads" => 32) 
+gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-2)#, "Threads" => 32) 
 
 function tender_stochastic_sensitivity(
     max_horizon_length::Int,
@@ -61,17 +62,20 @@ else
 end
 
     # value to scale coefficients for faster computation
-    unit = 1
+    unit = 1000
     global total_time = 0
-    global seed = 9
+    global seed = 1
     global demand_growth = 0.0
 
     for trial in 1:number_of_trials
+        seed = rand(1:99999)
+        demand_growth = 0.0
         println("trial: $trial")
         source = string(results_dir, "/model_", model, "log_DE_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",number_of_demand_scenarios*total_capacity_scenarios,"_trial_",trial,"_demand_growth_",demand_growth,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
             overlap_decision = true
 
-        demand_growth = 0.01 * (trial - 1)
+        # demand_growth = 0.01 * (trial - 1)
+        demand_growth = (0.4rand() - 0.1)
         println("Demand Growth for trial $trial is: $demand_growth")
 
     
@@ -87,13 +91,25 @@ end
         starting_points_vect_F, starting_points_vect_I, starting_points_vect_S = load_model_starting_points(data_dir, initial_inventory_rate, unit, A, V)
         # cuts_dict = Dict()
 
+        println(d_real_tilde)
+
         start_time = time()
     
         ################################################### INITIALIZE DE ###################################################
         Deterministic_Equivalent = JuMP.Model()
         JuMP.set_optimizer(Deterministic_Equivalent, gurobi_solver_DE)
         # set_optimizer_attribute(Deterministic_Equivalent, "TimeLimit", 500)
-        source1 = string(results_dir, "/", model, "_log_Phase1_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_demand_growth_",demand_growth,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
+        # source1 = string(results_dir, "/", model, "_log_Phase1_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_demand_growth_",demand_growth,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
+        source1 = normpath(joinpath(results_dir,
+        string(model, "_log_Phase1_L_T_", max_horizon_length,
+           "_delta_", max_tender_length,
+           "_scen_", length(random_scenarios),
+           "_trial_", trial,
+           "_demand_growth_", demand_growth,
+           "_inv_", initial_inventory_rate,
+           "_cap_", scaled_capacity,
+           "_cap_inc_", allowable_capacity_increase_number,
+           ".json")))
 
         # Deterministic_Equivalent = deterministic_equivalent(p_ω_test, random_scenarios, g, beta, Γ, gurobi_solver_DE,
         # A, A_p, F_time_set, V, P_v, T, T_initial, P, P_a, starting_points_vect_F, starting_points_vect_I, 
@@ -343,4 +359,4 @@ end
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(5,5,1,1,1,1,1,1, true, true, false, false, true)
+tender_stochastic_sensitivity(10,5,1,1,5,1,1,1, true, true, true, false, false)

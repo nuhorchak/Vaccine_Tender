@@ -22,7 +22,7 @@ function process_scenario_data_n_selected_with_MVP2_demand_scaling(
     demand_growth_rate::Float64,
     seed::Int,
 )
-    scenario_pair_probs_path = joinpath(data_dir, "scenario_pair_probabilities_new_11SEP.json")
+    scenario_pair_probs_path = joinpath(data_dir, "scenario_pair_probabilities_new_6OCT_NO_MMR.json")
     scenario_pair_probs = JSON.parsefile(scenario_pair_probs_path)
 
     # Convert keys to integers and sort them to maintain order
@@ -102,7 +102,7 @@ function process_scenario_data_n_selected_with_MVP2_demand_scaling(
     selected_scenario_probs = Dict(string(k) => scenario_pair_probs[string(k)] for k in selected_keys)
 
     # Load scenario pairs
-    scenario_pairs_path = joinpath(data_dir, "scenario_pairs_new_1_scenario_11SEP.json")
+    scenario_pairs_path = joinpath(data_dir, "scenario_pairs_new_1_scenario_6OCT_NO_MMR.json")
     scenario_pairs = JSON.parsefile(scenario_pairs_path)
     selected_scenario_pairs = Dict(string(k) => scenario_pairs[string(k)] for k in selected_keys)
 
@@ -127,11 +127,12 @@ function process_scenario_data_n_selected_with_MVP2_demand_scaling(
     for ω in Ω_test
         total_demand = 0.0
         for a in A
+            # new_rate = round((0.6 + 0.9 * rand()), digits=2) # demand_growth_rate)
             for t in T
-                growth_multiplier = t == 1 ? 1.0 : (1 + demand_growth_rate)
+                growth_multiplier = t == 1 ? 1.0 : round((0.7 + 0.8 * rand()), digits=2) # demand_growth_rate)
                 d_real_tilde[a, t, ω] = round(
                     (scenario_pairs["$ω"]["demand"]["$t"]["$a"] * growth_multiplier) / unit,
-                    digits=0,
+                    digits=2,
                 )
                 total_demand += d_real_tilde[a, t, ω]
             end
@@ -142,9 +143,10 @@ function process_scenario_data_n_selected_with_MVP2_demand_scaling(
     for ω in Ω_test
         total_capacity = 0.0
         for p in P
+            # new_prod_rate = (0.6 + 0.8 * rand())
             for t in T
-                scaled_capacity_multiplier = t == 1 ? 1.0 : (1 + scaled_capacity)
-                s_real_tilde[p, t, ω] = round(scenario_pairs["$ω"]["capacity"]["$t"]["$p"] * (1 + scaled_capacity_multiplier) / unit, digits=0)
+                # scaled_capacity_multiplier = t == 1 ? 1.0 : scaled_capacity # new_prod_rate
+                s_real_tilde[p, t, ω] = round(scenario_pairs["$ω"]["capacity"]["$t"]["$p"] * (scaled_capacity) / unit, digits=2) #(1 + scaled_capacity_multiplier) / unit, digits=5)
                 total_capacity += s_real_tilde[p, t, ω]
             end
         end
@@ -191,13 +193,13 @@ function process_scenario_data_n_selected_with_MVP2_demand_scaling(
 
         for a in A
             for t in T
-                d_real_tilde_MVP[a, t, MVP_scenario] = round(Statistics.mean([d_real_tilde[a, t, ω] for ω in Ω_test]), digits=0)
+                d_real_tilde_MVP[a, t, MVP_scenario] = round(Statistics.mean([d_real_tilde[a, t, ω] for ω in Ω_test]), digits=2)
             end
         end
 
         for p in P
             for t in T
-                s_real_tilde_MVP[p, t, MVP_scenario] = round(Statistics.mean([s_real_tilde[p, t, ω] for ω in Ω_test]), digits=0)
+                s_real_tilde_MVP[p, t, MVP_scenario] = round(Statistics.mean([s_real_tilde[p, t, ω] for ω in Ω_test]), digits=2)
             end
         end
 

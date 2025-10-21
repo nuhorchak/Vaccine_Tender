@@ -57,7 +57,7 @@ function initialize_parameters(
     # end
 
     # Define file path
-    capacity_file_path = joinpath(data_dir, "production_capacity_scenarios_NEW_23JUN.xlsx")
+    capacity_file_path = joinpath(data_dir, "production_capacity_scenarios_NEW_6OCT.xlsx")
 
     # Open the XLSX file and read the "base_capacity" sheet
     capacity_file = XLSX.readxlsx(capacity_file_path)
@@ -85,7 +85,7 @@ function initialize_parameters(
         # Iterate over column names starting from the second column (years)
         for col in names(s_real_raw_df_filtered)[2:2]  # Skip the first column (Manufacturer)
             year = string(col)  # Ensure the year is a string
-            s_real[producer] = round(row[col] / unit, digits=0)  # Store value in dictionary
+            s_real[producer] = round(row[col] / unit, digits=5)  # Store value in dictionary
         end
     end
 
@@ -147,7 +147,7 @@ function initialize_parameters(
     l = Dict()
     for v in V
         for p in P
-            l[v, p] = 0.1
+            l[v, p] = 0.02
         end
     end
 
@@ -181,7 +181,7 @@ function initialize_parameters(
                     # The combination does not exist, so skip this iteration
                     continue # Use 'continue' to skip to the next iteration of the inner loop
                 end
-                f_profit[v, p, (t,tau)] = s_real[p] / length(V_p[p]) * r_producer_avg[p] /1e6 * proportion_value
+                f_profit[v, p, (t,tau)] = s_real[p] / length(V_p[p]) * r_producer_avg[p] /1e5 * proportion_value
             end
         end
     end
@@ -199,21 +199,27 @@ function initialize_parameters(
 
     # Define the m values to cycle through for Q, Z, lambda_m
 
-    m_segments = [0.00, 0.01]
-    lower_breaks_values = [0, 1.041e4]
-    upper_breaks_values = [1.04e4, 99999999999999999999999999999999999]
+    # m_segments = [0.00, 0.01]
+    # lower_breaks_values = [0, 2767362]
+    # upper_breaks_values = [2767363, 99999999999999999999999999999999999]
 
+    #UG
     # m_segments = [0.00, 0.01, 0.02]
-    # lower_breaks_values = [0, 1.041e4, 3.69e6]
-    # upper_breaks_values = [1.04e4, 3.68e6, 99999999999999999999999999999999999]
+    # lower_breaks_values = [0, 6.0e4, 3.0e7]
+    # upper_breaks_values = [6.01e4, 3.01e6, 99999999999999999999999999999999999]
+
+    #SB
+    # m_segments = [0.00, 0.01, 0.02]
+    # lower_breaks_values = [0, 6.0e4, 3.0e8]
+    # upper_breaks_values = [6.01e4, 3.01e8, 99999999999999999999999999999999999]
 
     # m_segments = [0.0, 0.01, 0.02, 0.04]
     # lower_breaks_values = [0.0, 1.041e4, 3.69e6, 5.47e8]
     # upper_breaks_values = [1.04e4, 3.68e6, 5.46e8, 999999999999999999999999999999]
 
-    # m_segments = [0]
-    # lower_breaks_values = [0]
-    # upper_breaks_values = [99999999999999999999]
+    m_segments = [0]
+    lower_breaks_values = [0]
+    upper_breaks_values = [99999999999999999999]
 
     zeta_vm = Dict()
     phi_vm_lower = Dict()
