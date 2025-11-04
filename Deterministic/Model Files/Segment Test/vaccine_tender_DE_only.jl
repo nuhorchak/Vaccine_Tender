@@ -35,6 +35,9 @@ gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol
 gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1.5e-2)#8.5e-2)#, "Threads" => 32) 
 gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-2)#, "Threads" => 32) 
 
+# Base offset for the seed (S₀)
+const BASE_OFFSET = 10 
+
 function tender_stochastic_sensitivity(
     max_horizon_length::Int,
     max_tender_length::Int,
@@ -64,19 +67,26 @@ end
     # value to scale coefficients for faster computation
     unit = 1000
     global total_time = 0
-    global seed = 1
+    global current_seed = 1
     global demand_growth = 0.0
 
+    # --- Initialization ---
+
+    # Initial increase for Trial 1 (k)
+    current_increase = 10 
+    # The seed starts at BASE_OFFSET + initial increase
+    current_seed = BASE_OFFSET + current_increase
+
     for trial in 1:number_of_trials
-        seed = rand(1:99999)
+        # seed = rand(1:99999)
         demand_growth = 0.0
         println("trial: $trial")
         source = string(results_dir, "/model_", model, "log_DE_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",number_of_demand_scenarios*total_capacity_scenarios,"_trial_",trial,"_demand_growth_",demand_growth,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
             overlap_decision = true
 
-        # demand_growth = 0.01 * (trial - 1)
-        demand_growth = (0.4rand() - 0.1)
-        println("Demand Growth for trial $trial is: $demand_growth")
+        # # demand_growth = 0.01 * (trial - 1)
+        # demand_growth = (0.4rand() - 0.1)
+        # println("Demand Growth for trial $trial is: $demand_growth")
 
     
         ################################################### INITIALIZE NECESSARY PARAMS ###################################################
@@ -84,8 +94,8 @@ end
         A, V, A_v, P, P_v, V_a, V_p, P_a, A_p, capacity_category, vaccine_category, antigen_category = create_vaccine_data()
         T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, beta, zeta_vm, phi_vm_lower, phi_vm_upper, m_segments = initialize_parameters(data_dir, unit, scaled_capacity, max_horizon_length, max_tender_length, P, V, P_v, V_p, allowable_capacity_increase_number)
         # Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2, partial_scenario, s_real_tilde, d_real_tilde, random_scenarios = process_scenario_data_n_selected(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number, 1)
-        # Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2, partial_scenario, s_real_tilde, d_real_tilde, random_scenarios = process_scenario_data_n_selected_with_MVP2(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number, 1, true, unit,seed)
-        random_scenarios, s_real_tilde, d_real_tilde = process_scenario_data_n_selected_with_MVP2_demand_scaling(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number, 1, true, unit, demand_growth, seed)
+        # Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2, partial_scenario, s_real_tilde, d_real_tilde, random_scenarios = process_scenario_data_n_selected_with_MVP2(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number, 1, true, unit,current_seed)
+        random_scenarios, s_real_tilde, d_real_tilde = process_scenario_data_n_selected_with_MVP2_demand_scaling(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number, 1, true, unit, demand_growth, current_seed)
         X_tilde_lower, X_tilde_upper, L_ddot_lower, L_ddot_upper, L_hat_lower, L_hat_upper, L_check_lower, L_check_upper = create_check_params(V, P, P_v, T, F_time_set, s_real, κ, L_upper_number)
         
         starting_points_vect_F, starting_points_vect_I, starting_points_vect_S = load_model_starting_points(data_dir, initial_inventory_rate, unit, A, V)
@@ -354,9 +364,13 @@ end
             println("Total Objective value: ", obj_manual)
         end
         
-
+        # 3. Update the seed and increase for the NEXT trial
+        # The increase for the next trial doubles
+        current_increase *= 2 
+        # The seed for the next trial increases by the new, doubled amount
+        current_seed += current_increase
 
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(10,5,1,1,5,1,1,1, true, true, true, false, false)
+tender_stochastic_sensitivity(10,5,1,1,5,1,1,1, true, true, false, false, true)

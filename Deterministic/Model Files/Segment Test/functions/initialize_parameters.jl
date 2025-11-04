@@ -199,14 +199,14 @@ function initialize_parameters(
 
     # Define the m values to cycle through for Q, Z, lambda_m
 
-    # m_segments = [0.00, 0.01]
-    # lower_breaks_values = [0, 2767362]
-    # upper_breaks_values = [2767363, 99999999999999999999999999999999999]
+    m_segments = [0.00, 0.01]
+    lower_breaks_values = [0, 6.0e4]
+    upper_breaks_values = [6.01e4, 99999999999999999999999999999999999]
 
     #UG
     # m_segments = [0.00, 0.01, 0.02]
-    # lower_breaks_values = [0, 6.0e4, 3.0e7]
-    # upper_breaks_values = [6.01e4, 3.01e6, 99999999999999999999999999999999999]
+    # lower_breaks_values = [0, 6.0e4, 3.0e5]
+    # upper_breaks_values = [6.01e4, 3.01e5, 99999999999999999999999999999999999]
 
     #SB
     # m_segments = [0.00, 0.01, 0.02]
@@ -217,9 +217,9 @@ function initialize_parameters(
     # lower_breaks_values = [0.0, 1.041e4, 3.69e6, 5.47e8]
     # upper_breaks_values = [1.04e4, 3.68e6, 5.46e8, 999999999999999999999999999999]
 
-    m_segments = [0]
-    lower_breaks_values = [0]
-    upper_breaks_values = [99999999999999999999]
+    # m_segments = [0]
+    # lower_breaks_values = [0]
+    # upper_breaks_values = [99999999999999999999]
 
     zeta_vm = Dict()
     phi_vm_lower = Dict()
