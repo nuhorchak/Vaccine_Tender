@@ -38,6 +38,7 @@ function process_scenario_data_n_selected_with_MVP2_demand_scaling(
     end
 
     # Set seed for reproducibility
+    println("Demand current seed: $seed")
     Random.seed!(seed)
 
     # --- New Logic: Select a random central scenario and then its neighbors ---

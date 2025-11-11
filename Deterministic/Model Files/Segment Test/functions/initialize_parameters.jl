@@ -21,7 +21,7 @@ Processes production capacity, vaccine pricing, and cost-related data from Excel
 """
 function initialize_parameters(
     data_dir::String, unit::Int, scaled_capacity::Int, max_horizon_length::Int, max_tender_length::Int, 
-    P::Vector, V::Vector, P_v::Dict, V_p::Dict, allowable_capacity_increase_number::Int
+    P::Vector, V::Vector, P_v::Dict, V_p::Dict, allowable_capacity_increase_number::Int, iter::Int, n_iters::Int
 )
     # Time-related sets
     tmin = 1
@@ -199,9 +199,28 @@ function initialize_parameters(
 
     # Define the m values to cycle through for Q, Z, lambda_m
 
-    m_segments = [0.00, 0.01]
-    lower_breaks_values = [0, 6.0e4]
-    upper_breaks_values = [6.01e4, 99999999999999999999999999999999999]
+    # --- NEW: compute middle break based on iter / n_iters (linear spacing) ---
+    start_val = 1e2
+    end_val   = 1e8
+    if n_iters == 1
+        middle_break = start_val
+    else
+        # Logarithmic interpolation
+        log_start = log10(start_val)  # 2
+        log_end = log10(end_val)      # 8
+        log_middle = log_start + (iter - 1) * (log_end - log_start) / (n_iters - 1)
+        middle_break = 10^log_middle
+    end
+    middle_break = round(middle_break; digits=6)
+
+    # Update segment breaks using computed middle_break
+    m_segments = [0.00, -0.01]
+    lower_breaks_values = [0.0, middle_break]
+    upper_breaks_values = [middle_break + 1.0, 9.999999999999999e35]  # large sentinel
+
+    # m_segments = [0.00, -0.01]
+    # lower_breaks_values = [0, 6.0e4]
+    # upper_breaks_values = [6.01e4, 99999999999999999999999999999999999]
 
     #UG
     # m_segments = [0.00, 0.01, 0.02]
@@ -226,9 +245,17 @@ function initialize_parameters(
     phi_vm_upper = Dict()
  
     # Loop through v, and assign lambda for each m
+    # for v in V
+    #     for m in keys(m_segments)
+    #         zeta_vm[v, m] = m_segments[m]
+    #     end
+    # end
+
+    target_vaccines = ["Penta", "Hexa"]
+
     for v in V
         for m in keys(m_segments)
-            zeta_vm[v, m] = m_segments[m]
+            zeta_vm[v, m] = (v in target_vaccines ? m_segments[m] : m_segments[1])
         end
     end
  

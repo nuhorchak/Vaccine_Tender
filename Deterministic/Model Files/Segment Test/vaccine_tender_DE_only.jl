@@ -10,7 +10,7 @@ import JSON
 import MathOptInterface
 
 current_directory = @__DIR__
-println(current_directory)
+# println(current_directory)
 functions_directory = joinpath(current_directory, "functions")
 data_dir = joinpath(current_directory, "data")
 # functions_directory = joinpath(current_directory, "..", "functions")
@@ -33,7 +33,7 @@ include(joinpath(functions_directory, "master_problem.jl"))
 
 gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-4)#, "Threads" => 32) 
 gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1.5e-2)#8.5e-2)#, "Threads" => 32) 
-gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-2)#, "Threads" => 32) 
+gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-2)#, "Threads" => 32) 
 
 # Base offset for the seed (S₀)
 const BASE_OFFSET = 10 
@@ -75,10 +75,11 @@ end
     # Initial increase for Trial 1 (k)
     current_increase = 10 
     # The seed starts at BASE_OFFSET + initial increase
-    current_seed = BASE_OFFSET + current_increase
+    # current_seed = BASE_OFFSET + current_increase
 
     for trial in 1:number_of_trials
-        # seed = rand(1:99999)
+        current_seed = 1
+        println("Current seed: $current_seed")
         demand_growth = 0.0
         println("trial: $trial")
         source = string(results_dir, "/model_", model, "log_DE_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",number_of_demand_scenarios*total_capacity_scenarios,"_trial_",trial,"_demand_growth_",demand_growth,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
@@ -92,7 +93,7 @@ end
         ################################################### INITIALIZE NECESSARY PARAMS ###################################################
         #load vaccine dict data
         A, V, A_v, P, P_v, V_a, V_p, P_a, A_p, capacity_category, vaccine_category, antigen_category = create_vaccine_data()
-        T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, beta, zeta_vm, phi_vm_lower, phi_vm_upper, m_segments = initialize_parameters(data_dir, unit, scaled_capacity, max_horizon_length, max_tender_length, P, V, P_v, V_p, allowable_capacity_increase_number)
+        T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, beta, zeta_vm, phi_vm_lower, phi_vm_upper, m_segments = initialize_parameters(data_dir, unit, scaled_capacity, max_horizon_length, max_tender_length, P, V, P_v, V_p, allowable_capacity_increase_number, trial, number_of_trials)
         # Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2, partial_scenario, s_real_tilde, d_real_tilde, random_scenarios = process_scenario_data_n_selected(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number, 1)
         # Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2, partial_scenario, s_real_tilde, d_real_tilde, random_scenarios = process_scenario_data_n_selected_with_MVP2(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number, 1, true, unit,current_seed)
         random_scenarios, s_real_tilde, d_real_tilde = process_scenario_data_n_selected_with_MVP2_demand_scaling(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number, 1, true, unit, demand_growth, current_seed)
@@ -101,7 +102,11 @@ end
         starting_points_vect_F, starting_points_vect_I, starting_points_vect_S = load_model_starting_points(data_dir, initial_inventory_rate, unit, A, V)
         # cuts_dict = Dict()
 
-        println(d_real_tilde)
+        # println(d_real_tilde)
+        println("Lowerk segments")
+        println(phi_vm_lower)
+        println("Upper segments")
+        println(phi_vm_upper)
 
         start_time = time()
     
@@ -373,4 +378,4 @@ end
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(10,5,1,1,5,1,1,1, true, true, false, false, true)
+tender_stochastic_sensitivity(10,5,1,1,30,1,1,1, true, true, true, false, false)
