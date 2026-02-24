@@ -23,7 +23,8 @@ function create_vaccine_data()
     # ["Measles", "Mumps", "Rubella", "Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib", "Polio", "HPV", "Rotavirus", "PCV"]
 
     # List of vaccines
-    V = ["TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "Penta", "Hexa", "HPV", "Rotavirus", "PCV"] #"Hib",
+    V = ["TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "HPV", "Rotavirus", "PCV"]#, "Hib"]
+    # ["TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "Penta", "Hexa", "HPV", "Rotavirus", "PCV"] #"Hib",
     # ["M", "MR", "MMR", "TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "Penta", "Hexa", "HPV", "Rotavirus", "PCV"]
 
     # Mapping of vaccines to antigens
@@ -31,9 +32,14 @@ function create_vaccine_data()
         "TT" => ["Tetanus"],
         "HepB" => ["Hepatitis_B"], "IPV" => ["Polio"], "OPV" => ["Polio"], "DT" => ["Diphtheria", "Tetanus"],
         "Td" => ["Diphtheria", "Tetanus"], "DTwP" => ["Diphtheria", "Tetanus", "Pertussis"], "DTwP-Hib" => ["Diphtheria", "Tetanus", "Pertussis", "Hib"],
-        "Penta" => ["Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib"], "Hexa" => ["Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib", "Polio"],
-        "HPV" => ["HPV"], "Rotavirus" => ["Rotavirus"], "PCV" => ["PCV"] # "Hib" => ["Hib"],
+        "HPV" => ["HPV"], "Rotavirus" => ["Rotavirus"], "PCV" => ["PCV"],# "Hib" => ["Hib"],
     )
+
+        #     "TT" => ["Tetanus"],
+        # "HepB" => ["Hepatitis_B"], "IPV" => ["Polio"], "OPV" => ["Polio"], "DT" => ["Diphtheria", "Tetanus"],
+        # "Td" => ["Diphtheria", "Tetanus"], "DTwP" => ["Diphtheria", "Tetanus", "Pertussis"], "DTwP-Hib" => ["Diphtheria", "Tetanus", "Pertussis", "Hib"],
+        # "Penta" => ["Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib"], "Hexa" => ["Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib", "Polio"],
+        # "HPV" => ["HPV"], "Rotavirus" => ["Rotavirus"], "PCV" => ["PCV"] # "Hib" => ["Hib"],
 
     #     A_v = Dict(
     #     "M" => ["Measles"], "MR" => ["Measles", "Rubella"], "MMR" => ["Measles", "Mumps", "Rubella"], "TT" => ["Tetanus"],
@@ -51,9 +57,10 @@ function create_vaccine_data()
         "TT" => ["Serum_Institute", "PT_Bio", "BB_NCIPD", "Biological_E"], "HepB" => ["Serum_Institute", "LG_Chem"],
         "IPV" => ["LG_Chem", "AJ_Vaccines", "Bilthoven", "Sanofi"], "OPV" => ["Serum_Institute", "PT_Bio", "GSK", "Sanofi", "Panacea_Biotec", "China_National", "Bharat_Biotech", "Haffkine_Bio"],
         "DT" => ["PT_Bio", "BB_NCIPD"], "Td" => ["Serum_Institute", "PT_Bio", "BB_NCIPD", "Biological_E"], "DTwP" => ["Serum_Institute", "Biological_E"],
-        "DTwP-Hib" => ["Serum_Institute"], "Penta" => ["Serum_Institute", "PT_Bio", "Biological_E", "LG_Chem", "Panacea_Biotec"], "Hexa" => ["Sanofi"],
+        "DTwP-Hib" => ["Serum_Institute"], #"Penta" => ["Serum_Institute", "PT_Bio", "Biological_E", "LG_Chem", "Panacea_Biotec"], "Hexa" => ["Sanofi"],
         "HPV" => ["GSK", "Merck_Sharp", "China_National"], "Rotavirus" => ["Serum_Institute", "GSK", "Bharat_Biotech"], "PCV" => ["Serum_Institute", "GSK", "Pfizer"]
-    ) # "Hib" => ["Serum_Institute"],
+        #"Hib" => ["Serum_Institute"]
+    )
 
     #     P_v = Dict(
     #     "M" => ["Serum_Institute", "PT_Bio"], "MR" => ["Serum_Institute", "Biological_E"], "MMR" => ["Serum_Institute", "GSK"],
@@ -79,7 +86,7 @@ function create_vaccine_data()
 
     vaccine_category = Dict(
         "MMR-based" => ["M", "MR", "MMR"],
-        "Td-based" => ["TT", "HepB", "Hib", "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "Penta", "Hexa"],
+        "Td-based" => ["TT", "HepB", "Hib", "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib"],#, "Penta", "Hexa"],
         "Single" => ["HPV", "Rotavirus", "PCV"]
     )
 

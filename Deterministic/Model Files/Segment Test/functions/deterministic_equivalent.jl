@@ -94,7 +94,8 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
         @objective(model, Min, sum((-r_avg[v,t] * (1 - zeta_vm[v,m]) * Q[v,p,(t, tau),m]) / delta[t] for (t,tau) in F_time_set, v in V, p in P_v[v], m in keys(m_segments)) +
         sum((Γ[p] * L[p, t]) / delta[t] for p in P, t in T) +  
         sum(f_profit[v, p, (t,tau)] * W[p, (t,tau)] / delta[t] for (t, tau) in F_time_set, p in P, v in V_p[p]) +
-        sum(p_ω[ω] * ((r_avg[v,t]*S[a,t,ω]) / delta[t]) for a in A, v in V, t = last(T), ω in Ω)
+        sum(p_ω[ω] * ((r_avg[v,t]*S[a,t,ω]) / delta[t]) for a in A, v in V, t = last(T), ω in Ω) + 
+        sum(p_ω[ω] * h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω)
         # sum((f_profit[v,p,(t,tau)] * Y[p,t]) / delta[t] for v in V, p in P_v[v], t in T) +
     )
     end

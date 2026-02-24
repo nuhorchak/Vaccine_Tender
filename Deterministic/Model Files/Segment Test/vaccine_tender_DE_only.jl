@@ -32,8 +32,8 @@ include(joinpath(functions_directory, "sub_problem.jl"))
 include(joinpath(functions_directory, "master_problem.jl"))
 
 gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-4)#, "Threads" => 32) 
-gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1.5e-2)#8.5e-2)#, "Threads" => 32) 
-gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-2)#, "Threads" => 32) 
+gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-3)#8.5e-2)#, "Threads" => 32) 
+gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-3)#, "Threads" => 32) 
 
 # Base offset for the seed (S₀)
 const BASE_OFFSET = 10 
@@ -75,13 +75,14 @@ end
     # Initial increase for Trial 1 (k)
     current_increase = 10 
     # The seed starts at BASE_OFFSET + initial increase
-    # current_seed = BASE_OFFSET + current_increase
+    current_seed = BASE_OFFSET + current_increase
 
     for trial in 1:number_of_trials
-        current_seed = 1
-        println("Current seed: $current_seed")
-        demand_growth = 0.0
         println("trial: $trial")
+        # current_seed = 1
+        println("Current seed: $current_seed")
+        # demand_growth = 0.0
+        
         source = string(results_dir, "/model_", model, "log_DE_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",number_of_demand_scenarios*total_capacity_scenarios,"_trial_",trial,"_demand_growth_",demand_growth,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
             overlap_decision = true
 
@@ -203,6 +204,12 @@ end
             Nothing, κ, s_real, s_real_tilde, results_dir, m_segments)
         end
 
+        ######## NEED TO UPDATE TO REFLECT MODEL ##############################
+        # OBJ VAL
+        # Missed doses
+        # Inventory holding costs (generic)
+        # TENDER COST - UG tender costs
+        # PROD PROFIT - (revenue - costs)
         println("Manual calculation of the objective value function:")
 
         F_OBJ = 0.0
@@ -211,6 +218,7 @@ end
         S_OBJ = 0.0
         L_OBJ = 0.0
         Y_OBJ = 0.0
+        W_OBJ = 0.0
         obj_manual = 0.0
         LHS_value=Float64[]
         RHS_value=Float64[]
@@ -277,7 +285,7 @@ end
 
         # Term 6: Producer producing in period
         for v in V, p in P_v[v], (t,tau) in F_time_set
-            Y_OBJ += f_profit[v,p,(t,tau)] * value(Deterministic_Equivalent[:Y][p,t]) / delta[t]
+            W_OBJ += f_profit[v,p,(t,tau)] * value(Deterministic_Equivalent[:W][p,(t,tau)]) / delta[t]
         end
 
         results = DataFrame(
@@ -306,7 +314,7 @@ end
             println("S Objective value: ", S_OBJ)
             println("I Objective value: ", I_OBJ)
             println("L Objective value: ", L_OBJ)
-            println("Y Objective value: ", Y_OBJ)
+            # println("Y Objective value: ", W_OBJ)
             println("Total Objective value: ", obj_manual)
 
             # producer_profits = Dict{String, Float64}()
@@ -351,15 +359,15 @@ end
             
         elseif SOCIAL_BENEFIT_MODEL
             obj_manual = S_OBJ
-            println("F Objective value: ", F_OBJ)
-            println("Q Objective value: ", Q_OBJ)
+            # println("F Objective value: ", F_OBJ)
+            # println("Q Objective value: ", Q_OBJ)
             println("S Objective value: ", S_OBJ)
-            println("I Objective value: ", I_OBJ)
-            println("L Objective value: ", L_OBJ)
-            println("Y Objective value: ", Y_OBJ)
+            # println("I Objective value: ", I_OBJ)
+            # println("L Objective value: ", L_OBJ)
+            # println("Y Objective value: ", Y_OBJ)
             println("Total Objective value: ", obj_manual)
         else
-            obj_manual = Q_OBJ + S_OBJ + L_OBJ + Y_OBJ
+            obj_manual = -Q_OBJ + S_OBJ + L_OBJ + Y_OBJ + I_OBJ
             println("F Objective value: ", F_OBJ)
             println("Q Objective value: ", Q_OBJ)
             println("S Objective value: ", S_OBJ)
@@ -378,4 +386,4 @@ end
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(10,5,1,1,30,1,1,1, true, true, true, false, false)
+tender_stochastic_sensitivity(10,5,1,1,30,1,1,1, true, true, false, true, false)

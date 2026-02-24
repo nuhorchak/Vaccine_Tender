@@ -57,7 +57,7 @@ function initialize_parameters(
     # end
 
     # Define file path
-    capacity_file_path = joinpath(data_dir, "production_capacity_scenarios_NEW_6OCT.xlsx")
+    capacity_file_path = joinpath(data_dir, "production_capacity_scenarios_NEW_15YR_NO_MMR.xlsx")
 
     # Open the XLSX file and read the "base_capacity" sheet
     capacity_file = XLSX.readxlsx(capacity_file_path)
@@ -65,6 +65,8 @@ function initialize_parameters(
 
     # Extract column names from the first row, ensuring they are all strings
     column_names = string.(vec(s_real_raw[1, :]))  # Convert to 1D vector of Strings
+    @show column_names
+    @show findall(==("missing"), column_names)
 
     # Extract actual data from row 2 onwards
     data = s_real_raw[2:end, :]
@@ -90,7 +92,7 @@ function initialize_parameters(
     end
 
     # Read vaccine price data
-    vaccine_price_file_path = joinpath(data_dir, "Vaccine_price_data.xlsx")
+    vaccine_price_file_path = joinpath(data_dir, "Vaccine_price_data_15YR.xlsx")
     vaccine_price_file = XLSX.readxlsx(vaccine_price_file_path)
 
     r = Dict()
@@ -199,28 +201,30 @@ function initialize_parameters(
 
     # Define the m values to cycle through for Q, Z, lambda_m
 
+    ##############################################################################
     # --- NEW: compute middle break based on iter / n_iters (linear spacing) ---
-    start_val = 1e2
-    end_val   = 1e8
-    if n_iters == 1
-        middle_break = start_val
-    else
-        # Logarithmic interpolation
-        log_start = log10(start_val)  # 2
-        log_end = log10(end_val)      # 8
-        log_middle = log_start + (iter - 1) * (log_end - log_start) / (n_iters - 1)
-        middle_break = 10^log_middle
-    end
-    middle_break = round(middle_break; digits=6)
+    # start_val = 1e2
+    # end_val   = 1e8
+    # if n_iters == 1
+    #     middle_break = start_val
+    # else
+    #     # Logarithmic interpolation
+    #     log_start = log10(start_val)  # 2
+    #     log_end = log10(end_val)      # 8
+    #     log_middle = log_start + (iter - 1) * (log_end - log_start) / (n_iters - 1)
+    #     middle_break = 10^log_middle
+    # end
+    # middle_break = round(middle_break; digits=6)
 
-    # Update segment breaks using computed middle_break
-    m_segments = [0.00, -0.01]
-    lower_breaks_values = [0.0, middle_break]
-    upper_breaks_values = [middle_break + 1.0, 9.999999999999999e35]  # large sentinel
-
+    # # Update segment breaks using computed middle_break
     # m_segments = [0.00, -0.01]
-    # lower_breaks_values = [0, 6.0e4]
-    # upper_breaks_values = [6.01e4, 99999999999999999999999999999999999]
+    # lower_breaks_values = [0.0, middle_break]
+    # upper_breaks_values = [middle_break + 1.0, 9.999999999999999e35]  # large sentinel
+    ##############################################################################
+
+    m_segments = [0.00, -0.01]
+    lower_breaks_values = [0, 6.0e4]
+    upper_breaks_values = [6.01e4, 99999999999999999999999999999999999]
 
     #UG
     # m_segments = [0.00, 0.01, 0.02]
@@ -251,13 +255,16 @@ function initialize_parameters(
     #     end
     # end
 
-    target_vaccines = ["Penta", "Hexa"]
+    # target_vaccines = ["Penta", "Hexa"]
 
-    for v in V
-        for m in keys(m_segments)
-            zeta_vm[v, m] = (v in target_vaccines ? m_segments[m] : m_segments[1])
-        end
+
+    # target_vaccines = ["Penta", "Hexa"]
+    target_vaccines = ["TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "HPV", "Rotavirus", "PCV", "Penta", "Hexa"]
+
+    for v in V, m in eachindex(m_segments)
+        zeta_vm[v, m] = (v in target_vaccines) ? m_segments[m] : 0.0
     end
+
  
     for v in V
         for m in keys(lower_breaks_values)

@@ -22,7 +22,7 @@ function process_scenario_data_n_selected_with_MVP2_demand_scaling(
     demand_growth_rate::Float64,
     seed::Int,
 )
-    scenario_pair_probs_path = joinpath(data_dir, "scenario_pair_probabilities_new_6OCT_NO_MMR.json")
+    scenario_pair_probs_path = joinpath(data_dir, "scenario_pair_probabilities_new_15YR_NO_MMR.json")
     scenario_pair_probs = JSON.parsefile(scenario_pair_probs_path)
 
     # Convert keys to integers and sort them to maintain order
@@ -103,7 +103,7 @@ function process_scenario_data_n_selected_with_MVP2_demand_scaling(
     selected_scenario_probs = Dict(string(k) => scenario_pair_probs[string(k)] for k in selected_keys)
 
     # Load scenario pairs
-    scenario_pairs_path = joinpath(data_dir, "scenario_pairs_new_1_scenario_6OCT_NO_MMR.json")
+    scenario_pairs_path = joinpath(data_dir, "scenario_pairs_new_1_scenario_15YR_NO_MMR.json")
     scenario_pairs = JSON.parsefile(scenario_pairs_path)
     selected_scenario_pairs = Dict(string(k) => scenario_pairs[string(k)] for k in selected_keys)
 

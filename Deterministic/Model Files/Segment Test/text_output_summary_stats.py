@@ -164,7 +164,7 @@ if __name__ == "__main__":
     # Path to your file
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    file_path = os.path.join(script_dir, "results/manufacturer discounts/2 segments/UG/UG_output_2_segments_penta_hexa_inverse.txt")
+    file_path = os.path.join(script_dir, "results/manufacturer discounts/2 segments/MP/MP_new_OBJ_output_2_segments_penta_hexa_inverse.txt")
     
     # Run analysis
     trials_df, stats_df = analyze_objective_functions(file_path)
@@ -183,7 +183,7 @@ if __name__ == "__main__":
     print(stats_df)
     
     # Optional: Save to CSV
-    prefix = "UG_2_segments_penta_hexa_inverse_"
+    prefix = "MP_2_segments_penta_hexa_inverse_"
 
     trials_df.to_csv(os.path.join(script_dir, f"{prefix}trials_data.csv"), index=False)
     stats_df.to_csv(os.path.join(script_dir, f"{prefix}summary_statistics.csv"), index=False)
