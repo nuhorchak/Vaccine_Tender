@@ -1,0 +1,96 @@
+
+Gurobi 12.0.2 (win64) logging started Thu Jun 18 10:53:43 2026
+
+Set parameter LogFile to value "C:\Users\Nicholas Uhorchak\OneDrive - University of Arkansas\Desktop\Vaccine_Tender\Deterministic\Model Files\Segment Test\results\SOCIAL_BENEFIT_log_Phase1_L_T_10_delta_5_scen_1_trial_13_demand_growth_0.0_inv_1_cap_1_cap_inc_1.json"
+
+Gurobi 12.0.2 (win64) logging started Thu Jun 18 10:53:43 2026
+
+Set parameter LogFile to value "C:\Users\Nicholas Uhorchak\OneDrive - University of Arkansas\Desktop\Vaccine_Tender\Deterministic\Model Files\Segment Test\results\SOCIAL_BENEFIT_log_Phase1_L_T_10_delta_5_scen_1_trial_13_demand_growth_0.0_inv_1_cap_1_cap_inc_1.json"
+Gurobi Optimizer version 12.0.2 build v12.0.2rc0 (win64 - Windows 11+.0 (26200.2))
+
+CPU model: 12th Gen Intel(R) Core(TM) i7-1265U, instruction set [SSE2|AVX|AVX2]
+Thread count: 10 physical cores, 12 logical processors, using up to 12 threads
+
+Non-default parameters:
+FeasibilityTol  0.01
+MIPGap  0.05
+NumericFocus  1
+Presolve  1
+
+Optimize a model with 22091 rows, 10962 columns and 64771 nonzeros
+Model fingerprint: 0xa96b3f18
+Variable types: 9282 continuous, 1680 integer (1530 binary)
+Coefficient statistics:
+  Matrix range     [2e-03, 1e+20]
+  Objective range  [7e+00, 1e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+13]
+Warning: Model contains large matrix coefficient range
+Warning: Model contains large rhs
+Presolve removed 12121 rows and 5485 columns
+Presolve time: 0.15s
+Presolved: 9970 rows, 5477 columns, 36863 nonzeros
+Variable types: 4158 continuous, 1319 integer (863 binary)
+Found heuristic solution: objective 1.031573e+08
+Found heuristic solution: objective 1.021281e+08
+
+Root relaxation: objective 4.331383e+07, 4673 iterations, 0.23 seconds (0.20 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 4.3314e+07    0  171 1.0213e+08 4.3314e+07  57.6%     -    0s
+H    0     0                    6.037879e+07 4.3386e+07  28.1%     -    1s
+H    0     0                    5.919943e+07 4.3386e+07  26.7%     -    1s
+     0     0 4.3491e+07    0  337 5.9199e+07 4.3491e+07  26.5%     -    1s
+H    0     0                    5.914915e+07 4.3491e+07  26.5%     -    1s
+     0     0 4.3765e+07    0  334 5.9149e+07 4.3765e+07  26.0%     -    1s
+     0     0 4.3940e+07    0  327 5.9149e+07 4.3940e+07  25.7%     -    1s
+H    0     0                    5.898798e+07 4.3945e+07  25.5%     -    1s
+     0     0 4.3945e+07    0  297 5.8988e+07 4.3945e+07  25.5%     -    1s
+     0     0 4.3946e+07    0  300 5.8988e+07 4.3946e+07  25.5%     -    1s
+     0     0 4.4039e+07    0  430 5.8988e+07 4.4039e+07  25.3%     -    1s
+     0     0 4.4083e+07    0  419 5.8988e+07 4.4083e+07  25.3%     -    1s
+     0     0 4.4107e+07    0  416 5.8988e+07 4.4107e+07  25.2%     -    2s
+     0     0 4.4239e+07    0  397 5.8988e+07 4.4239e+07  25.0%     -    2s
+     0     0 4.4290e+07    0  216 5.8988e+07 4.4290e+07  24.9%     -    2s
+H    0     0                    5.787567e+07 4.4290e+07  23.5%     -    2s
+     0     2 4.4290e+07    0  216 5.7876e+07 4.4290e+07  23.5%     -    2s
+H   56    61                    5.713364e+07 4.4290e+07  22.5%   630    4s
+H  105   104                    5.657762e+07 4.4290e+07  21.7%   462    4s
+H  113   104                    5.635032e+07 4.4290e+07  21.4%   438    4s
+   231   224 5.0023e+07   18  114 5.6350e+07 4.4290e+07  21.4%   325    5s
+H  321   291                    5.545727e+07 4.4290e+07  20.1%   282    5s
+H  619   428                    5.526593e+07 4.4716e+07  19.1%   237    7s
+H  884   569                    5.520204e+07 4.5178e+07  18.2%   237    9s
+  1097   595     cutoff   32      5.5202e+07 4.5230e+07  18.1%   221   10s
+H 1483   684                    5.476764e+07 4.5929e+07  16.1%   212   12s
+  1976   888 5.0401e+07   17  207 5.4768e+07 4.6413e+07  15.3%   205   15s
+H 2315   903                    5.439015e+07 4.6413e+07  14.7%   196   16s
+* 2673   895              37    5.385203e+07 4.7110e+07  12.5%   195   18s
+H 2687   890                    5.376292e+07 4.7110e+07  12.4%   195   18s
+H 2750   820                    5.337078e+07 4.7136e+07  11.7%   195   18s
+* 2986   845              57    5.325233e+07 4.7307e+07  11.2%   193   19s
+  3079   838     cutoff   21      5.3252e+07 4.7516e+07  10.8%   192   20s
+H 4021   904                    5.304695e+07 4.8314e+07  8.92%   200   25s
+  4765  1005 5.3046e+07   16   65 5.3047e+07 4.8876e+07  7.86%   209   30s
+  5394  1057     cutoff   22      5.3047e+07 4.9195e+07  7.26%   212   35s
+  6013  1115 4.9521e+07   18  216 5.3047e+07 4.9521e+07  6.65%   217   40s
+  6141  1201 4.9521e+07   22  229 5.3047e+07 4.9521e+07  6.65%   218   45s
+  6655  1271 5.0459e+07   37  233 5.3047e+07 4.9521e+07  6.65%   216   50s
+  7184  1225 5.1535e+07   30  216 5.3047e+07 4.9521e+07  6.65%   212   55s
+  8331  1119 5.1928e+07   34  170 5.3047e+07 4.9521e+07  6.65%   207   60s
+  9535   897     cutoff   38      5.3047e+07 4.9521e+07  6.65%   205   65s
+ 10616  1007 5.2419e+07   39  199 5.3047e+07 4.9521e+07  6.65%   204   70s
+ 11812  1113 5.2208e+07   31  216 5.3047e+07 4.9521e+07  6.65%   201   75s
+ 12800  1186 5.2290e+07   36  210 5.3047e+07 4.9784e+07  6.15%   200   80s
+
+Explored 13951 nodes (2802244 simplex iterations) in 83.56 seconds (45.39 work units)
+Thread count was 12 (of 12 available processors)
+
+Solution count 10: 5.3047e+07 5.32523e+07 5.33708e+07 ... 5.54573e+07
+
+Optimal solution found (tolerance 5.00e-02)
+Best objective 5.304695262584e+07, best bound 5.062551658050e+07, gap 4.5647%
+
+User-callback calls 34367, time in user-callback 0.06 sec

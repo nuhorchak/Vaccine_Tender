@@ -31,9 +31,9 @@ include(joinpath(functions_directory, "create_vaccine_data.jl"))
 include(joinpath(functions_directory, "sub_problem.jl"))
 include(joinpath(functions_directory, "master_problem.jl"))
 
-gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-4)#, "Threads" => 32) 
-gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-4, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-3)#8.5e-2)#, "Threads" => 32) 
-gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-3)#, "Threads" => 32) 
+gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-2)#, "Threads" => 32) 
+gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-2)#8.5e-2)#, "Threads" => 32) 
+gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-2)#, "Threads" => 32) 
 
 # Base offset for the seed (S₀)
 const BASE_OFFSET = 10 
@@ -104,10 +104,13 @@ end
         # cuts_dict = Dict()
 
         # println(d_real_tilde)
-        println("Lowerk segments")
+        println("Lower segments")
         println(phi_vm_lower)
         println("Upper segments")
         println(phi_vm_upper)
+
+        println("Demand Data")
+        println(d_real_tilde)
 
         start_time = time()
     
@@ -386,4 +389,4 @@ end
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(10,5,1,1,30,1,1,1, true, true, false, true, false)
+tender_stochastic_sensitivity(10,5,1,1,30,1,1,1, true, true, true, false, false)

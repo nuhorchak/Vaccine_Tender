@@ -23,8 +23,8 @@ function create_vaccine_data()
     # ["Measles", "Mumps", "Rubella", "Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib", "Polio", "HPV", "Rotavirus", "PCV"]
 
     # List of vaccines
-    V = ["TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "HPV", "Rotavirus", "PCV"]#, "Hib"]
-    # ["TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "Penta", "Hexa", "HPV", "Rotavirus", "PCV"] #"Hib",
+    # V = ["TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "HPV", "Rotavirus", "PCV"]#, "Hib"]
+    V = ["TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "Penta", "Hexa", "HPV", "Rotavirus", "PCV"] #"Hib",
     # ["M", "MR", "MMR", "TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "Penta", "Hexa", "HPV", "Rotavirus", "PCV"]
 
     # Mapping of vaccines to antigens
@@ -32,6 +32,7 @@ function create_vaccine_data()
         "TT" => ["Tetanus"],
         "HepB" => ["Hepatitis_B"], "IPV" => ["Polio"], "OPV" => ["Polio"], "DT" => ["Diphtheria", "Tetanus"],
         "Td" => ["Diphtheria", "Tetanus"], "DTwP" => ["Diphtheria", "Tetanus", "Pertussis"], "DTwP-Hib" => ["Diphtheria", "Tetanus", "Pertussis", "Hib"],
+        "Penta" => ["Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib"], "Hexa" => ["Diphtheria", "Tetanus", "Pertussis", "Hepatitis_B", "Hib", "Polio"],
         "HPV" => ["HPV"], "Rotavirus" => ["Rotavirus"], "PCV" => ["PCV"],# "Hib" => ["Hib"],
     )
 
@@ -57,10 +58,18 @@ function create_vaccine_data()
         "TT" => ["Serum_Institute", "PT_Bio", "BB_NCIPD", "Biological_E"], "HepB" => ["Serum_Institute", "LG_Chem"],
         "IPV" => ["LG_Chem", "AJ_Vaccines", "Bilthoven", "Sanofi"], "OPV" => ["Serum_Institute", "PT_Bio", "GSK", "Sanofi", "Panacea_Biotec", "China_National", "Bharat_Biotech", "Haffkine_Bio"],
         "DT" => ["PT_Bio", "BB_NCIPD"], "Td" => ["Serum_Institute", "PT_Bio", "BB_NCIPD", "Biological_E"], "DTwP" => ["Serum_Institute", "Biological_E"],
-        "DTwP-Hib" => ["Serum_Institute"], #"Penta" => ["Serum_Institute", "PT_Bio", "Biological_E", "LG_Chem", "Panacea_Biotec"], "Hexa" => ["Sanofi"],
+        "DTwP-Hib" => ["Serum_Institute"], "Penta" => ["Serum_Institute", "PT_Bio", "Biological_E", "LG_Chem", "Panacea_Biotec"], "Hexa" => ["Sanofi"],
         "HPV" => ["GSK", "Merck_Sharp", "China_National"], "Rotavirus" => ["Serum_Institute", "GSK", "Bharat_Biotech"], "PCV" => ["Serum_Institute", "GSK", "Pfizer"]
         #"Hib" => ["Serum_Institute"]
     )
+
+    #     P_v = Dict(
+    #     "TT" => ["Serum_Institute", "PT_Bio", "BB_NCIPD", "Biological_E"], "HepB" => ["Serum_Institute", "LG_Chem"],
+    #     "IPV" => ["LG_Chem", "AJ_Vaccines", "Bilthoven", "Sanofi"], "OPV" => ["Serum_Institute", "PT_Bio", "GSK", "Sanofi", "Panacea_Biotec", "China_National", "Bharat_Biotech", "Haffkine_Bio"],
+    #     "DT" => ["PT_Bio", "BB_NCIPD"], "Td" => ["Serum_Institute", "PT_Bio", "BB_NCIPD", "Biological_E"], "DTwP" => ["Serum_Institute", "Biological_E"],
+    #     "DTwP-Hib" => ["Serum_Institute"],  "HPV" => ["GSK", "Merck_Sharp", "China_National"], "Rotavirus" => ["Serum_Institute", "GSK", "Bharat_Biotech"], 
+    #     "PCV" => ["Serum_Institute", "GSK", "Pfizer"]
+    # )
 
     #     P_v = Dict(
     #     "M" => ["Serum_Institute", "PT_Bio"], "MR" => ["Serum_Institute", "Biological_E"], "MMR" => ["Serum_Institute", "GSK"],
@@ -78,10 +87,16 @@ function create_vaccine_data()
     A_p = Dict(p => [a for a in keys(P_a) if p in P_a[a]] for p in P)
 
     # Categories
-    capacity_category = Dict(
-        "Small" => ["AJ_Vaccines", "Panacea_Biotec", "Bilthoven", "China_National"],
-        "Medium" => ["Sanofi", "Pfizer", "Haffkine_Bio", "Bharat_Biotech", "Merck_Sharp", "PT_Bio", "LG_Chem", "BB_NCIPD"],
-        "Large" => ["Serum_Institute", "GSK", "Biological_E"]
+    # capacity_category = Dict(
+    #     "Small" => ["AJ_Vaccines", "Panacea_Biotec", "Bilthoven", "China_National"],
+    #     "Medium" => ["Sanofi", "Pfizer", "Haffkine_Bio", "Bharat_Biotech", "Merck_Sharp", "PT_Bio", "LG_Chem", "BB_NCIPD"],
+    #     "Large" => ["Serum_Institute", "GSK", "Biological_E"]
+    # )
+
+        capacity_category = Dict(
+        "Small" => ["Serum_Institute", "Haffkine_Bio",  "Merck_Sharp", "Sanofi"],
+        "Medium" => ["Bilthoven", "Pfizer",  "Bharat_Biotech",  "PT_Bio", "BB_NCIPD", "China_National"],
+        "Large" => [, "GSK", "Biological_E", "AJ_Vaccines", "LG_Chem", "Panacea_Biotec"]
     )
 
     vaccine_category = Dict(

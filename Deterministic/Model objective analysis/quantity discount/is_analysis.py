@@ -200,7 +200,18 @@ def export_csv(summaries: list, out_path: Path):
 
 # ── plotting ──────────────────────────────────────────────────────────────────
 
-COLORS = ["#2196F3", "#E53935", "#43A047"]
+COLORS = [
+    "#000000",  # black        (okabe-ito 1)
+    "#E69F00",  # orange       (okabe-ito 2)
+    "#56B4E9",  # sky blue     (okabe-ito 3)
+    "#009E73",  # green        (okabe-ito 4)
+    "#F0E442",  # yellow       (okabe-ito 5)
+    "#0072B2",  # blue         (okabe-ito 6)
+    "#D55E00",  # vermillion   (okabe-ito 7)
+    "#CC79A7",  # pink         (okabe-ito 8)
+    "#228833",  # dark green   (tol_bright)
+    "#AA3377",  # purple       (tol_bright)
+]
 
 def millions(x, _):
     if abs(x) >= 1e9:  return f"{x/1e9:.1f}B"
@@ -281,62 +292,55 @@ def grouped_bar_stat(ax, categories, summaries, dim_key, stat,
 
 
 def make_plots(summaries: list, out_path: Path):
-    colors       = COLORS[:len(summaries)]
-    all_vaccines = sorted({k for s in summaries for k in s["I"]})
-    all_diseases = sorted({k for s in summaries for k in s["S"]})
+    colors = COLORS[:len(summaries)]
+    names  = [s["name"] for s in summaries]
 
-    fig, axes = plt.subplots(3, 2, figsize=(20, 18))
+    fig, axes = plt.subplots(1, 2, figsize=(14, 7))
     fig.suptitle(
-        "Inventory (I) & Missed Doses (S) — Mean ± 95% CI across 30 Trials",
-        fontsize=14, fontweight="bold", y=0.99
+        "Inventory (I) & Missed Doses (S) — Aggregate Total\nMean ± 95% CI across 30 Trials",
+        fontsize=13, fontweight="bold", y=1.01
     )
 
-    # ── Row 0: Mean ± 95% CI ──────────────────────────────────────────────────
-    grouped_bar_ci(
-        axes[0, 0], all_vaccines, summaries, "I",
-        "Inventory (I) — Mean ± 95% CI\n(mean of t=1..10 per vaccine)",
-        "Mean inventory (doses)", colors,
-        exclude_zero_mean=True,
-    )
-    grouped_bar_ci(
-        axes[0, 1], all_diseases, summaries, "S",
-        "Missed Doses (S) — Mean ± 95% CI\n(value at t=10 per disease)",
-        "Missed doses at t=10", colors,
-        exclude_zero_mean=True,
-    )
+    for ax, var, title, ylabel in [
+        (axes[0], "I_total",
+         "Total Inventory (I)\n(mean of t=1..10, summed across all vaccines)",
+         "Total inventory (doses)"),
+        (axes[1], "S_total",
+         "Total Missed Doses (S)\n(value at t=10, summed across all diseases)",
+         "Total missed doses"),
+    ]:
+        x     = np.arange(len(summaries))
+        means = [s[var]["mean"] for s in summaries]
+        ci95s = [s[var]["ci95"] for s in summaries]
 
-    # ── Row 1: Std Deviation ──────────────────────────────────────────────────
-    grouped_bar_stat(
-        axes[1, 0], all_vaccines, summaries, "I", "std",
-        "Inventory (I) — Std Deviation",
-        "Std Dev (doses)", colors,
-        exclude_zero_mean=True,
-    )
-    grouped_bar_stat(
-        axes[1, 1], all_diseases, summaries, "S", "std",
-        "Missed Doses (S) — Std Deviation",
-        "Std Dev (doses)", colors,
-        exclude_zero_mean=True,
-    )
+        bars = ax.bar(x, means, color=colors, edgecolor="white",
+                      linewidth=0.5, alpha=0.88, width=0.5, zorder=3)
+        ax.errorbar(x, means, yerr=ci95s,
+                    fmt="none", color="black", capsize=6, linewidth=1.5, zorder=4)
 
-    # ── Row 2: Variance ───────────────────────────────────────────────────────
-    grouped_bar_stat(
-        axes[2, 0], all_vaccines, summaries, "I", "variance",
-        "Inventory (I) — Variance",
-        "Variance", colors,
-        exclude_zero_mean=True,
-    )
-    grouped_bar_stat(
-        axes[2, 1], all_diseases, summaries, "S", "variance",
-        "Missed Doses (S) — Variance",
-        "Variance", colors,
-        exclude_zero_mean=True,
-    )
+        # Value labels above bars
+        for bar, m, ci in zip(bars, means, ci95s):
+            ax.text(bar.get_x() + bar.get_width() / 2,
+                    m + ci + (max(means) * 0.01),
+                    millions(m, None),
+                    ha="center", va="bottom", fontsize=9, fontweight="bold")
 
-    plt.tight_layout(rect=[0, 0, 1, 0.98])
+        ax.set_xticks(x)
+        ax.set_xticklabels(names, fontsize=10)
+        ax.yaxis.set_major_formatter(mticker.FuncFormatter(millions))
+        ax.set_title(title, fontsize=10, fontweight="bold", pad=8)
+        ax.set_ylabel(ylabel, fontsize=9)
+        ax.grid(axis="y", alpha=0.25, zorder=0)
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
+
+    plt.tight_layout()
     plt.savefig(out_path, dpi=150, bbox_inches="tight")
     print(f"Plot saved →  {out_path}")
     plt.close()
+
+
+# ── CLI ───────────────────────────────────────────────────────────────────────
 
 
 # ── CLI ───────────────────────────────────────────────────────────────────────
@@ -348,9 +352,10 @@ def parse_args():
     p.add_argument("--name1",  default="Group 1", metavar="NAME")
     p.add_argument("--group2", required=True,  metavar="DIR")
     p.add_argument("--name2",  default="Group 2", metavar="NAME")
-    p.add_argument("--group3", required=False, metavar="DIR",
-                   help="Optional third group")
-    p.add_argument("--name3",  default="Group 3", metavar="NAME")
+    for i in range(3, 11):
+        p.add_argument(f"--group{i}", required=False, metavar="DIR",
+                       help=f"Optional group {i}")
+        p.add_argument(f"--name{i}",  default=f"Group {i}", metavar="NAME")
     p.add_argument("--out-dir", default=".", metavar="DIR",
                    help="Where to save CSV and PNG (default: current directory)")
     return p.parse_args()
@@ -362,8 +367,10 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
 
     specs = [(args.group1, args.name1), (args.group2, args.name2)]
-    if args.group3:
-        specs.append((args.group3, args.name3))
+    for i in range(3, 11):
+        grp = getattr(args, f"group{i}", None)
+        if grp:
+            specs.append((grp, getattr(args, f"name{i}")))
 
     groups = []
     for path_str, name in specs:

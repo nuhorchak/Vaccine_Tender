@@ -202,7 +202,7 @@ function initialize_parameters(
     # Define the m values to cycle through for Q, Z, lambda_m
 
     ##############################################################################
-    # --- NEW: compute middle break based on iter / n_iters (linear spacing) ---
+    # # --- NEW: compute middle break based on iter / n_iters (linear spacing) ---
     # start_val = 1e2
     # end_val   = 1e8
     # if n_iters == 1
@@ -220,9 +220,68 @@ function initialize_parameters(
     # m_segments = [0.00, -0.01]
     # lower_breaks_values = [0.0, middle_break]
     # upper_breaks_values = [middle_break + 1.0, 9.999999999999999e35]  # large sentinel
+
+    # println("=" ^ 40)
+    # println("        Break Values Summary")
+    # println("=" ^ 40)
+    # println("\nLower Breaks:")
+    # println("  ", lower_breaks_values)
+    # println("\nUpper Breaks:")
+    # println("  ", upper_breaks_values)
+    # println("\n" * "=" ^ 40)
+
+    #*****************************************
+
+    # # --- Compute logarithmically spaced breaks for 3 groups ---
+    # start_val = 1e2
+    # end_val   = 1e8
+
+    # n_groups = 3
+    # n_breaks = n_groups - 1
+
+    # if n_breaks == 0
+    #     break_values = Float64[]
+    # else
+    #     log_start = log10(start_val)
+    #     log_end   = log10(end_val)
+
+    #     break_values = [
+    #         10^(log_start + i * (log_end - log_start) / n_groups)
+    #         for i in 1:n_breaks
+    #     ]
+    # end
+
+    # break_values = round.(break_values; digits=6)
+
+    # # Segment definitions
+    # m_segments = [0.00, -0.01, -0.02]
+
+    # # Lower/upper bounds for each segment
+    # lower_breaks_values = vcat(0.0, break_values)
+
+    # upper_breaks_values = vcat(
+    #     break_values .+ 1.0,
+    #     9.999999999999999e35
+    # )
+
+    # println("=" ^ 40)
+    # println("        Break Values Summary")
+    # println("=" ^ 40)
+
+    # println("\nBreak Values:")
+    # println("  ", break_values)
+
+    # println("\nLower Breaks:")
+    # println("  ", lower_breaks_values)
+
+    # println("\nUpper Breaks:")
+    # println("  ", upper_breaks_values)
+
+    # println("\n" * "=" ^ 40)
     ##############################################################################
 
-    m_segments = [0.00, -0.01]
+    #%%%%%%%%%%%%%%%%%%%%%%%%%%%% DISCOUNT CODE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    m_segments = [0.00, 0.01]
     lower_breaks_values = [0, 6.0e4]
     upper_breaks_values = [6.01e4, 99999999999999999999999999999999999]
 
@@ -255,16 +314,14 @@ function initialize_parameters(
     #     end
     # end
 
-    # target_vaccines = ["Penta", "Hexa"]
-
-
-    # target_vaccines = ["Penta", "Hexa"]
-    target_vaccines = ["TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "HPV", "Rotavirus", "PCV", "Penta", "Hexa"]
+    target_vaccines = ["Penta", "Hexa"]
+    # target_vaccines = ["TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "HPV", "Rotavirus", "PCV", "Penta", "Hexa"]
+    # target_vaccines = ["TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "HPV", "Rotavirus", "PCV"]
 
     for v in V, m in eachindex(m_segments)
         zeta_vm[v, m] = (v in target_vaccines) ? m_segments[m] : 0.0
     end
-
+ 
  
     for v in V
         for m in keys(lower_breaks_values)
@@ -278,6 +335,43 @@ function initialize_parameters(
         end
     end
 
+    # Single segment - fixed discounts only, no quantity breaks needed
+    # m_segments = [0.0]
+    # lower_breaks_values = [0.0]
+    # upper_breaks_values = [99999999999999999999.0]
+
+    # producer_discount = Dict(
+    #     "Small"  => 0.10,
+    #     "Medium" => 0.05,
+    #     "Large"  => 0.00
+    # )
+
+    # # Invert capacity_category to a producer -> category lookup
+    # capacity_category = Dict(
+    #     "Small"  => ["Serum_Institute", "Haffkine_Bio", "Merck_Sharp", "Sanofi"],
+    #     "Medium" => ["Bilthoven", "Pfizer", "Bharat_Biotech", "PT_Bio", "BB_NCIPD", "China_National"],
+    #     "Large"  => ["GSK", "Biological_E", "AJ_Vaccines", "LG_Chem", "Panacea_Biotec"]
+    # )
+
+    # producer_to_category = Dict(
+    #     p => cat for (cat, producers) in capacity_category for p in producers
+    # )
+
+    # zeta_vm    = Dict()
+    # phi_vm_lower = Dict()
+    # phi_vm_upper = Dict()
+
+    # for v in V, m in eachindex(m_segments)
+    #     cat = get(producer_to_category, v, "Large")  # default to no discount if unlisted
+    #     zeta_vm[v, m] = producer_discount[cat]
+    # end
+
+    # for v in V, m in eachindex(m_segments)
+    #     phi_vm_lower[v, m] = lower_breaks_values[m]
+    #     phi_vm_upper[v, m] = upper_breaks_values[m]
+    # end
+
+    #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DISCOUNT CODE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     λ = 0.8
 
 

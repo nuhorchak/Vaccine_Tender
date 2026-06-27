@@ -90,14 +90,17 @@ def load_group(directory: Path, name: str) -> dict:
 # ── statistics ────────────────────────────────────────────────────────────────
 
 def compute_stats(values: list) -> dict:
-    a = np.array(values, dtype=float)
+    a  = np.array(values, dtype=float)
+    n  = len(a)
+    s  = float(a.std())
     return {
         "mean":     float(a.mean()),
-        "std":      float(a.std()),
+        "std":      s,
         "variance": float(a.var()),
+        "ci95":     1.96 * s / np.sqrt(n) if n > 1 else 0.0,
         "min":      float(a.min()),
         "max":      float(a.max()),
-        "n":        len(a),
+        "n":        n,
     }
 
 def summarise_group(group: dict) -> dict:
@@ -190,27 +193,38 @@ def export_csv(summaries: list, out_path: Path):
 
 # ── plotting ──────────────────────────────────────────────────────────────────
 
-COLORS = ["#2196F3", "#E53935", "#43A047"]
+COLORS = [
+    "#000000",  # black        (okabe-ito 1)
+    "#E69F00",  # orange       (okabe-ito 2)
+    "#56B4E9",  # sky blue     (okabe-ito 3)
+    "#009E73",  # green        (okabe-ito 4)
+    "#F0E442",  # yellow       (okabe-ito 5)
+    "#0072B2",  # blue         (okabe-ito 6)
+    "#D55E00",  # vermillion   (okabe-ito 7)
+    "#CC79A7",  # pink         (okabe-ito 8)
+    "#228833",  # dark green   (tol_bright)
+    "#AA3377",  # purple       (tol_bright)
+]
 
 def millions(x, _):
     if x >= 1e6:  return f"{x/1e6:.1f}M"
     if x >= 1e3:  return f"{x/1e3:.0f}K"
     return f"{x:.0f}"
 
-def grouped_bar(ax, categories, summaries, dim_key, stat, title, ylabel, colors):
+def grouped_bar(ax, categories, summaries, dim_key, title, ylabel, colors):
+    """Grouped bar chart — mean ± 95% CI only."""
     n  = len(summaries)
     x  = np.arange(len(categories))
     w  = 0.7 / n
     os = np.linspace(-(n - 1) / 2, (n - 1) / 2, n) * w
 
     for i, (s, color) in enumerate(zip(summaries, colors)):
-        vals = [s[dim_key].get(c, {}).get(stat, 0.0) for c in categories]
-        stds = [s[dim_key].get(c, {}).get("std",  0.0) for c in categories]
-        bars = ax.bar(x + os[i], vals, w, label=s["name"],
-                      color=color, edgecolor="white", linewidth=0.4, alpha=0.88, zorder=3)
-        if stat == "mean":
-            ax.errorbar(x + os[i], vals, yerr=stds,
-                        fmt="none", color="black", capsize=3, linewidth=1, zorder=4)
+        vals  = [s[dim_key].get(c, {}).get("mean", 0.0) for c in categories]
+        ci95s = [s[dim_key].get(c, {}).get("ci95", 0.0) for c in categories]
+        ax.bar(x + os[i], vals, w, label=s["name"],
+               color=color, edgecolor="white", linewidth=0.4, alpha=0.88, zorder=3)
+        ax.errorbar(x + os[i], vals, yerr=ci95s,
+                    fmt="none", color="black", capsize=3, linewidth=1, zorder=4)
 
     ax.set_xticks(x)
     ax.set_xticklabels(categories, rotation=35, ha="right", fontsize=8.5)
@@ -228,28 +242,22 @@ def make_plots(summaries: list, out_path: Path):
     all_vacs = sorted({k for s in summaries for k in s["by_vaccine"]})
     all_mfrs = sorted({k for s in summaries for k in s["by_manufacturer"]})
 
-    fig, axes = plt.subplots(3, 2, figsize=(18, 18))
-    fig.suptitle("Total Q Across 30 Trials — Model Comparison", fontsize=14, fontweight="bold", y=0.99)
+    fig, axes = plt.subplots(1, 2, figsize=(18, 7))
+    fig.suptitle("Total Q Across 30 Trials — Model Comparison\nMean ± 95% CI",
+                 fontsize=13, fontweight="bold", y=1.02)
 
-    grouped_bar(axes[0, 0], all_vacs, summaries, "by_vaccine",
-                "mean",     "By Vaccine — Mean ± 1σ",      "Mean Q (doses)", colors)
-    grouped_bar(axes[0, 1], all_mfrs, summaries, "by_manufacturer",
-                "mean",     "By Manufacturer — Mean ± 1σ", "Mean Q (doses)", colors)
+    grouped_bar(axes[0], all_vacs, summaries, "by_vaccine",
+                "By Vaccine — Mean ± 95% CI", "Mean Q (doses)", colors)
+    grouped_bar(axes[1], all_mfrs, summaries, "by_manufacturer",
+                "By Manufacturer — Mean ± 95% CI", "Mean Q (doses)", colors)
 
-    grouped_bar(axes[1, 0], all_vacs, summaries, "by_vaccine",
-                "std",      "By Vaccine — Std Deviation",      "Std Dev (doses)", colors)
-    grouped_bar(axes[1, 1], all_mfrs, summaries, "by_manufacturer",
-                "std",      "By Manufacturer — Std Deviation", "Std Dev (doses)", colors)
-
-    grouped_bar(axes[2, 0], all_vacs, summaries, "by_vaccine",
-                "variance", "By Vaccine — Variance",      "Variance (doses²)", colors)
-    grouped_bar(axes[2, 1], all_mfrs, summaries, "by_manufacturer",
-                "variance", "By Manufacturer — Variance", "Variance (doses²)", colors)
-
-    plt.tight_layout(rect=[0, 0, 1, 0.98])
+    plt.tight_layout()
     plt.savefig(out_path, dpi=150, bbox_inches="tight")
     print(f"Plot saved →  {out_path}")
     plt.close()
+
+
+# ── CLI ───────────────────────────────────────────────────────────────────────
 
 
 # ── CLI ───────────────────────────────────────────────────────────────────────
@@ -261,8 +269,10 @@ def parse_args():
     p.add_argument("--name1",  default="Group 1", metavar="NAME")
     p.add_argument("--group2", required=True,  metavar="DIR")
     p.add_argument("--name2",  default="Group 2", metavar="NAME")
-    p.add_argument("--group3", required=False, metavar="DIR",  help="Optional third group")
-    p.add_argument("--name3",  default="Group 3", metavar="NAME")
+    for i in range(3, 11):
+        p.add_argument(f"--group{i}", required=False, metavar="DIR",
+                       help=f"Optional group {i}")
+        p.add_argument(f"--name{i}",  default=f"Group {i}", metavar="NAME")
     p.add_argument("--out-dir", default=".", metavar="DIR",
                    help="Where to save CSV and PNG (default: current directory)")
     return p.parse_args()
@@ -274,8 +284,10 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
 
     specs = [(args.group1, args.name1), (args.group2, args.name2)]
-    if args.group3:
-        specs.append((args.group3, args.name3))
+    for i in range(3, 11):
+        grp = getattr(args, f"group{i}", None)
+        if grp:
+            specs.append((grp, getattr(args, f"name{i}")))
 
     groups = []
     for path_str, name in specs:

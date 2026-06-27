@@ -172,14 +172,17 @@ def compute_pairwise(trials: list) -> dict:
 # ── group summary ─────────────────────────────────────────────────────────────
 
 def compute_stats(values: list) -> dict:
-    a = np.array(values, dtype=float)
+    a  = np.array(values, dtype=float)
+    n  = len(a)
+    s  = float(a.std())
     return {
         "mean":     float(a.mean()),
-        "std":      float(a.std()),
+        "std":      s,
         "variance": float(a.var()),
+        "ci95":     1.96 * s / np.sqrt(n) if n > 1 else 0.0,
         "min":      float(a.min()),
         "max":      float(a.max()),
-        "n":        len(a),
+        "n":        n,
     }
 
 def summarise_group(group: dict) -> dict:
@@ -315,27 +318,54 @@ def export_csv(summaries: list, out_path: Path):
 
 # ── plotting ──────────────────────────────────────────────────────────────────
 
-COLORS = ["#2196F3", "#E53935", "#43A047"]
+COLORS = [
+    "#000000",  # black        (okabe-ito 1)
+    "#E69F00",  # orange       (okabe-ito 2)
+    "#56B4E9",  # sky blue     (okabe-ito 3)
+    "#009E73",  # green        (okabe-ito 4)
+    "#F0E442",  # yellow       (okabe-ito 5)
+    "#0072B2",  # blue         (okabe-ito 6)
+    "#D55E00",  # vermillion   (okabe-ito 7)
+    "#CC79A7",  # pink         (okabe-ito 8)
+    "#228833",  # dark green   (tol_bright)
+    "#AA3377",  # purple       (tol_bright)
+]
 
-def grouped_bar(ax, categories, summaries, lookup_fn, stat,
-                title, ylabel, colors, fmt_fn=None):
-    """Generic grouped bar chart with optional error bars for std."""
+
+
+
+def _ci95(s, key):
+    """Return 95% CI half-width for a stats dict."""
+    st = s[key]
+    return 1.96 * st["std"] / np.sqrt(st["n"]) if st["n"] > 1 else 0.0
+
+
+def _ci95_lookup(s, cat, lookup_fn):
+    st_dict = lookup_fn(s, cat)
+    if not st_dict:
+        return 0.0
+    n = st_dict.get("n", 1)
+    return 1.96 * st_dict["std"] / np.sqrt(n) if n > 1 else 0.0
+
+
+def grouped_bar_ci(ax, categories, summaries, lookup_fn,
+                   title, ylabel, colors, fmt_fn=None, x_labels=None):
+    """Grouped bar chart — mean ± 95% CI only."""
     n  = len(summaries)
     x  = np.arange(len(categories))
     w  = 0.7 / n
     os = np.linspace(-(n - 1) / 2, (n - 1) / 2, n) * w
 
     for i, (s, color) in enumerate(zip(summaries, colors)):
-        vals = [lookup_fn(s, c, stat)   for c in categories]
-        stds = [lookup_fn(s, c, "std")  for c in categories]
-        ax.bar(x + os[i], vals, w, label=s["name"],
+        means = [lookup_fn(s, c).get("mean", 0.0)  for c in categories]
+        ci95s = [_ci95_lookup(s, c, lookup_fn)      for c in categories]
+        ax.bar(x + os[i], means, w, label=s["name"],
                color=color, edgecolor="white", linewidth=0.4, alpha=0.88, zorder=3)
-        if stat == "mean":
-            ax.errorbar(x + os[i], vals, yerr=stds,
-                        fmt="none", color="black", capsize=3, linewidth=1, zorder=4)
+        ax.errorbar(x + os[i], means, yerr=ci95s,
+                    fmt="none", color="black", capsize=3, linewidth=1, zorder=4)
 
     ax.set_xticks(x)
-    ax.set_xticklabels(categories, rotation=35, ha="right", fontsize=8.5)
+    ax.set_xticklabels(x_labels or categories, rotation=35, ha="right", fontsize=8.5)
     if fmt_fn:
         ax.yaxis.set_major_formatter(mticker.FuncFormatter(fmt_fn))
     ax.set_title(title, fontsize=10, fontweight="bold", pad=6)
@@ -349,50 +379,53 @@ def grouped_bar(ax, categories, summaries, lookup_fn, stat,
 def make_plots(summaries: list, out_path: Path):
     colors       = COLORS[:len(summaries)]
     all_diseases = sorted({d for s in summaries for d in s["by_disease_slots"]})
-    dist_metrics = ["avg_sim", "avg_dist"]
-    dist_labels  = ["Avg Similarity", "Avg Distance"]
 
-    def get_dist(s, cat, stat):
-        return s[cat][stat] if cat in s else 0.0
+    # ── lookup helpers returning a stats dict ──────────────────────────────────
+    def get_sim(s, cat):
+        return s["avg_sim"] if cat == "avg_sim" else {}
 
-    def get_overlap(s, cat, stat):
-        return s["by_disease_overlap"].get(cat, {}).get(stat, 0.0)
+    def get_dist(s, cat):
+        return s["avg_dist"] if cat == "avg_dist" else {}
 
-    fig, axes = plt.subplots(3, 2, figsize=(18, 18))
-    fig.suptitle("F Analysis — Distance, Similarity & Overlapping Periods Across 30 Trials",
-                 fontsize=14, fontweight="bold", y=0.99)
+    def get_overlap(s, cat):
+        return s["by_disease_overlap"].get(cat, {})
 
-    # Row 0: distance/similarity — mean±1σ and std
-    grouped_bar(axes[0, 0], dist_metrics, summaries, get_dist, "mean",
-                "Distance & Similarity — Mean ± 1σ", "Value", colors,
-                fmt_fn=lambda x, _: f"{x:.3f}")
-    axes[0, 0].set_xticklabels(dist_labels, rotation=20, ha="right", fontsize=9)
+    # ── 3 subplots: similarity | distance | overlap ────────────────────────────
+    fig, axes = plt.subplots(1, 3, figsize=(18, 6))
+    fig.suptitle(
+        "F Analysis — Distance, Similarity & Overlapping Periods\nMean ± 95% CI across 30 Trials",
+        fontsize=13, fontweight="bold", y=1.02
+    )
 
-    grouped_bar(axes[0, 1], dist_metrics, summaries, get_dist, "std",
-                "Distance & Similarity — Std Deviation", "Std Dev", colors,
-                fmt_fn=lambda x, _: f"{x:.4f}")
-    axes[0, 1].set_xticklabels(dist_labels, rotation=20, ha="right", fontsize=9)
+    # Plot 1: Avg Cosine Similarity
+    grouped_bar_ci(
+        axes[0], ["avg_sim"], summaries, get_sim,
+        "Avg Cosine Similarity\nMean ± 95% CI", "Cosine Similarity", colors,
+        fmt_fn=lambda x, _: f"{x:.3f}",
+        x_labels=["Avg Similarity"],
+    )
 
-    # Row 1: overlapping periods by disease — mean±1σ and std
-    grouped_bar(axes[1, 0], all_diseases, summaries, get_overlap, "mean",
-                "Overlapping Periods by Disease — Mean ± 1σ", "Overlap periods (mean)", colors)
+    # Plot 2: Avg Cosine Distance
+    grouped_bar_ci(
+        axes[1], ["avg_dist"], summaries, get_dist,
+        "Avg Cosine Distance\nMean ± 95% CI", "Cosine Distance", colors,
+        fmt_fn=lambda x, _: f"{x:.3f}",
+        x_labels=["Avg Distance"],
+    )
 
-    grouped_bar(axes[1, 1], all_diseases, summaries, get_overlap, "std",
-                "Overlapping Periods by Disease — Std Deviation", "Std Dev", colors)
+    # Plot 3: Overlapping Periods by Disease
+    grouped_bar_ci(
+        axes[2], all_diseases, summaries, get_overlap,
+        "Overlapping Tender Periods by Disease\nMean ± 95% CI", "Overlap periods", colors,
+    )
 
-    # Row 2: overlap variance | distance variance
-    grouped_bar(axes[2, 0], all_diseases, summaries, get_overlap, "variance",
-                "Overlapping Periods by Disease — Variance", "Variance", colors)
-
-    grouped_bar(axes[2, 1], dist_metrics, summaries, get_dist, "variance",
-                "Distance & Similarity — Variance", "Variance", colors,
-                fmt_fn=lambda x, _: f"{x:.5f}")
-    axes[2, 1].set_xticklabels(dist_labels, rotation=20, ha="right", fontsize=9)
-
-    plt.tight_layout(rect=[0, 0, 1, 0.98])
+    plt.tight_layout()
     plt.savefig(out_path, dpi=150, bbox_inches="tight")
     print(f"Plot saved →  {out_path}")
     plt.close()
+
+
+# ── CLI ───────────────────────────────────────────────────────────────────────
 
 
 # ── CLI ───────────────────────────────────────────────────────────────────────
@@ -404,8 +437,10 @@ def parse_args():
     p.add_argument("--name1",  default="Group 1", metavar="NAME")
     p.add_argument("--group2", required=True,  metavar="DIR")
     p.add_argument("--name2",  default="Group 2", metavar="NAME")
-    p.add_argument("--group3", required=False, metavar="DIR", help="Optional third group")
-    p.add_argument("--name3",  default="Group 3", metavar="NAME")
+    for i in range(3, 11):
+        p.add_argument(f"--group{i}", required=False, metavar="DIR",
+                       help=f"Optional group {i}")
+        p.add_argument(f"--name{i}",  default=f"Group {i}", metavar="NAME")
     p.add_argument("--out-dir", default=".", metavar="DIR",
                    help="Where to save CSV and PNG (default: current directory)")
     return p.parse_args()
@@ -417,8 +452,10 @@ def main():
     out_dir.mkdir(parents=True, exist_ok=True)
 
     specs = [(args.group1, args.name1), (args.group2, args.name2)]
-    if args.group3:
-        specs.append((args.group3, args.name3))
+    for i in range(3, 11):
+        grp = getattr(args, f"group{i}", None)
+        if grp:
+            specs.append((grp, getattr(args, f"name{i}")))
 
     groups = []
     for path_str, name in specs:
