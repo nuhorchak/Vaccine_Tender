@@ -103,14 +103,14 @@ end
         starting_points_vect_F, starting_points_vect_I, starting_points_vect_S = load_model_starting_points(data_dir, initial_inventory_rate, unit, A, V)
         # cuts_dict = Dict()
 
-        # println(d_real_tilde)
-        println("Lower segments")
-        println(phi_vm_lower)
-        println("Upper segments")
-        println(phi_vm_upper)
+        # # println(d_real_tilde)
+        # println("Lower segments")
+        # println(phi_vm_lower)
+        # println("Upper segments")
+        # println(phi_vm_upper)
 
-        println("Demand Data")
-        println(d_real_tilde)
+        # println("Demand Data")
+        # println(d_real_tilde)
 
         start_time = time()
     
@@ -238,7 +238,7 @@ end
             for (t, tau) in F_time_set, v in V, p in P_v[v], m in keys(m_segments)
                 q_val = value(Deterministic_Equivalent[:Q][v, p, (t, tau), m])
                 if q_val > 0
-                    Q_OBJ += r_avg[v, t] * (1 - zeta_vm[v, m]) * q_val / delta[t]
+                    Q_OBJ += r_avg[v, t] * (1 - zeta_vm[v,p, m]) * q_val / delta[t]
                 end
             end
         elseif SOCIAL_BENEFIT_MODEL
@@ -389,4 +389,4 @@ end
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(10,5,1,1,30,1,1,1, true, true, true, false, false)
+tender_stochastic_sensitivity(10,5,1,1,30,1,1,1, true, true, false, false, true)

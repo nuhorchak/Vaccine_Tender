@@ -32,14 +32,14 @@ include(joinpath(FUNCTIONS_DIR, "initialize_parameters.jl"))
 
 # Define models: each entry is (label, path_to_results_folder)
 const MODELS = [
-    ("UG-OLD", joinpath(@__DIR__, "results", "UG_test_no_W", "OLD")),
-    ("UG-No_W", joinpath(@__DIR__, "results", "UG_test_no_W", "NEW"))
+    ("2-segments", joinpath(@__DIR__, "results", "buyer discounts", "3 segments",  "UG",)),
+    ("2-segments-prod-size-discount", joinpath(@__DIR__, "results", "manufacturer discounts", "3 segments by producer size scaled by size", "UG",))
 ]
 
 const DATA_DIR         = joinpath(@__DIR__, "data")
 const STARTING_PT_PATH = joinpath(@__DIR__, "data", "Starting_point.xlsx")
-const OUTPUT_EXCEL     = joinpath(@__DIR__, "results", "model comparison", "UG_With_and_Without_W", "model_cost_comparison.xlsx")
-const OUTPUT_PLOTS_DIR = joinpath(@__DIR__, "results", "model comparison", "UG_With_and_Without_W")
+const OUTPUT_EXCEL     = joinpath(@__DIR__, "results", "model comparison", "3_Segments_UG_model_comparison_cross_models_buyer_prod", "model_cost_comparison.xlsx")
+const OUTPUT_PLOTS_DIR = joinpath(@__DIR__, "results", "model comparison", "3_Segments_UG_model_comparison_cross_models_buyer_prod")
 
 const UNIT       = 1000
 const TMAX       = 10
@@ -170,7 +170,7 @@ function compute_costs(json_path::String)
             haskey(Q_data, v) || continue
             for p in keys(Q_data[v])
                 for m in M
-                    zeta  = zeta_vm[v, m]
+                    zeta  = zeta_vm[v,p, m]
                     r_bar = r_avg[v, t]
                     Q_sum = sum(get_Q(Q_data, v, p, t, tau, m) for tau in tau_list)
                     procurement_sum += r_bar * (1.0 - zeta) * Q_sum

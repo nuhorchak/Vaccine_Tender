@@ -1,0 +1,781 @@
+/scrfs/storage/uhorchak/home/model/base_testing/3_segments/MP
+trial: 1
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 1.5434363920775505e7
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.347943700962122e6
+Q Objective value: -6.2013385580459855e7
+S Objective value: 6.97206658186515e7
+I Objective value: 1.0311340667906036e12
+Y Objective value: 7.727036516260343e6
+L Objective value: 98.34267494372043
+Total Objective value: 1.543441509712693e7
+trial: 2
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 9.26038211520495e6
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.269002777530728e6
+Q Objective value: -6.2013385580459855e7
+S Objective value: 6.354668401308091e7
+I Objective value: 1.4941651901565352e12
+Y Objective value: 7.727036516260343e6
+L Objective value: 97.18295912067059
+Total Objective value: 9.260432131840518e6
+trial: 3
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 1.872686975244201e7
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.194593386041055e6
+Q Objective value: -6.2013385580459855e7
+S Objective value: 7.301317165031803e7
+I Objective value: 674631.2897245097
+Y Objective value: 7.727036516260343e6
+L Objective value: 117.34831922239054
+Total Objective value: 1.8726939934437733e7
+trial: 4
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: -3.65079238494231e6
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.422353092451794e6
+Q Objective value: -6.215433755912299e7
+S Objective value: 5.094151906839948e7
+I Objective value: 1.4941652084941348e12
+Y Objective value: 7.561978939457642e6
+L Objective value: 97.13207057093399
+Total Objective value: -3.650742419195293e6
+trial: 5
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 1.9790729812624406e7
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.347943700962122e6
+Q Objective value: -6.199157573408636e7
+S Objective value: 7.406254181913397e7
+I Objective value: 1.931025344000902e12
+Y Objective value: 7.71971656125332e6
+L Objective value: 100.12313581859384
+Total Objective value: 1.979078276943675e7
+trial: 6
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 1.2870351250579502e7
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.199124917982777e6
+Q Objective value: -6.2013385580459855e7
+S Objective value: 6.71566531484555e7
+I Objective value: 1.494165249245851e12
+Y Objective value: 7.727036516260343e6
+L Objective value: 123.49366575079623
+Total Objective value: 1.2870427577921739e7
+trial: 7
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 2.353049009259445e7
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.196892636238086e6
+Q Objective value: -6.2013385580459855e7
+S Objective value: 7.781679199047045e7
+I Objective value: 1.4941650759025076e12
+Y Objective value: 7.727036516260343e6
+L Objective value: 120.52293036679741
+Total Objective value: 2.3530563449201304e7
+trial: 8
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 4.3837227489776965e6
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.192361104296365e6
+Q Objective value: -6.2013385580459855e7
+S Objective value: 5.867002464685365e7
+I Objective value: 2.1399623124979082e12
+Y Objective value: 7.727036516260343e6
+L Objective value: 89.74120733382449
+Total Objective value: 4.3837653238614695e6
+trial: 9
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 1.201223065085492e7
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.347943700962122e6
+Q Objective value: -6.2013385580459855e7
+S Objective value: 6.629853254873089e7
+I Objective value: 1.4941651784749329e12
+Y Objective value: 7.727036516260343e6
+L Objective value: 112.18471022804592
+Total Objective value: 1.2012295669241603e7
+trial: 10
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 1.8461948704492144e7
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.273534309472449e6
+Q Objective value: -6.215433755912299e7
+S Objective value: 7.305426015783395e7
+I Objective value: 1.4941651758472373e12
+Y Objective value: 7.561978939457642e6
+L Objective value: 108.74371113405103
+Total Objective value: 1.8462010281879734e7
+trial: 11
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 9.440901804434732e6
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.501294015883188e6
+Q Objective value: -6.2013385580459855e7
+S Objective value: 6.372720370231072e7
+I Objective value: 1.4941651896873398e12
+Y Objective value: 7.727036516260343e6
+L Objective value: 111.66269517614589
+Total Objective value: 9.440966300806383e6
+trial: 12
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 1.6130338054782692e7
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.196892636238086e6
+Q Objective value: -6.215433755912299e7
+S Objective value: 7.072264950812447e7
+I Objective value: 1.4941651773850195e12
+Y Objective value: 7.561978939457642e6
+L Objective value: 91.38100131343268
+Total Objective value: 1.613038226946044e7
+trial: 13
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 4.35545917256758e6
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.269002777530728e6
+Q Objective value: -6.215433755912299e7
+S Objective value: 5.894777062590939e7
+I Objective value: 1.4941651854514111e12
+Y Objective value: 7.561978939457642e6
+L Objective value: 97.93865279723309
+Total Objective value: 4.3555099448968405e6
+trial: 14
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 1.1733264474426588e7
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.422353092451794e6
+Q Objective value: -6.42731046831437e7
+S Objective value: 6.851875211914721e7
+I Objective value: 1.931025386660769e12
+Y Objective value: 7.487569547967969e6
+L Objective value: 101.5087838883059
+Total Objective value: 1.1733318492755372e7
+trial: 15
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 1.9892463306245577e7
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.422353092451794e6
+Q Objective value: -6.215433755912299e7
+S Objective value: 7.448477475958744e7
+I Objective value: 1.4941651623365774e12
+Y Objective value: 7.561978939457642e6
+L Objective value: 107.92517096889252
+Total Objective value: 1.989252406509306e7
+trial: 16
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 3.851479087614944e6
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.2713020277277585e6
+Q Objective value: -6.2013385580459855e7
+S Objective value: 5.8137780985490926e7
+I Objective value: 1.9310253664411882e12
+Y Objective value: 7.727036516260343e6
+L Objective value: 89.40617725285729
+Total Objective value: 3.851521327468666e6
+trial: 17
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 1.0779864021787435e7
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.266770495786037e6
+Q Objective value: -6.328860373527987e7
+S Objective value: 6.6415793141841576e7
+I Objective value: 1.9310253697687136e12
+Y Objective value: 7.65262712477067e6
+L Objective value: 111.5670962597548
+Total Objective value: 1.0779928098428633e7
+trial: 18
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 2.522556563838138e7
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.3434121690204e6
+Q Objective value: -6.2013385580459855e7
+S Objective value: 7.951186753625737e7
+I Objective value: 1.4941650748153237e12
+Y Objective value: 7.727036516260343e6
+L Objective value: 123.85434349748104
+Total Objective value: 2.5225642326401353e7
+trial: 19
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 9.5487212082082e6
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.2713020277277585e6
+Q Objective value: -6.206255017091124e7
+S Objective value: 6.413550615177666e7
+I Objective value: 5.4174533638655884e11
+Y Objective value: 7.475718061019226e6
+L Objective value: 106.5421362177079
+Total Objective value: 9.548780584020864e6
+trial: 20
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 1.6837850849029366e6
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.422353092451794e6
+Q Objective value: -6.2013385580459855e7
+S Objective value: 5.59700869827789e7
+I Objective value: 7.865311034589857e11
+Y Objective value: 7.727036516260343e6
+L Objective value: 113.96573678070959
+Total Objective value: 1.6838518843161673e6
+trial: 21
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 1.469783652239414e7
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.3434121690204e6
+Q Objective value: -6.1921598192248106e7
+S Objective value: 6.89786119104968e7
+I Objective value: 545786.6004531528
+Y Objective value: 7.640775637821927e6
+L Objective value: 122.73220963546535
+Total Objective value: 1.4697912088280259e7
+trial: 22
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 1.4166601828191496e7
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.2713020277277585e6
+Q Objective value: -6.2013385580459855e7
+S Objective value: 6.84529037260675e7
+I Objective value: 1.4941652123575063e12
+Y Objective value: 7.727036516260343e6
+L Objective value: 115.68132203055951
+Total Objective value: 1.4166670343190016e7
+trial: 23
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: -3.9379411768078394e6
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.269002777530728e6
+Q Objective value: -6.2013385580459855e7
+S Objective value: 5.034836072106813e7
+I Objective value: 1.4941652776248938e12
+Y Objective value: 7.727036516260343e6
+L Objective value: 118.07231822256041
+Total Objective value: -3.9378702708131615e6
+trial: 24
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 1.5271870194223497e7
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.117951712806692e6
+Q Objective value: -6.2013385580459855e7
+S Objective value: 6.955817209209949e7
+I Objective value: 1.9310254640742148e12
+Y Objective value: 7.727036516260343e6
+L Objective value: 101.01375048407618
+Total Objective value: 1.527192404165046e7
+trial: 25
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 8.658792519364063e6
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.269002777530728e6
+Q Objective value: -6.2013385580459855e7
+S Objective value: 6.294509441724005e7
+I Objective value: 1.9310253444717698e12
+Y Objective value: 7.727036516260343e6
+L Objective value: 114.30056838306562
+Total Objective value: 8.658859653608924e6
+trial: 26
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: -791605.4174203724
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.269002777530728e6
+Q Objective value: -6.2013385580459855e7
+S Objective value: 5.34946964804556e7
+I Objective value: 1.0311340054361415e12
+Y Objective value: 7.727036516260343e6
+L Objective value: 105.75092599193674
+Total Objective value: -791546.8328179212
+trial: 27
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 3.7431178980465047e6
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.194593386041055e6
+Q Objective value: -6.2013385580459855e7
+S Objective value: 5.802941979592249e7
+I Objective value: 1.4941652005589763e12
+Y Objective value: 7.727036516260343e6
+L Objective value: 99.01516964264846
+Total Objective value: 3.743169746892618e6
+trial: 28
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 6.266543461549327e6
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.269002777530728e6
+Q Objective value: -6.215433755912299e7
+S Objective value: 6.0858854914891124e7
+I Objective value: 1.4941650998395415e12
+Y Objective value: 7.561978939457642e6
+L Objective value: 113.08210819150449
+Total Objective value: 6.26660937733397e6
+trial: 29
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 1.9204896407717682e7
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.269002777530728e6
+Q Objective value: -6.2013385580459855e7
+S Objective value: 7.349119830559367e7
+I Objective value: 1.4941651888977578e12
+Y Objective value: 7.727036516260343e6
+L Objective value: 118.08964767770354
+Total Objective value: 1.920496733104183e7
+trial: 30
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Set parameter WLSAccessID
+Set parameter WLSSecret
+Set parameter LicenseID to value 2566847
+Academic license 2566847 - for non-commercial use only - registered to uh___@uark.edu
+Set parameter FeasibilityTol to value 0.0001
+Max Profit model with capacity extension/discounts
+Set parameter FeasibilityTol to value 0.0001
+Set parameter NumericFocus to value 1
+Set parameter MIPGap to value 0.015
+DE Model status: OPTIMAL
+Objective Value: 1.0256607019651067e6
+MVP Model
+Manual calculation of the objective value function:
+F Objective value: 6.201424168179807e6
+Q Objective value: -6.2013385580459855e7
+S Objective value: 5.531196259984107e7
+I Objective value: 2.1399622741772056e12
+Y Objective value: 7.727036516260343e6
+L Objective value: 96.78145106469809
+Total Objective value: 1.0257103170926251e6

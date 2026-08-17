@@ -34,7 +34,7 @@ Defines the deterministic equivalent model for a stochastic optimization problem
 4. **Conditions**:
    - The model adapts based on whether capacity extension decisions are included and whether the objective focuses on social benefit or profit maximization.
 
-# Notes
+# Noteshttps://tv.apple.com/us/show/shrinking/umc.cmc.apzybj6eqf6pzccd97kev7bs
 - Uses the Gurobi solver via JuMP.
 """
 
@@ -281,31 +281,17 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
     #sub problem constraints
     
     # Constraint (12) - McCormick - make linear, remove W, check results
-    # for ω in Ω
-    #     for v in V
-    #         for p in P_v[v]
-    #             for t in T
-    #                 for tau in T
-    #                     if (t,tau) in F_time_set
-    #                         @constraint(model, X_tilde[v,p,(t,tau),ω] == sum(X[v,p,l,ω] for l in t:tau))
-    #                         @constraint(model, sum(Q[v,p,(t,tau), m] for m in M) >= K[v,p,(t,tau),ω])
-    #                         @constraint(model, K[v,p,(t,tau),ω] >= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] + X_tilde[v,p,(t,tau),ω] - X_tilde_upper[v,p,(t,tau)])
-    #                         @constraint(model, K[v,p,(t,tau),ω] <= X_tilde[v,p,(t,tau),ω])
-    #                         @constraint(model, K[v,p,(t,tau),ω] <= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
-    #                     end
-    #                 end
-    #             end
-    #         end
-    #     end
-    # end
-
     for ω in Ω
         for v in V
             for p in P_v[v]
                 for t in T
                     for tau in T
                         if (t,tau) in F_time_set
-                            @constraint(model, sum(Q[v,p,(t,tau), m] for m in M) >= sum(X[v,p,l,ω] for l in t:tau))
+                            @constraint(model, X_tilde[v,p,(t,tau),ω] == sum(X[v,p,l,ω] for l in t:tau))
+                            @constraint(model, sum(Q[v,p,(t,tau), m] for m in M) == K[v,p,(t,tau),ω])
+                            @constraint(model, K[v,p,(t,tau),ω] >= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] + X_tilde[v,p,(t,tau),ω] - X_tilde_upper[v,p,(t,tau)])
+                            @constraint(model, K[v,p,(t,tau),ω] <= X_tilde[v,p,(t,tau),ω])
+                            @constraint(model, K[v,p,(t,tau),ω] <= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
                         end
                     end
                 end

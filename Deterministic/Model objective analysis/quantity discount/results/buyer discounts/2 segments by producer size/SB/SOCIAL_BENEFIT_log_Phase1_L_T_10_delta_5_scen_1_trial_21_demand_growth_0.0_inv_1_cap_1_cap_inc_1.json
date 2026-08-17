@@ -1,0 +1,92 @@
+
+Gurobi 12.0.2 (win64) logging started Wed Jul  1 05:46:47 2026
+
+Set parameter LogFile to value "C:\Users\Nicholas Uhorchak\OneDrive - University of Arkansas\Desktop\Vaccine_Tender\Deterministic\Model Files\Segment Test\results\SOCIAL_BENEFIT_log_Phase1_L_T_10_delta_5_scen_1_trial_21_demand_growth_0.0_inv_1_cap_1_cap_inc_1.json"
+
+Gurobi 12.0.2 (win64) logging started Wed Jul  1 05:46:47 2026
+
+Set parameter LogFile to value "C:\Users\Nicholas Uhorchak\OneDrive - University of Arkansas\Desktop\Vaccine_Tender\Deterministic\Model Files\Segment Test\results\SOCIAL_BENEFIT_log_Phase1_L_T_10_delta_5_scen_1_trial_21_demand_growth_0.0_inv_1_cap_1_cap_inc_1.json"
+Gurobi Optimizer version 12.0.2 build v12.0.2rc0 (win64 - Windows 11+.0 (26200.2))
+
+CPU model: 12th Gen Intel(R) Core(TM) i7-1265U, instruction set [SSE2|AVX|AVX2]
+Thread count: 10 physical cores, 12 logical processors, using up to 12 threads
+
+Non-default parameters:
+FeasibilityTol  0.01
+MIPGap  0.01
+NumericFocus  1
+Presolve  1
+
+Optimize a model with 27641 rows, 15162 columns and 86971 nonzeros
+Model fingerprint: 0xae4131c0
+Variable types: 12642 continuous, 2520 integer (2370 binary)
+Coefficient statistics:
+  Matrix range     [6e-03, 1e+20]
+  Objective range  [7e+00, 1e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 1e+13]
+Warning: Model contains large matrix coefficient range
+Warning: Model contains large rhs
+Presolve removed 17515 rows and 9574 columns
+Presolve time: 0.11s
+Presolved: 10126 rows, 5588 columns, 37258 nonzeros
+Variable types: 4324 continuous, 1264 integer (855 binary)
+Found heuristic solution: objective 1.360781e+08
+Found heuristic solution: objective 1.354463e+08
+
+Root relaxation: objective 7.618712e+07, 5230 iterations, 0.17 seconds (0.22 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 7.6187e+07    0  126 1.3545e+08 7.6187e+07  43.8%     -    0s
+H    0     0                    8.815252e+07 7.6278e+07  13.5%     -    0s
+     0     0 7.6341e+07    0  358 8.8153e+07 7.6341e+07  13.4%     -    0s
+     0     0 7.6843e+07    0  311 8.8153e+07 7.6843e+07  12.8%     -    0s
+     0     0 7.6843e+07    0  301 8.8153e+07 7.6843e+07  12.8%     -    0s
+     0     0 7.6934e+07    0  292 8.8153e+07 7.6934e+07  12.7%     -    0s
+     0     0 7.6938e+07    0  274 8.8153e+07 7.6938e+07  12.7%     -    0s
+     0     0 7.7270e+07    0  383 8.8153e+07 7.7270e+07  12.3%     -    1s
+     0     0 7.7307e+07    0  383 8.8153e+07 7.7307e+07  12.3%     -    1s
+     0     0 7.7342e+07    0  367 8.8153e+07 7.7342e+07  12.3%     -    1s
+     0     0 7.7365e+07    0  380 8.8153e+07 7.7365e+07  12.2%     -    1s
+     0     0 7.7369e+07    0  354 8.8153e+07 7.7369e+07  12.2%     -    1s
+     0     0 7.7500e+07    0  409 8.8153e+07 7.7500e+07  12.1%     -    1s
+     0     0 7.7519e+07    0  176 8.8153e+07 7.7519e+07  12.1%     -    2s
+     0     2 7.7519e+07    0  166 8.8153e+07 7.7519e+07  12.1%     -    2s
+*  431   329              46    8.783647e+07 7.7519e+07  11.7%   127    4s
+H  494   368                    8.755145e+07 7.7519e+07  11.5%   135    4s
+H  499   368                    8.739181e+07 7.7519e+07  11.3%   133    4s
+   555   418 8.4684e+07   30  167 8.7392e+07 7.7519e+07  11.3%   128    5s
+H  588   428                    8.620407e+07 7.7519e+07  10.1%   128    5s
+H  696   465                    8.608777e+07 7.7742e+07  9.69%   134    5s
+H  936   506                    8.564211e+07 7.8496e+07  8.34%   166    7s
+  1424   531     cutoff   18      8.5642e+07 8.0277e+07  6.26%   191   10s
+  2172   521 8.2864e+07   16  150 8.5642e+07 8.2445e+07  3.73%   214   15s
+  2969   408 8.5418e+07   16  145 8.5642e+07 8.3677e+07  2.29%   232   20s
+  3733   366 infeasible   27      8.5642e+07 8.4231e+07  1.65%   235   25s
+
+Cutting planes:
+  Gomory: 13
+  Cover: 734
+  Implied bound: 711
+  Clique: 76
+  MIR: 50
+  StrongCG: 1
+  Flow cover: 338
+  Inf proof: 3
+  Zero half: 10
+  RLT: 553
+  Relax-and-lift: 3
+  BQP: 10
+  PSD: 153
+
+Explored 4173 nodes (1024851 simplex iterations) in 27.14 seconds (15.47 work units)
+Thread count was 12 (of 12 available processors)
+
+Solution count 9: 8.56421e+07 8.60878e+07 8.62041e+07 ... 1.36078e+08
+
+Optimal solution found (tolerance 1.00e-02)
+Best objective 8.564211322402e+07, best bound 8.482568561675e+07, gap 0.9533%
+
+User-callback calls 10520, time in user-callback 0.01 sec

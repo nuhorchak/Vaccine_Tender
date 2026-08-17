@@ -93,10 +93,16 @@ function create_vaccine_data()
     #     "Large" => ["Serum_Institute", "GSK", "Biological_E"]
     # )
 
-        capacity_category = Dict(
-        "Small" => ["Serum_Institute", "Haffkine_Bio",  "Merck_Sharp", "Sanofi"],
-        "Medium" => ["Bilthoven", "Pfizer",  "Bharat_Biotech",  "PT_Bio", "BB_NCIPD", "China_National"],
-        "Large" => [, "GSK", "Biological_E", "AJ_Vaccines", "LG_Chem", "Panacea_Biotec"]
+    #     capacity_category = Dict(
+    #     "Small" => ["Serum_Institute", "Haffkine_Bio",  "Merck_Sharp", "Sanofi"],
+    #     "Medium" => ["Bilthoven", "Pfizer",  "Bharat_Biotech",  "PT_Bio", "BB_NCIPD", "China_National"],
+    #     "Large" => ["GSK", "Biological_E", "AJ_Vaccines", "LG_Chem", "Panacea_Biotec"]
+    # )
+
+    capacity_category = Dict(
+    "Small"  => ["Serum_Institute", "Haffkine_Bio", "Merck_Sharp", "Sanofi"],
+    "Medium" => ["Bilthoven", "Pfizer", "Bharat_Biotech", "PT_Bio", "BB_NCIPD", "China_National", "GSK", "Biological_E"],
+    "Large"  => ["AJ_Vaccines", "LG_Chem", "Panacea_Biotec"]
     )
 
     vaccine_category = Dict(

@@ -308,15 +308,15 @@ function initialize_parameters(
     phi_vm_upper = Dict()
  
     # Loop through v, and assign lambda for each m
-    # for v in V
-    #     for m in keys(m_segments)
-    #         zeta_vm[v, m] = m_segments[m]
-    #     end
-    # end
+    for v in V
+        for m in keys(m_segments)
+            zeta_vm[v, m] = m_segments[m]
+        end
+    end
 
-    target_vaccines = ["Penta", "Hexa"]
-    # target_vaccines = ["TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "HPV", "Rotavirus", "PCV", "Penta", "Hexa"]
-    # target_vaccines = ["TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "HPV", "Rotavirus", "PCV"]
+    # target_vaccines = ["Penta", "Hexa"]
+    target_vaccines = ["TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "HPV", "Rotavirus", "PCV", "Penta", "Hexa"]
+    # # target_vaccines = ["TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "HPV", "Rotavirus", "PCV"]
 
     for v in V, m in eachindex(m_segments)
         zeta_vm[v, m] = (v in target_vaccines) ? m_segments[m] : 0.0
@@ -335,14 +335,15 @@ function initialize_parameters(
         end
     end
 
-    # Single segment - fixed discounts only, no quantity breaks needed
+    #%%%%%%%% discounts by produer %%%%%%%%%%%%%%%%%%%
+    # # Single segment - fixed discounts only, no quantity breaks needed
     # m_segments = [0.0]
     # lower_breaks_values = [0.0]
     # upper_breaks_values = [99999999999999999999.0]
 
     # producer_discount = Dict(
-    #     "Small"  => 0.10,
-    #     "Medium" => 0.05,
+    #     "Small"  => -0.20,
+    #     "Medium" => -0.10,
     #     "Large"  => 0.00
     # )
 
@@ -370,6 +371,172 @@ function initialize_parameters(
     #     phi_vm_lower[v, m] = lower_breaks_values[m]
     #     phi_vm_upper[v, m] = upper_breaks_values[m]
     # end
+
+    #%%%%%%%%%%%%%%%%%%%%%%% discounts by producer by quantity %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    #binned based on base prod capacity
+    # capacity_category = Dict(
+    # "Small"  => ["Serum_Institute", "Haffkine_Bio", "Merck_Sharp", "Sanofi"],
+    # "Medium" => ["Bilthoven", "Pfizer", "Bharat_Biotech", "BB_NCIPD", "China_National", "GSK", "AJ_Vaccines"],
+    # "Large"  => ["Biological_E", "LG_Chem", "Panacea_Biotec", "PT_Bio"]
+    # )
+
+    # # m_segments = [0.00, 0.05, 0.10]
+    # m_segments = [0.05, -0.05, -0.20]
+
+    # lower_breaks = Dict(
+    #     "Small"  => [0.0,   1.5e6,  4.0e6],
+    #     "Medium" => [0.0,   1.0e7,  4.0e7],
+    #     "Large"  => [0.0,   5.0e7,  2.0e8]
+    # )
+
+    # upper_breaks = Dict(
+    #     "Small"  => [1.5e6,  4.0e6,  9.9e19],
+    #     "Medium" => [1.0e7,  4.0e7,  9.9e19],
+    #     "Large"  => [5.0e7,  2.0e8,  9.9e19]
+    # )
+
+    # producer_discount = Dict(
+    #     "Small"  => [0.00, -0.05, -0.10],
+    #     "Medium" => [0.00, -0.05, -0.10],
+    #     "Large"  => [0.00, 0.00, 0.00]
+    # )
+
+    # producer_to_category = Dict(
+    #     p => cat for (cat, producers) in capacity_category for p in producers
+    # )
+
+    # zeta_vpm = Dict(
+    #     (v, p, m) => producer_discount[producer_to_category[p]][m]
+    #     for v in keys(P_v) for p in P_v[v] for m in eachindex(m_segments)
+    # )
+
+    # phi_pm_lower = Dict(
+    #     (p, m) => lower_breaks[producer_to_category[p]][m]
+    #     for p in P for m in eachindex(m_segments)
+    # )
+
+    # phi_pm_upper = Dict(
+    #     (p, m) => upper_breaks[producer_to_category[p]][m]
+    #     for p in P for m in eachindex(m_segments)
+    # )
+
+    # %%%%%%%%%%%%%%%%%%%% 3 tiered based on production capacity at start %%%%%%%%%
+
+    # capacity_category = Dict(
+    # "Small"  => ["Serum_Institute", "Haffkine_Bio", "Merck_Sharp", "Sanofi"],
+    # "Medium" => ["Bilthoven", "Pfizer", "Bharat_Biotech", "BB_NCIPD", "China_National", "GSK", "AJ_Vaccines"],
+    # "Large"  => ["Biological_E", "LG_Chem", "Panacea_Biotec", "PT_Bio"]
+    # )
+
+    # m_segments = [0.05, -0.05, -0.20]   # still needed as-is — drives M, and phi_pm_lower/upper below
+
+    # lower_breaks = Dict(
+    #     "Small"  => [0.0,   1.5e6,  4.0e6],
+    #     "Medium" => [0.0,   1.0e7,  4.0e7],
+    #     "Large"  => [0.0,   5.0e7,  2.0e8]
+    # )
+
+    # upper_breaks = Dict(
+    #     "Small"  => [1.5e6,  4.0e6,  9.9e19],
+    #     "Medium" => [1.0e7,  4.0e7,  9.9e19],
+    #     "Large"  => [5.0e7,  2.0e8,  9.9e19]
+    # )
+
+    # # ---- ADD THIS: producer -> category lookup, needed by phi_pm_lower/upper ----
+    # producer_to_category = Dict(
+    #     p => cat for (cat, producers) in capacity_category for p in producers
+    # )
+
+    # # ---- ADD THIS: phi_pm_lower/upper were only ever defined in the commented-out block ----
+    # phi_pm_lower = Dict(
+    #     (p, m) => lower_breaks[producer_to_category[p]][m]
+    #     for p in P for m in eachindex(m_segments)
+    # )
+
+    # phi_pm_upper = Dict(
+    #     (p, m) => upper_breaks[producer_to_category[p]][m]
+    #     for p in P for m in eachindex(m_segments)
+    # )
+
+    # # --- Continuous, capacity-based producer discount ---
+    # # 1 - zeta is the discount factor; zeta is negative for producers,
+    # # so a more negative zeta = a bigger discount.
+
+    # max_discount = 0.20
+    # min_discount = 0.00
+
+    # log_s = Dict(p => log(s_real[p] + 1) for p in P)
+    # s_min, s_max = extrema(values(log_s))
+
+    # base_rate = Dict(
+    #     p => s_max > s_min ? (s_max - log_s[p]) / (s_max - s_min) : 0.0
+    #     for p in P
+    # )
+
+    # tier_multiplier = [0.0, 0.5, 1.0]
+
+    # zeta_vpm = Dict(
+    #     (v, p, m) => -clamp(max_discount * base_rate[p] * tier_multiplier[m], min_discount, max_discount)
+    #     for v in keys(P_v) for p in P_v[v] for m in eachindex(m_segments)
+    # )
+
+    # %%%%%%%%%%%%%%%%%% 2 tiers scaled by producer capacity %%%%%%%%%%%%%%%%%%%%%
+    # capacity_category = Dict(
+    # "Small"  => ["Serum_Institute", "Haffkine_Bio", "Merck_Sharp", "Sanofi"],
+    # "Medium" => ["Bilthoven", "Pfizer", "Bharat_Biotech", "BB_NCIPD", "China_National", "GSK", "AJ_Vaccines"],
+    # "Large"  => ["Biological_E", "LG_Chem", "Panacea_Biotec", "PT_Bio"]
+    # )
+
+    # m_segments = [0.05, 0.20]   # 2 tiers now — drives M, and phi_pm_lower/upper below
+
+    # lower_breaks = Dict(
+    #     "Small"  => [0.0,   1.5e6],
+    #     "Medium" => [0.0,   1.0e7],
+    #     "Large"  => [0.0,   5.0e7]
+    # )
+
+    # upper_breaks = Dict(
+    #     "Small"  => [1.5e6,  9.9e19],
+    #     "Medium" => [1.0e7,  9.9e19],
+    #     "Large"  => [5.0e7,  9.9e19]
+    # )
+
+    # # ---- producer -> category lookup, needed by phi_pm_lower/upper ----
+    # producer_to_category = Dict(
+    #     p => cat for (cat, producers) in capacity_category for p in producers
+    # )
+
+    # phi_pm_lower = Dict(
+    #     (p, m) => lower_breaks[producer_to_category[p]][m]
+    #     for p in P for m in eachindex(m_segments)
+    # )
+
+    # phi_pm_upper = Dict(
+    #     (p, m) => upper_breaks[producer_to_category[p]][m]
+    #     for p in P for m in eachindex(m_segments)
+    # )
+
+    # # --- Continuous, capacity-based producer discount ---
+    # # 1 - zeta is the discount factor; zeta is negative for producers,
+    # # so a more negative zeta = a bigger discount.
+
+    # max_discount = 0.20
+    # min_discount = 0.00
+
+    # log_s = Dict(p => log(s_real[p] + 1) for p in P)
+    # s_min, s_max = extrema(values(log_s))
+
+    # base_rate = Dict(
+    #     p => s_max > s_min ? (s_max - log_s[p]) / (s_max - s_min) : 0.0
+    #     for p in P
+    # )
+
+    # tier_multiplier = [0.0, 1.0]   # m=1 no discount, m=2 the full capacity-scaled discount
+
+    # zeta_vpm = Dict(
+    #     (v, p, m) => -clamp(max_discount * base_rate[p] * tier_multiplier[m], min_discount, max_discount)
+    #     for v in keys(P_v) for p in P_v[v] for m in eachindex(m_segments)
+    # )
 
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DISCOUNT CODE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     λ = 0.8
