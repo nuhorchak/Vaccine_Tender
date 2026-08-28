@@ -37,7 +37,7 @@ function initialize_parameters(
 
     # inf_penalty = 100
     # Unvaccinated children penalty
-    beta = 10
+    beta = 1000
 
     # # Read production capacity data
     # capacity_file_path = joinpath(data_dir, "production_capacity_scenarios.xlsx")
@@ -171,6 +171,7 @@ function initialize_parameters(
 
     # Profit function 
     f_profit = Dict()
+    # min_f_profit_floor = 10
     for p in P
         for v in V_p[p]
             for (t,tau) in F_time_set
@@ -184,6 +185,8 @@ function initialize_parameters(
                     continue # Use 'continue' to skip to the next iteration of the inner loop
                 end
                 f_profit[v, p, (t,tau)] = s_real[p] / length(V_p[p]) * r_producer_avg[p] /1e5 * proportion_value
+                # raw_value = s_real[p] / length(V_p[p]) * r_producer_avg[p] / 1e5 * proportion_value
+                # f_profit[v, p, (t,tau)] = max(raw_value, min_f_profit_floor)
             end
         end
     end
@@ -281,10 +284,19 @@ function initialize_parameters(
     ##############################################################################
 
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%% DISCOUNT CODE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    m_segments = [0.00, 0.01]
-    lower_breaks_values = [0, 6.0e4]
-    upper_breaks_values = [6.01e4, 99999999999999999999999999999999999]
+    # m_segments = [0.00, -0.01]
+    # lower_breaks_values = [0, 6.0e4]
+    # upper_breaks_values = [6.01e4, 99999999999999999999999999999999999]
 
+    #new with new formulation
+    m_segments = [0.00, 0.01]
+    lower_breaks_values = [0, 7.49e6]
+    upper_breaks_values = [7.5e6, 99999999999999999999999999999999999]
+
+    # #new 3 with new formulation
+    # m_segments = [0.00, -0.01, -0.02]
+    # lower_breaks_values = [0, 1.0e5, 6.0e5]
+    # upper_breaks_values = [0.99e5, 5.99e5, 999...]
     #UG
     # m_segments = [0.00, 0.01, 0.02]
     # lower_breaks_values = [0, 6.0e4, 3.0e5]

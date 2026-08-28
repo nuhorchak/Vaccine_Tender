@@ -34,7 +34,7 @@ Defines the deterministic equivalent model for a stochastic optimization problem
 4. **Conditions**:
    - The model adapts based on whether capacity extension decisions are included and whether the objective focuses on social benefit or profit maximization.
 
-# Noteshttps://tv.apple.com/us/show/shrinking/umc.cmc.apzybj6eqf6pzccd97kev7bs
+# Notes
 - Uses the Gurobi solver via JuMP.
 """
 
@@ -83,7 +83,7 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
     # UNICEF model - base model used, calculated from the perspective of UNICEF-GAVI
 
     #social benefit - mods to OBJ funs (MP and SP), calcualted to minimize missed doses
-    if UNICEF_MODEL && capacity_extension_decision 
+    if UNICEF_MODEL #&& capacity_extension_decision 
         println("UNICEF-GAVI model with capacity extension/discounts")
         @objective(model, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set_lookup, a in A if (a,t,tau) ∉ starting_points_vect_F) +
         sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * Q[v,p,(t, tau),m] / delta[t] for (t,tau) in F_time_set, v in V, p in P_v[v], m in M) +
@@ -91,11 +91,11 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
         sum(p_ω[ω] * h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω)
     )
 
-    elseif social_benefit && capacity_extension_decision
+    elseif social_benefit #&& capacity_extension_decision
         println("Social benefit model with capacity extension/discounts")
         @objective(model, Min, sum(p_ω[ω] *beta * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω))
 
-    else max_profit && capacity_extension_decision
+    else max_profit #&& capacity_extension_decision
         println("Max Profit model with capacity extension/discounts")
         @objective(model, Min, sum((-r_avg[v,t] * (1 - zeta_vm[v,m]) * Q[v,p,(t, tau),m]) / delta[t] for (t,tau) in F_time_set, v in V, p in P_v[v], m in M) +
         sum((Γ[p] * L[p, t]) / delta[t] for p in P, t in T) +  
@@ -122,28 +122,7 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
 
     #removed overlap condition bool
     # Constraint (3)
-    # for a in A
-    #     for t in T
-    #         for tau in T
-    #             if tau >= t
-    #                 for t_prime in T
-    #                     for tau_prime in T
-    #                         if tau_prime >= t_prime
-    #                             overlap_decision = (t == t_prime)
-    #                             if overlap_decision == true
-    #                                 if ((t, tau) in F_time_set_lookup) && ((t_prime, tau_prime) in F_time_set) && ((t, tau) != (t_prime, tau_prime))
-    #                                     @constraint(model, F[a, (t, tau)] + F[a, (t_prime, tau_prime)] <= 1)
-    #                                 end
-    #                             end
-    #                         end
-    #                     end
-    #                 end
-    #             end
-    #         end
-    #     end
-    # end
-
-    #NEW, updated, for checking, not implimented yet
+    #updated
     for a in A
         for t in T
             @constraint(model,
@@ -161,22 +140,32 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
 
 
     # Constraint (5)
+    for p in P
+        for t in T
+            for tau in T
+                if (t, tau) in F_time_set_lookup
+                    @constraint(model, sum(F[a, (t, tau)] for a in A_p[p]) >= W[p, (t, tau)])
+                end
+            end
+        end
+    end
+
+    # Constraint (6)
     # for p in P
     #     for t in T
     #         for tau in T
     #             if (t, tau) in F_time_set_lookup
-    #                 @constraint(model, sum(F[a, (t, tau)] for a in A_p[p]) >= W[p, (t, tau)])
+    #                 @constraint(model, sum(F[a, (t, tau)] for a in A_p[p]) <= length(A_p) * W[p, (t, tau)])
     #             end
     #         end
     #     end
     # end
 
-    # Constraint (6)
-    for p in P
+    for a in A
         for t in T
             for tau in T
                 if (t, tau) in F_time_set_lookup
-                    @constraint(model, sum(F[a, (t, tau)] for a in A_p[p]) <= length(A_p) * W[p, (t, tau)])
+                    @constraint(model, F[a, (t, tau)] <= sum(W[p, (t, tau)] for p in P if a in A_p[p]))
                 end
             end
         end
@@ -241,7 +230,7 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
 
     for p in P, (t, tau) in F_time_set
         lhs = @expression(model, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * Q[v,p,(t,tau),m] for v in V_p[p], m in M))
-        rhs = @expression(model, sum((1 + l[v,p]) * f_profit[v,p,(t,tau)] * W[p,(t,tau)] for v in V_p[p], m in M))
+        rhs = @expression(model, sum((1 + l[v,p]) * f_profit[v,p,(t,tau)] * W[p,(t,tau)] for v in V_p[p]))
         c = @constraint(model, lhs >= rhs)
         set_name(c, "revenue_constraint[$p,$t,$tau]")
     end
@@ -251,7 +240,7 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
         for p in P_v[v]
             for (t, tau) in F_time_set_lookup
                 for m in M
-                    @constraint(model, phi_vm_lower[v,m] * Z[v,p,t,m] <= Q[v,p,(t,tau),m]) #sum(Q[v,p,(t,tau),m] for (t, tau) in F_time_set_lookup))
+                    @constraint(model, phi_vm_lower[v,m] * Z[v,p,t,m] <= sum(Q[v,p,(t,tau),m] for (t, tau) in F_time_set_lookup))
                 end
             end
         end
@@ -263,7 +252,7 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
         for p in P_v[v]
             for (t, tau) in F_time_set_lookup
                 for m in M
-                    @constraint(model, phi_vm_upper[v,m] * Z[v,p,t,m] >= Q[v,p,(t,tau),m]) #sum(Q[v,p,(t,tau),m] for (t, tau) in F_time_set_lookup))
+                    @constraint(model, phi_vm_upper[v,m] * Z[v,p,t,m] >= sum(Q[v,p,(t,tau),m] for (t, tau) in F_time_set_lookup))
                 end
             end
         end
@@ -281,17 +270,31 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
     #sub problem constraints
     
     # Constraint (12) - McCormick - make linear, remove W, check results
+    # for ω in Ω
+    #     for v in V
+    #         for p in P_v[v]
+    #             for t in T
+    #                 for tau in T
+    #                     if (t,tau) in F_time_set
+    #                         @constraint(model, X_tilde[v,p,(t,tau),ω] == sum(X[v,p,l,ω] for l in t:tau))
+    #                         @constraint(model, sum(Q[v,p,(t,tau), m] for m in M) == K[v,p,(t,tau),ω])
+    #                         @constraint(model, K[v,p,(t,tau),ω] >= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] + X_tilde[v,p,(t,tau),ω] - X_tilde_upper[v,p,(t,tau)])
+    #                         @constraint(model, K[v,p,(t,tau),ω] <= X_tilde[v,p,(t,tau),ω])
+    #                         @constraint(model, K[v,p,(t,tau),ω] <= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
+    #                     end
+    #                 end
+    #             end
+    #         end
+    #     end
+    # end
+
     for ω in Ω
         for v in V
             for p in P_v[v]
                 for t in T
                     for tau in T
                         if (t,tau) in F_time_set
-                            @constraint(model, X_tilde[v,p,(t,tau),ω] == sum(X[v,p,l,ω] for l in t:tau))
-                            @constraint(model, sum(Q[v,p,(t,tau), m] for m in M) == K[v,p,(t,tau),ω])
-                            @constraint(model, K[v,p,(t,tau),ω] >= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)] + X_tilde[v,p,(t,tau),ω] - X_tilde_upper[v,p,(t,tau)])
-                            @constraint(model, K[v,p,(t,tau),ω] <= X_tilde[v,p,(t,tau),ω])
-                            @constraint(model, K[v,p,(t,tau),ω] <= X_tilde_upper[v,p,(t,tau)]*W[p,(t,tau)])
+                            @constraint(model, sum(Q[v,p,(t,tau), m] for m in M) >= sum(X[v,p,l,ω] for l in t:tau))
                         end
                     end
                 end
@@ -300,12 +303,14 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
     end
 
     # Constraint (13) McCormack
-    for p in P
-        for t in T
-            @constraint(model, L_ddot[p,t] == sum(κ*s_real[p] * L[p, l] for l in 1:t))
-            @constraint(model, K_ddot[p,t] >= L_ddot[p,t] + Y[p,t]*L_ddot_upper[p,t] - L_ddot_upper[p,t])
-            @constraint(model, K_ddot[p,t] <= Y[p,t]*L_ddot_upper[p,t])
-            @constraint(model, K_ddot[p,t] <= L_ddot[p,t])
+    for ω in Ω
+        for p in P
+            for t in T
+                @constraint(model, L_ddot[p,t] == sum(κ*s_real[p] * L[p, l] for l in 1:t))
+                @constraint(model, K_ddot[p,t] >= L_ddot[p,t] + Y[p,t]*L_ddot_upper[p,t] - L_ddot_upper[p,t])
+                @constraint(model, K_ddot[p,t] <= Y[p,t]*L_ddot_upper[p,t])
+                @constraint(model, K_ddot[p,t] <= L_ddot[p,t])
+            end
         end
     end
 
@@ -373,9 +378,9 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
     # end
 
     # Instead of indexing into a vector repeatedly:
-    for (a, t, tau) in starting_points_vect_F
-        @constraint(model, F[a, (t, tau)] == 1)
-    end
+    # for (a, t, tau) in starting_points_vect_F
+    #     @constraint(model, F[a, (t, tau)] == 1)
+    # end
 
     for ω in Ω, (v, amount) in starting_points_vect_I
         @constraint(model, I[v, 0, ω] == amount)
@@ -384,7 +389,6 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
     for ω in Ω, (a, amount) in starting_points_vect_S
         @constraint(model, S[a, 0, ω] == amount)
     end
-
 
     return model
 end
