@@ -281,7 +281,7 @@ function initialize_parameters(
     ##############################################################################
 
     #%%%%%%%%%%%%%%%%%%%%%%%%%%%% DISCOUNT CODE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    m_segments = [0.00, 0.01]
+    m_segments = [0.00, .2]
     lower_breaks_values = [0, 6.0e4]
     upper_breaks_values = [6.01e4, 99999999999999999999999999999999999]
 
@@ -314,9 +314,10 @@ function initialize_parameters(
     #     end
     # end
 
-    target_vaccines = ["Penta", "Hexa"]
+    # target_vaccines = ["Penta", "Hexa"]
     # target_vaccines = ["TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "HPV", "Rotavirus", "PCV", "Penta", "Hexa"]
     # target_vaccines = ["TT", "HepB",  "IPV", "OPV", "DT", "Td", "DTwP", "DTwP-Hib", "HPV", "Rotavirus", "PCV"]
+    target_vaccines = ["HPV", "Rotavirus", "PCV"]
 
     for v in V, m in eachindex(m_segments)
         zeta_vm[v, m] = (v in target_vaccines) ? m_segments[m] : 0.0

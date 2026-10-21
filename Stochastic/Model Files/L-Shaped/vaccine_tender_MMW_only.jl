@@ -43,6 +43,14 @@ gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol
 gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-6, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1)#, "MIPGap" => 1e-1)#, "Threads" => 8) 
 gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-6, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1)#, "MIPGap" => 1e-1)#, "Threads" => 8) 
 
+#turn off pre solve and check
+# WARM START - OPTIMAL is also FEASIBLE warm start - same feasible region
+# warm start MIP using dual from previous iteration - gurobi parameter for solver 
+# dig into master problem - what characteristics does it have - integer? what if we remove Q?
+# how fast does it solve? sub problem?
+# what type of decomposition can help speed this up?
+# 
+
 function tender_stochastic_sensitivity(
     max_horizon_length::Int,
     max_tender_length::Int,

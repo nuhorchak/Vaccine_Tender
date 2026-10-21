@@ -161,15 +161,15 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
 
 
     # Constraint (5)
-    # for p in P
-    #     for t in T
-    #         for tau in T
-    #             if (t, tau) in F_time_set_lookup
-    #                 @constraint(model, sum(F[a, (t, tau)] for a in A_p[p]) >= W[p, (t, tau)])
-    #             end
-    #         end
-    #     end
-    # end
+    for p in P
+        for t in T
+            for tau in T
+                if (t, tau) in F_time_set_lookup
+                    @constraint(model, sum(F[a, (t, tau)] for a in A_p[p]) >= W[p, (t, tau)])
+                end
+            end
+        end
+    end
 
     # Constraint (6)
     for p in P
@@ -241,7 +241,7 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
 
     for p in P, (t, tau) in F_time_set
         lhs = @expression(model, sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * Q[v,p,(t,tau),m] for v in V_p[p], m in M))
-        rhs = @expression(model, sum((1 + l[v,p]) * f_profit[v,p,(t,tau)] * W[p,(t,tau)] for v in V_p[p], m in M))
+        rhs = @expression(model, sum((1 + l[v,p]) * f_profit[v,p,(t,tau)] * W[p,(t,tau)] for v in V_p[p]))
         c = @constraint(model, lhs >= rhs)
         set_name(c, "revenue_constraint[$p,$t,$tau]")
     end

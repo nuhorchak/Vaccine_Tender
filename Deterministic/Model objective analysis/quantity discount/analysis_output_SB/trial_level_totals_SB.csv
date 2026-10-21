@@ -1,0 +1,355 @@
+model,scenario,variable,trial_number,total
+SB,1 segment,Q,1,13179827.71
+SB,1 segment,Q,2,18453244.720000003
+SB,1 segment,Q,3,17007723.59299
+SB,1 segment,Q,4,22775509.12882
+SB,1 segment,Q,5,14462880.51617
+SB,1 segment,Q,6,16027351.97441
+SB,1 segment,Q,7,17303111.494409997
+SB,1 segment,Q,8,14356297.31441
+SB,1 segment,Q,9,18744412.73646
+SB,1 segment,Q,10,19091508.97
+SB,1 segment,Q,11,13089412.334409999
+SB,1 segment,Q,12,18452596.72
+SB,1 segment,Q,13,13436959.69941
+SB,1 segment,Q,14,13664274.219999999
+SB,1 segment,Q,15,15037696.3821
+SB,1 segment,Q,16,14710641.404409999
+SB,1 segment,Q,17,14481186.14441
+SB,1 segment,Q,18,15516238.14
+SB,1 segment,Q,19,15510054.96441
+SB,1 segment,Q,20,14281946.64882
+SB,1 segment,Q,21,14456111.4
+SB,1 segment,Q,22,19013241.114409998
+SB,1 segment,Q,23,15392285.47941
+SB,1 segment,Q,24,13832139.77941
+SB,1 segment,Q,25,14011411.734410001
+SB,1 segment,Q,26,14499954.65441
+SB,1 segment,Q,27,19615889.931491636
+SB,1 segment,Q,28,16422087.51882
+SB,1 segment,Q,29,15305245.324409999
+SB,1 segment,Q,30,13582394.044410001
+SB,2 segments,Q,1,70641989.9146558
+SB,2 segments,Q,2,69100834.40219954
+SB,2 segments,Q,3,72972201.49941
+SB,2 segments,Q,4,71842670.23764
+SB,2 segments,Q,5,70706555.05441
+SB,2 segments,Q,6,70955541.82823
+SB,2 segments,Q,7,70128270.31941001
+SB,2 segments,Q,8,71139740.10627
+SB,2 segments,Q,9,71467636.07764
+SB,2 segments,Q,10,74165619.44941
+SB,2 segments,Q,11,72431076.90440996
+SB,2 segments,Q,12,69312470.7
+SB,2 segments,Q,13,72794912.87441
+SB,2 segments,Q,14,68095306.50942379
+SB,2 segments,Q,15,74551372.18499996
+SB,2 segments,Q,16,69935474.28441
+SB,2 segments,Q,17,69340487.37370001
+SB,2 segments,Q,18,71120272.095
+SB,2 segments,Q,19,72779522.81969348
+SB,2 segments,Q,20,72925070.7
+SB,2 segments,Q,21,70187198.17441
+SB,2 segments,Q,22,72501268.995
+SB,2 segments,Q,23,71806353.62941
+SB,2 segments,Q,24,70450560.17441
+SB,2 segments,Q,25,72375225.59
+SB,2 segments,Q,26,73117698.7
+SB,2 segments,Q,27,70843537.84705
+SB,2 segments,Q,28,70497106.70143315
+SB,2 segments,Q,29,73327609.15764
+SB,2 segments,Q,30,69714330.4592643
+SB,2 segments hpv pcv rota,Q,1,51803161.46230147
+SB,2 segments hpv pcv rota,Q,2,51377475.89359719
+SB,2 segments hpv pcv rota,Q,3,51168380.68121427
+SB,2 segments hpv pcv rota,Q,4,51726606.80441409
+SB,2 segments hpv pcv rota,Q,5,50880566.81644412
+SB,2 segments hpv pcv rota,Q,6,51341561.229211316
+SB,2 segments hpv pcv rota,Q,7,52608739.87830853
+SB,2 segments hpv pcv rota,Q,8,51357976.10214726
+SB,2 segments hpv pcv rota,Q,9,53546343.64943806
+SB,2 segments hpv pcv rota,Q,10,51600198.181941755
+SB,2 segments hpv pcv rota,Q,11,51079743.01979228
+SB,2 segments hpv pcv rota,Q,12,51264188.1925751
+SB,2 segments hpv pcv rota,Q,13,51177831.99992282
+SB,2 segments hpv pcv rota,Q,14,51044230.38850538
+SB,2 segments hpv pcv rota,Q,15,48121238.022758946
+SB,2 segments hpv pcv rota,Q,16,51912163.006140724
+SB,2 segments hpv pcv rota,Q,17,51894112.66642443
+SB,2 segments hpv pcv rota,Q,18,51452659.59823227
+SB,2 segments hpv pcv rota,Q,19,50822340.21307383
+SB,2 segments hpv pcv rota,Q,20,51168801.64300725
+SB,2 segments hpv pcv rota,Q,21,51567615.20552457
+SB,2 segments hpv pcv rota,Q,22,50938301.46640451
+SB,2 segments hpv pcv rota,Q,23,52521606.20097809
+SB,2 segments hpv pcv rota,Q,24,51068831.76833432
+SB,2 segments hpv pcv rota,Q,25,51531812.59332289
+SB,2 segments hpv pcv rota,Q,26,51570254.425555184
+SB,2 segments hpv pcv rota,Q,27,51760259.4249433
+SB,2 segments hpv pcv rota,Q,28,50902426.08212375
+SB,2 segments hpv pcv rota,Q,29,51631375.23502327
+SB,2 segments hpv pcv rota,Q,30,51055467.269085936
+SB,2 segments no penta hexa,Q,1,9017503.11843999
+SB,2 segments no penta hexa,Q,2,8972573.811699998
+SB,2 segments no penta hexa,Q,3,9232054.603399998
+SB,2 segments no penta hexa,Q,4,8718587.808439992
+SB,2 segments no penta hexa,Q,5,8761091.943399992
+SB,2 segments no penta hexa,Q,6,9249791.671699997
+SB,2 segments no penta hexa,Q,7,9097558.683399996
+SB,2 segments no penta hexa,Q,8,8758013.443399992
+SB,2 segments no penta hexa,Q,9,8625162.616739994
+SB,2 segments no penta hexa,Q,10,8933698.083399996
+SB,2 segments no penta hexa,Q,11,9050714.463399993
+SB,2 segments no penta hexa,Q,12,8639207.096739994
+SB,2 segments no penta hexa,Q,13,9135542.041699998
+SB,2 segments no penta hexa,Q,14,8793487.92339999
+SB,2 segments no penta hexa,Q,15,9023165.828399992
+SB,2 segments no penta hexa,Q,16,8541614.993399996
+SB,2 segments no penta hexa,Q,17,8445220.973399993
+SB,2 segments no penta hexa,Q,18,8945170.303399995
+SB,2 segments no penta hexa,Q,19,9756823.3
+SB,2 segments no penta hexa,Q,20,9033399.983399997
+SB,2 segments no penta hexa,Q,21,9342756.643399995
+SB,2 segments no penta hexa,Q,22,8980775.3
+SB,2 segments no penta hexa,Q,23,9148232.403399996
+SB,2 segments no penta hexa,Q,24,9509206.998399997
+SB,2 segments no penta hexa,Q,25,9566016.001769999
+SB,2 segments no penta hexa,Q,26,8809486.820139987
+SB,2 segments no penta hexa,Q,27,9221376.7
+SB,2 segments no penta hexa,Q,28,9042169.8634
+SB,2 segments no penta hexa,Q,29,9073443.423399994
+SB,2 segments no penta hexa,Q,30,8950810.720069995
+SB,2 segments penta hexa,Q,1,64024281.7
+SB,2 segments penta hexa,Q,2,65488330.54882
+SB,2 segments penta hexa,Q,3,66554493.97885714
+SB,2 segments penta hexa,Q,4,65201724.87441
+SB,2 segments penta hexa,Q,5,66218942.7
+SB,2 segments penta hexa,Q,6,65108937.99764
+SB,2 segments penta hexa,Q,7,67486684.39946671
+SB,2 segments penta hexa,Q,8,66699364.845
+SB,2 segments penta hexa,Q,9,65487228.49419289
+SB,2 segments penta hexa,Q,10,66537423.115
+SB,2 segments penta hexa,Q,11,66835452.70000001
+SB,2 segments penta hexa,Q,12,65603349.7
+SB,2 segments penta hexa,Q,13,67091220.7
+SB,2 segments penta hexa,Q,14,65609357.7
+SB,2 segments penta hexa,Q,15,65985173.7
+SB,2 segments penta hexa,Q,16,65708376.35441
+SB,2 segments penta hexa,Q,17,64369312.41
+SB,2 segments penta hexa,Q,18,67336949.7
+SB,2 segments penta hexa,Q,19,66612478.7
+SB,2 segments penta hexa,Q,20,67121203.7
+SB,2 segments penta hexa,Q,21,67433074.42748
+SB,2 segments penta hexa,Q,22,65945542.7
+SB,2 segments penta hexa,Q,23,66449407.355
+SB,2 segments penta hexa,Q,24,66304623.775
+SB,2 segments penta hexa,Q,25,65865709.7
+SB,2 segments penta hexa,Q,26,65625786.254410006
+SB,2 segments penta hexa,Q,27,67416435.63000003
+SB,3 segments,Q,1,44676663.18940999
+SB,3 segments,Q,2,42092956.82705
+SB,3 segments,Q,3,44534391.515
+SB,3 segments,Q,4,45185324.7
+SB,3 segments,Q,5,43378403.7
+SB,3 segments,Q,6,42634599.805
+SB,3 segments,Q,7,42417681.115
+SB,3 segments,Q,8,45062530.37345428
+SB,3 segments,Q,9,44732588.955
+SB,3 segments,Q,10,42984260.18538353
+SB,3 segments,Q,11,45101724.23
+SB,3 segments,Q,12,44643845.13711161
+SB,3 segments,Q,13,42289783.675
+SB,3 segments,Q,14,42082129.35941
+SB,3 segments,Q,15,42603741.885
+SB,3 segments,Q,16,42513470.2
+SB,3 segments,Q,17,42945288.15561634
+SB,3 segments,Q,18,43297610.58
+SB,3 segments,Q,19,42647782.915
+SB,3 segments,Q,20,42387716.93
+SB,3 segments,Q,21,42742607.345
+SB,3 segments,Q,22,42867750.395
+SB,3 segments,Q,23,43903729.2534667
+SB,3 segments,Q,24,44979493.475
+SB,3 segments,Q,25,43034426.7
+SB,3 segments,Q,26,42133736.485
+SB,3 segments,Q,27,43821590.3
+SB,3 segments,Q,28,42418283.3
+SB,3 segments,Q,29,43047283.94126
+SB,3 segments,Q,30,41948739.08941
+SB,1 segment,S,1,10711937.803989997
+SB,1 segment,S,2,11549264.71775
+SB,1 segment,S,3,10357352.208080001
+SB,1 segment,S,4,8826068.53337
+SB,1 segment,S,5,10860900.92062
+SB,1 segment,S,6,10585295.76688
+SB,1 segment,S,7,11829009.230600003
+SB,1 segment,S,8,6714495.17843
+SB,1 segment,S,9,13311170.978720002
+SB,1 segment,S,10,8458013.133019997
+SB,1 segment,S,11,7780990.244690001
+SB,1 segment,S,12,11734117.26709
+SB,1 segment,S,13,5259678.130620002
+SB,1 segment,S,14,10818276.863680001
+SB,1 segment,S,15,7493622.926219997
+SB,1 segment,S,16,8119331.289299999
+SB,1 segment,S,17,9643589.70062
+SB,1 segment,S,18,13110636.36773
+SB,1 segment,S,19,10156052.95248
+SB,1 segment,S,20,6425036.7318400005
+SB,1 segment,S,21,9430440.916549997
+SB,1 segment,S,22,10207252.4306
+SB,1 segment,S,23,7000539.4903
+SB,1 segment,S,24,8901876.93523
+SB,1 segment,S,25,9770737.071819998
+SB,1 segment,S,26,5945556.54064
+SB,1 segment,S,27,5260749.352499999
+SB,1 segment,S,28,8367621.67963
+SB,1 segment,S,29,10832002.269960001
+SB,1 segment,S,30,9038746.320600001
+SB,2 segments,S,1,22856234.697059963
+SB,2 segments,S,2,22541562.928939987
+SB,2 segments,S,3,24757380.957739998
+SB,2 segments,S,4,17026673.62487
+SB,2 segments,S,5,25150245.692139994
+SB,2 segments,S,6,22100376.46211999
+SB,2 segments,S,7,25511926.523309983
+SB,2 segments,S,8,18123370.613659993
+SB,2 segments,S,9,26697060.72209999
+SB,2 segments,S,10,22882097.142019995
+SB,2 segments,S,11,18748867.402139902
+SB,2 segments,S,12,22788895.8308
+SB,2 segments,S,13,18174326.689929996
+SB,2 segments,S,14,20061108.998929974
+SB,2 segments,S,15,25593734.944009956
+SB,2 segments,S,16,18868661.737719998
+SB,2 segments,S,17,18138294.138399977
+SB,2 segments,S,18,28956972.148939993
+SB,2 segments,S,19,22111526.335192718
+SB,2 segments,S,20,18441444.060279988
+SB,2 segments,S,21,21321574.559589997
+SB,2 segments,S,22,23666725.803999983
+SB,2 segments,S,23,16286410.397409994
+SB,2 segments,S,24,23356096.408279996
+SB,2 segments,S,25,21031079.102649976
+SB,2 segments,S,26,15759623.029589998
+SB,2 segments,S,27,19885955.68586
+SB,2 segments,S,28,19627128.431409117
+SB,2 segments,S,29,23305357.201459996
+SB,2 segments,S,30,19904755.515189238
+SB,2 segments hpv pcv rota,S,1,92505745.14407998
+SB,2 segments hpv pcv rota,S,2,90376648.43907999
+SB,2 segments hpv pcv rota,S,3,93020778.94907999
+SB,2 segments hpv pcv rota,S,4,84768602.72782
+SB,2 segments hpv pcv rota,S,5,95411859.33721
+SB,2 segments hpv pcv rota,S,6,91475006.40407999
+SB,2 segments hpv pcv rota,S,7,95468623.50594999
+SB,2 segments hpv pcv rota,S,8,86483521.77720998
+SB,2 segments hpv pcv rota,S,9,98158939.65908
+SB,2 segments hpv pcv rota,S,10,92971377.89282
+SB,2 segments hpv pcv rota,S,11,88119777.44782
+SB,2 segments hpv pcv rota,S,12,90549858.17595366
+SB,2 segments hpv pcv rota,S,13,86607499.86781998
+SB,2 segments hpv pcv rota,S,14,87007256.03281999
+SB,2 segments hpv pcv rota,S,15,96989662.37281622
+SB,2 segments hpv pcv rota,S,16,90466012.28908
+SB,2 segments hpv pcv rota,S,17,89544060.04595
+SB,2 segments hpv pcv rota,S,18,98053461.00408
+SB,2 segments hpv pcv rota,S,19,90305067.20782
+SB,2 segments hpv pcv rota,S,20,85299541.74094999
+SB,2 segments hpv pcv rota,S,21,91970710.92908
+SB,2 segments hpv pcv rota,S,22,93378474.85407782
+SB,2 segments hpv pcv rota,S,23,83656317.12408
+SB,2 segments hpv pcv rota,S,24,92893307.66408
+SB,2 segments hpv pcv rota,S,25,92498418.55907999
+SB,2 segments hpv pcv rota,S,26,87133661.78407998
+SB,2 segments hpv pcv rota,S,27,88753045.26281999
+SB,2 segments hpv pcv rota,S,28,91016955.82469
+SB,2 segments hpv pcv rota,S,29,94722400.23968999
+SB,2 segments hpv pcv rota,S,30,89603751.56781998
+SB,2 segments no penta hexa,S,1,108322520.97575995
+SB,2 segments no penta hexa,S,2,104589110.61915997
+SB,2 segments no penta hexa,S,3,107434519.54752997
+SB,2 segments no penta hexa,S,4,100363910.17078997
+SB,2 segments no penta hexa,S,5,107540605.46752997
+SB,2 segments no penta hexa,S,6,105299820.93745996
+SB,2 segments no penta hexa,S,7,110285224.80752997
+SB,2 segments no penta hexa,S,8,100594426.05915996
+SB,2 segments no penta hexa,S,9,112302040.14745995
+SB,2 segments no penta hexa,S,10,107311185.78752996
+SB,2 segments no penta hexa,S,11,103405342.79752997
+SB,2 segments no penta hexa,S,12,104645873.91405995
+SB,2 segments no penta hexa,S,13,101307329.83752997
+SB,2 segments no penta hexa,S,14,102293312.25915994
+SB,2 segments no penta hexa,S,15,110280449.42582995
+SB,2 segments no penta hexa,S,16,105029390.33915994
+SB,2 segments no penta hexa,S,17,105071924.98745996
+SB,2 segments no penta hexa,S,18,111734090.65915997
+SB,2 segments no penta hexa,S,19,105586614.39085995
+SB,2 segments no penta hexa,S,20,98183986.16752997
+SB,2 segments no penta hexa,S,21,105587399.40915997
+SB,2 segments no penta hexa,S,22,107251958.90412997
+SB,2 segments no penta hexa,S,23,98939530.63915996
+SB,2 segments no penta hexa,S,24,107111364.94752999
+SB,2 segments no penta hexa,S,25,104853000.21909
+SB,2 segments no penta hexa,S,26,100396597.74745996
+SB,2 segments no penta hexa,S,27,103333970.53752996
+SB,2 segments no penta hexa,S,28,106451663.25915997
+SB,2 segments no penta hexa,S,29,108605843.96072997
+SB,2 segments no penta hexa,S,30,103012291.31738997
+SB,2 segments penta hexa,S,1,25094848.54331999
+SB,2 segments penta hexa,S,2,24612772.36893999
+SB,2 segments penta hexa,S,3,27041902.382149935
+SB,2 segments penta hexa,S,4,18866936.32894999
+SB,2 segments penta hexa,S,5,27426456.03838996
+SB,2 segments penta hexa,S,6,24294493.152119987
+SB,2 segments penta hexa,S,7,27955893.448470507
+SB,2 segments penta hexa,S,8,20399419.085859995
+SB,2 segments penta hexa,S,9,28956684.81209999
+SB,2 segments penta hexa,S,10,25088974.396429796
+SB,2 segments penta hexa,S,11,21090459.730269503
+SB,2 segments penta hexa,S,12,24769872.10705998
+SB,2 segments penta hexa,S,13,20527157.944339983
+SB,2 segments penta hexa,S,14,21838843.259599987
+SB,2 segments penta hexa,S,15,28325187.604009993
+SB,2 segments penta hexa,S,16,20922881.419589985
+SB,2 segments penta hexa,S,17,19992701.036199983
+SB,2 segments penta hexa,S,18,31385436.047059994
+SB,2 segments penta hexa,S,19,24197038.597739987
+SB,2 segments penta hexa,S,20,20611644.63468999
+SB,2 segments penta hexa,S,21,23502906.423309922
+SB,2 segments penta hexa,S,22,26048531.938409995
+SB,2 segments penta hexa,S,23,18402765.957409997
+SB,2 segments penta hexa,S,24,25546561.54269
+SB,2 segments penta hexa,S,25,23304372.01890999
+SB,2 segments penta hexa,S,26,17817313.303999998
+SB,2 segments penta hexa,S,27,22085229.576529987
+SB,3 segments,S,1,37229019.2383599
+SB,3 segments,S,2,36118462.340239994
+SB,3 segments,S,3,38461259.56464994
+SB,3 segments,S,4,29176455.46770998
+SB,3 segments,S,5,39681366.30651996
+SB,3 segments,S,6,37019717.29277
+SB,3 segments,S,7,40034885.230239965
+SB,3 segments,S,8,32225123.89242994
+SB,3 segments,S,9,41933640.21276992
+SB,3 segments,S,10,36329137.60650996
+SB,3 segments,S,11,32539686.442449942
+SB,3 segments,S,12,35946628.209579945
+SB,3 segments,S,13,32298721.65651
+SB,3 segments,S,14,32588936.285849977
+SB,3 segments,S,15,40081162.55025998
+SB,3 segments,S,16,32991923.065839976
+SB,3 segments,S,17,32661147.40142994
+SB,3 segments,S,18,43304602.449579954
+SB,3 segments,S,19,35577793.485849984
+SB,3 segments,S,20,30036260.092789978
+SB,3 segments,S,21,35740191.78210998
+SB,3 segments,S,22,37667847.46090994
+SB,3 segments,S,23,28248751.61210813
+SB,3 segments,S,24,37152635.90024996
+SB,3 segments,S,25,35948247.11835999
+SB,3 segments,S,26,29465847.162109975
+SB,3 segments,S,27,33992280.26277
+SB,3 segments,S,28,33989713.51957998
+SB,3 segments,S,29,37139657.54805998
+SB,3 segments,S,30,33666824.80362998

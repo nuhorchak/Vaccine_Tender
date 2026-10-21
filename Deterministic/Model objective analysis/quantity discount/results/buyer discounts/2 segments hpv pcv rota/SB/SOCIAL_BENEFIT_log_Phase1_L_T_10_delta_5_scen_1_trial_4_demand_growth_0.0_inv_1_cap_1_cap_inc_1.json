@@ -1,0 +1,81 @@
+
+Gurobi 12.0.2 (win64) logging started Wed Sep  2 13:49:21 2026
+
+Set parameter LogFile to value "C:\Users\Nicholas Uhorchak\OneDrive - University of Arkansas\Desktop\Vaccine_Tender\Deterministic\Model Files\Segment Test\results\SOCIAL_BENEFIT_log_Phase1_L_T_10_delta_5_scen_1_trial_4_demand_growth_0.0_inv_1_cap_1_cap_inc_1.json"
+
+Gurobi 12.0.2 (win64) logging started Wed Sep  2 13:49:21 2026
+
+Set parameter LogFile to value "C:\Users\Nicholas Uhorchak\OneDrive - University of Arkansas\Desktop\Vaccine_Tender\Deterministic\Model Files\Segment Test\results\SOCIAL_BENEFIT_log_Phase1_L_T_10_delta_5_scen_1_trial_4_demand_growth_0.0_inv_1_cap_1_cap_inc_1.json"
+Gurobi Optimizer version 12.0.2 build v12.0.2rc0 (win64 - Windows 11+.0 (26200.2))
+
+CPU model: 12th Gen Intel(R) Core(TM) i7-1265U, instruction set [SSE2|AVX|AVX2]
+Thread count: 10 physical cores, 12 logical processors, using up to 12 threads
+
+Non-default parameters:
+FeasibilityTol  0.01
+MIPGap  0.01
+NumericFocus  1
+Presolve  1
+
+Optimize a model with 17561 rows, 13062 columns and 59671 nonzeros
+Model fingerprint: 0x516a49a5
+Variable types: 10962 continuous, 2100 integer (1950 binary)
+Coefficient statistics:
+  Matrix range     [2e-03, 1e+35]
+  Objective range  [7e+00, 1e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+06]
+Warning: Model contains large matrix coefficient range
+Presolve removed 11562 rows and 9417 columns
+Presolve time: 0.13s
+Presolved: 5999 rows, 3645 columns, 23234 nonzeros
+Variable types: 2014 continuous, 1631 integer (885 binary)
+Found heuristic solution: objective 1.052138e+09
+
+Root relaxation: objective 6.847240e+08, 4219 iterations, 0.05 seconds (0.05 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 6.8472e+08    0  359 1.0521e+09 6.8472e+08  34.9%     -    0s
+H    0     0                    7.034910e+08 6.8472e+08  2.67%     -    0s
+     0     0 6.9005e+08    0  389 7.0349e+08 6.9005e+08  1.91%     -    0s
+     0     0 6.9015e+08    0  378 7.0349e+08 6.9015e+08  1.90%     -    0s
+     0     0 6.9015e+08    0  374 7.0349e+08 6.9015e+08  1.90%     -    0s
+     0     0 6.9102e+08    0  434 7.0349e+08 6.9102e+08  1.77%     -    0s
+     0     0 6.9153e+08    0  419 7.0349e+08 6.9153e+08  1.70%     -    0s
+     0     0 6.9190e+08    0  440 7.0349e+08 6.9190e+08  1.65%     -    0s
+     0     0 6.9190e+08    0  439 7.0349e+08 6.9190e+08  1.65%     -    0s
+     0     0 6.9237e+08    0  430 7.0349e+08 6.9237e+08  1.58%     -    0s
+     0     0 6.9260e+08    0  431 7.0349e+08 6.9260e+08  1.55%     -    0s
+     0     0 6.9266e+08    0  431 7.0349e+08 6.9266e+08  1.54%     -    0s
+     0     0 6.9266e+08    0  431 7.0349e+08 6.9266e+08  1.54%     -    0s
+H    0     0                    7.002513e+08 6.9266e+08  1.08%     -    0s
+     0     0 6.9274e+08    0  414 7.0025e+08 6.9274e+08  1.07%     -    0s
+     0     0 6.9277e+08    0  349 7.0025e+08 6.9277e+08  1.07%     -    0s
+     0     2 6.9277e+08    0  255 7.0025e+08 6.9277e+08  1.07%     -    0s
+
+Cutting planes:
+  Learned: 4
+  Gomory: 8
+  Cover: 24
+  Implied bound: 48
+  Clique: 4
+  MIR: 10
+  Flow cover: 38
+  Zero half: 2
+  Mod-K: 1
+  RLT: 49
+  Relax-and-lift: 20
+  BQP: 17
+  PSD: 3
+
+Explored 7 nodes (10917 simplex iterations) in 1.02 seconds (0.83 work units)
+Thread count was 12 (of 12 available processors)
+
+Solution count 4: 7.00251e+08 7.00251e+08 7.03491e+08 1.05214e+09 
+
+Optimal solution found (tolerance 1.00e-02)
+Best objective 7.002513285126e+08, best bound 6.935219615224e+08, gap 0.9610%
+
+User-callback calls 1338, time in user-callback 0.00 sec

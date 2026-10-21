@@ -1,0 +1,85 @@
+
+Gurobi 12.0.2 (win64) logging started Wed Sep  2 13:54:56 2026
+
+Set parameter LogFile to value "C:\Users\Nicholas Uhorchak\OneDrive - University of Arkansas\Desktop\Vaccine_Tender\Deterministic\Model Files\Segment Test\results\SOCIAL_BENEFIT_log_Phase1_L_T_10_delta_5_scen_1_trial_25_demand_growth_0.0_inv_1_cap_1_cap_inc_1.json"
+
+Gurobi 12.0.2 (win64) logging started Wed Sep  2 13:54:56 2026
+
+Set parameter LogFile to value "C:\Users\Nicholas Uhorchak\OneDrive - University of Arkansas\Desktop\Vaccine_Tender\Deterministic\Model Files\Segment Test\results\SOCIAL_BENEFIT_log_Phase1_L_T_10_delta_5_scen_1_trial_25_demand_growth_0.0_inv_1_cap_1_cap_inc_1.json"
+Gurobi Optimizer version 12.0.2 build v12.0.2rc0 (win64 - Windows 11+.0 (26200.2))
+
+CPU model: 12th Gen Intel(R) Core(TM) i7-1265U, instruction set [SSE2|AVX|AVX2]
+Thread count: 10 physical cores, 12 logical processors, using up to 12 threads
+
+Non-default parameters:
+FeasibilityTol  0.01
+MIPGap  0.01
+NumericFocus  1
+Presolve  1
+
+Optimize a model with 17561 rows, 13062 columns and 59671 nonzeros
+Model fingerprint: 0x1a19077d
+Variable types: 10962 continuous, 2100 integer (1950 binary)
+Coefficient statistics:
+  Matrix range     [2e-03, 1e+35]
+  Objective range  [7e+00, 1e+01]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 2e+06]
+Warning: Model contains large matrix coefficient range
+Presolve removed 11565 rows and 9421 columns
+Presolve time: 0.13s
+Presolved: 5996 rows, 3641 columns, 23224 nonzeros
+Variable types: 2010 continuous, 1631 integer (885 binary)
+Found heuristic solution: objective 1.112432e+09
+
+Root relaxation: objective 7.492021e+08, 4006 iterations, 0.05 seconds (0.04 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 7.4920e+08    0  351 1.1124e+09 7.4920e+08  32.7%     -    0s
+H    0     0                    7.678723e+08 7.4920e+08  2.43%     -    0s
+     0     0 7.5474e+08    0  384 7.6787e+08 7.5474e+08  1.71%     -    0s
+     0     0 7.5503e+08    0  378 7.6787e+08 7.5503e+08  1.67%     -    0s
+     0     0 7.5509e+08    0  381 7.6787e+08 7.5509e+08  1.66%     -    0s
+     0     0 7.5509e+08    0  383 7.6787e+08 7.5509e+08  1.66%     -    0s
+     0     0 7.5563e+08    0  378 7.6787e+08 7.5563e+08  1.59%     -    0s
+     0     0 7.5570e+08    0  356 7.6787e+08 7.5570e+08  1.59%     -    0s
+     0     0 7.5570e+08    0  390 7.6787e+08 7.5570e+08  1.59%     -    0s
+     0     0 7.5651e+08    0  367 7.6787e+08 7.5651e+08  1.48%     -    0s
+     0     0 7.5677e+08    0  361 7.6787e+08 7.5677e+08  1.45%     -    0s
+     0     0 7.5684e+08    0  360 7.6787e+08 7.5684e+08  1.44%     -    0s
+H    0     0                    7.674795e+08 7.5684e+08  1.39%     -    0s
+H    0     0                    7.668539e+08 7.5712e+08  1.27%     -    0s
+     0     0 7.5712e+08    0  403 7.6685e+08 7.5712e+08  1.27%     -    0s
+     0     0 7.5715e+08    0  394 7.6685e+08 7.5715e+08  1.27%     -    0s
+     0     0 7.5717e+08    0  396 7.6685e+08 7.5717e+08  1.26%     -    1s
+     0     0 7.5725e+08    0  412 7.6685e+08 7.5725e+08  1.25%     -    1s
+     0     0 7.5726e+08    0  270 7.6685e+08 7.5726e+08  1.25%     -    1s
+H    0     0                    7.662397e+08 7.5726e+08  1.17%     -    1s
+     0     2 7.5726e+08    0  270 7.6624e+08 7.5726e+08  1.17%     -    1s
+H   37    41                    7.639549e+08 7.5752e+08  0.84%   169    1s
+
+Cutting planes:
+  Learned: 3
+  Gomory: 12
+  Cover: 48
+  Implied bound: 79
+  Clique: 13
+  MIR: 24
+  Flow cover: 68
+  Flow path: 1
+  Zero half: 2
+  RLT: 70
+  Relax-and-lift: 24
+  BQP: 15
+
+Explored 43 nodes (16301 simplex iterations) in 1.54 seconds (0.90 work units)
+Thread count was 12 (of 12 available processors)
+
+Solution count 7: 7.63955e+08 7.63955e+08 7.6624e+08 ... 1.11243e+09
+
+Optimal solution found (tolerance 1.00e-02)
+Best objective 7.639549203610e+08, best bound 7.575242222148e+08, gap 0.8418%
+
+User-callback calls 1497, time in user-callback 0.00 sec

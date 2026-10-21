@@ -32,7 +32,7 @@ include(joinpath(functions_directory, "sub_problem.jl"))
 include(joinpath(functions_directory, "master_problem.jl"))
 
 gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-2)#, "Threads" => 32) 
-gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-2)#8.5e-2)#, "Threads" => 32) 
+gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-3)#8.5e-2)#, "Threads" => 32) 
 gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-2)#, "Threads" => 32) 
 
 # Base offset for the seed (S₀)
@@ -389,4 +389,4 @@ end
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(10,5,1,1,30,1,1,1, true, true, true, false, false)
+tender_stochastic_sensitivity(10,5,1,1,1,1,1,1, true, true, true, false, false)

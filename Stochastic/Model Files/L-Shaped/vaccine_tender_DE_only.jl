@@ -343,4 +343,4 @@ end
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(5,5,1,1,1,1,1,1, true, true, false, false, true)
+tender_stochastic_sensitivity(5,5,5,7,1,1,1,1, true, true, false, false, true)
