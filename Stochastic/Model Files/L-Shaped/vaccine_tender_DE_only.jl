@@ -32,7 +32,7 @@ include(joinpath(functions_directory, "master_problem.jl"))
 
 gurobi_solver = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1)#, "Threads" => 32) 
 gurobi_solver_DE = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 1, "Presolve" => 1, "NumericFocus" => 1, "MIPGap" => 1e-4)#, "Threads" => 32) 
-gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-1)#, "Threads" => 32) 
+gurobi_solver_no_presolve = JuMP.optimizer_with_attributes(Gurobi.Optimizer, "FeasibilityTol" => 1e-2, "OutputFlag" => 0, "Presolve" => 0, "NumericFocus" => 1, "MIPGap" => 1e-4)#, "Threads" => 32) 
 
 function tender_stochastic_sensitivity(
     max_horizon_length::Int,
@@ -81,7 +81,7 @@ end
         T, T_initial, Δ, s_real, r, r_avg, r_producer_avg, g, h, l, f_profit, Γ, F_time_set, κ, L_lower_number, L_upper_number, delta, beta, zeta_vm, phi_vm_lower, phi_vm_upper, m_segments = initialize_parameters(data_dir, unit, scaled_capacity, max_horizon_length, max_tender_length, P, V, P_v, V_p, allowable_capacity_increase_number)
         # Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2, partial_scenario, s_real_tilde, d_real_tilde, random_scenarios = process_scenario_data_n_selected(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number, 1)
         # Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2, partial_scenario, s_real_tilde, d_real_tilde, random_scenarios = process_scenario_data_n_selected_with_MVP2(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number, 1, true, unit,seed)
-        random_scenarios, s_real_tilde, d_real_tilde = process_scenario_data_n_selected_with_MVP2_demand_scaling(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number, 1, true, unit, demand_growth, seed)
+        Scenarios_used, p_ω_test, p_ω_test_partial_2, Ω_test_partial_1, Ω_test_partial_2, partial_scenario, s_real_tilde, d_real_tilde, random_scenarios, p_ω_MVP, Ω_MVP = process_scenario_data_n_selected_with_MVP2_demand_scaling(current_directory, data_dir, total_capacity_scenarios, number_of_demand_scenarios, A, T, P, scaled_capacity, max_horizon_length, max_tender_length, trial, initial_inventory_rate, allowable_capacity_increase_number, 1, false, unit, demand_growth, seed)
         X_tilde_lower, X_tilde_upper, L_ddot_lower, L_ddot_upper, L_hat_lower, L_hat_upper, L_check_lower, L_check_upper = create_check_params(V, P, P_v, T, F_time_set, s_real, κ, L_upper_number)
         
         starting_points_vect_F, starting_points_vect_I, starting_points_vect_S = load_model_starting_points(data_dir, initial_inventory_rate, unit, A, V)
@@ -91,7 +91,7 @@ end
     
         ################################################### INITIALIZE DE ###################################################
         Deterministic_Equivalent = JuMP.Model()
-        JuMP.set_optimizer(Deterministic_Equivalent, gurobi_solver_DE)
+        JuMP.set_optimizer(Deterministic_Equivalent, gurobi_solver)
         # set_optimizer_attribute(Deterministic_Equivalent, "TimeLimit", 500)
         source1 = string(results_dir, "/", model, "_log_Phase1_L_T_", max_horizon_length, "_delta_",max_tender_length,"_scen_",length(random_scenarios),"_trial_",trial,"_demand_growth_",demand_growth,"_inv_",initial_inventory_rate,"_cap._",scaled_capacity,"_cap.inc._",allowable_capacity_increase_number,".json")
 
@@ -110,12 +110,20 @@ end
         # m_segments,zeta_vm, phi_vm_lower, phi_vm_upper, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL, true)
 
         #SOLVING 1 suppyl and demand explicit
-        Deterministic_Equivalent = deterministic_equivalent(1, 1, g, beta, Γ, gurobi_solver_DE,
-        A, A_p, F_time_set, V, P_v, T, T_initial, P, P_a, starting_points_vect_F, starting_points_vect_I, 
+        # Deterministic_Equivalent = deterministic_equivalent(1, 1, g, beta, Γ, gurobi_solver_DE,
+        # A, A_p, F_time_set, V, P_v, T, T_initial, P, P_a, starting_points_vect_F, starting_points_vect_I,
+        # starting_points_vect_S, capacity_extension_decision, UNICEF_MODEL, L_lower_number, L_upper_number,
+        # κ, s_real, L_hat_upper, L_check_upper, d_real_tilde, X_tilde_upper, s_real_tilde, 1,
+        # r, r_avg, h, V_p, l, f_profit, V_a, delta, L_ddot_upper, overlap_decision, Nothing, Nothing,
+        # m_segments,zeta_vm, phi_vm_lower, phi_vm_upper, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL, true)
+
+        #SOLVING full stochastic DE over all selected scenarios
+        Deterministic_Equivalent = deterministic_equivalent(p_ω_test, random_scenarios, g, beta, Γ, gurobi_solver_DE,
+        A, A_p, F_time_set, V, P_v, T, T_initial, P, P_a, starting_points_vect_F, starting_points_vect_I,
         starting_points_vect_S, capacity_extension_decision, UNICEF_MODEL, L_lower_number, L_upper_number,
-        κ, s_real, L_hat_upper, L_check_upper, d_real_tilde, X_tilde_upper, s_real_tilde, 1, 
-        r, r_avg, h, V_p, l, f_profit, V_a, delta, L_ddot_upper, overlap_decision, Nothing, Nothing, 
-        m_segments,zeta_vm, phi_vm_lower, phi_vm_upper, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL, true)
+        κ, s_real, L_hat_upper, L_check_upper, d_real_tilde, X_tilde_upper, s_real_tilde, 1,
+        r, r_avg, h, V_p, l, f_profit, V_a, delta, L_ddot_upper, overlap_decision, Ω_test_partial_1, Ω_test_partial_2,
+        m_segments,zeta_vm, phi_vm_lower, phi_vm_upper, SOCIAL_BENEFIT_MODEL, MAX_PROFIT_MODEL, false)
 
         set_optimizer_attribute(Deterministic_Equivalent, "LogFile", source1)
         # set_optimizer_attribute(Deterministic_Equivalent, "TimeLimit", 5000)
@@ -157,7 +165,7 @@ end
 
 
 
-        model_type = "MVP"
+        model_type = "DE"
         if number_of_demand_scenarios + total_capacity_scenarios > 2
             save_L_shaped_results(F_bar,Y_bar,W_bar,L_bar,Q_bar,X_bar,I_bar,Vc_bar,S_bar,Z_bar, model_type, A, T, T_initial, 
             P, P_v, V, V_p, random_scenarios, F_time_set, random_scenarios, capacity_category, antigen_category, 
@@ -219,24 +227,24 @@ end
 
         if UNICEF_MODEL
             # Term 3: Missed dose penalty
-            for a in A, t in T
-                S_OBJ += 1 * beta * value(Deterministic_Equivalent[:S][a, t, 1]) / delta[t]
+            for a in A, t in T, ω in random_scenarios
+                S_OBJ += p_ω_test[ω] * beta * value(Deterministic_Equivalent[:S][a, t, ω]) / delta[t]
             end
         elseif SOCIAL_BENEFIT_MODEL
             # Term 3: Missed dose penalty
-            for a in A, t in T
-                S_OBJ += 1 * beta * value(Deterministic_Equivalent[:S][a, t, 1]) / delta[t]
+            for a in A, t in T, ω in random_scenarios
+                S_OBJ += p_ω_test[ω] * beta * value(Deterministic_Equivalent[:S][a, t, ω]) / delta[t]
             end
         else
             # Term 3: Final period weighted revenue
-            for a in A, v in V
-                S_OBJ += 1 * (r_avg[v, last(T)] * value(Deterministic_Equivalent[:S][a, last(T), 1])) / delta[last(T)]
+            for a in A, v in V, ω in random_scenarios
+                S_OBJ += p_ω_test[ω] * (r_avg[v, last(T)] * value(Deterministic_Equivalent[:S][a, last(T), ω])) / delta[last(T)]
             end
         end
 
         # Term 4: Inventory holding cost
-        for v in V, t in T
-            I_OBJ += 1 * h[v] * r_avg[v, t] * value(Deterministic_Equivalent[:I][v, t, 1]) / delta[t]
+        for v in V, t in T, ω in random_scenarios
+            I_OBJ += p_ω_test[ω] * h[v] * r_avg[v, t] * value(Deterministic_Equivalent[:I][v, t, ω]) / delta[t]
         end
 
         # Term 5: Production capacity increase
@@ -343,4 +351,4 @@ end
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(5,5,5,7,1,1,1,1, true, true, false, false, true)
+tender_stochastic_sensitivity(5,5,5,7,1,1,1,1, true, true, true, false, false)

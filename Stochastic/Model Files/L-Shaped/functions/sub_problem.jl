@@ -32,11 +32,13 @@ function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, 
         )
     elseif social_benefit #min unvax model
         println("Condition: Min Unvax Model")
-        @objective(Subproblem, Min, sum(beta * S[a, t] / delta[t] for a in A, t in T)
+        @objective(Subproblem, Min, sum(S[a, t] / delta[t] for a in A, t in T)
         )
     else max_profit #max profit
         println("Condition: Max Profit model")
-        @objective(Subproblem, Min, sum(r_avg[v,t]* S[a, t]/ delta[t] for a in A, t = last(T), v in V))
+        @objective(Subproblem, Min, sum(r_avg[v,t]* S[a, t]/ delta[t] for a in A, t = last(T), v in V)
+        + sum(h[v] * r_avg[v, t] * I[v, t] / delta[t] for v in V, t in T)
+        )
     end
 
     cons_14 = []
@@ -46,17 +48,13 @@ function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, 
     cons_18 = []
     cons_19 = []
 
-    # constraint 14 - non McCormack
+    # constraint 14 - linear, W removed (matches deterministic equivalent)
     for v in V
         for p in P_v[v]
-            for t in T
-                for tau in T
-                    if (t,tau) in F_time_set
-                        c = @constraint(Subproblem, sum(Q_bar[v,p,(t, tau),m] for m in keys(m_segments)) >= W_bar[p,(t,tau)] * sum(X[v,p,l] for l in t:tau))
-                        set_name(c, "c_14[$((v,p,(t,tau)))]")
-                        push!(cons_14, c)
-                    end
-                end
+            for (t, tau) in F_time_set
+                c = @constraint(Subproblem, sum(Q_bar[v,p,(t, tau),m] for m in keys(m_segments)) >= sum(X[v,p,l] for l in t:tau))
+                set_name(c, "c_14[$((v,p,(t,tau)))]")
+                push!(cons_14, c)
             end
         end
     end

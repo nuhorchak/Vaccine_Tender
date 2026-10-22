@@ -1,0 +1,50 @@
+
+Gurobi 12.0.2 (win64) logging started Thu Oct 22 08:08:23 2026
+
+Set parameter LogFile to value "C:\Users\Nicholas Uhorchak\OneDrive - University of Arkansas\Desktop\Vaccine_Tender\Stochastic\Model Files\L-Shaped\results/UNICEF_GAVI_log_Phase1_L_T_5_delta_5_scen_7_trial_1_demand_growth_0.0_inv_1_cap._1_cap.inc._1.json"
+
+Gurobi 12.0.2 (win64) logging started Thu Oct 22 08:08:24 2026
+
+Set parameter LogFile to value "C:\Users\Nicholas Uhorchak\OneDrive - University of Arkansas\Desktop\Vaccine_Tender\Stochastic\Model Files\L-Shaped\results/UNICEF_GAVI_log_Phase1_L_T_5_delta_5_scen_7_trial_1_demand_growth_0.0_inv_1_cap._1_cap.inc._1.json"
+Gurobi Optimizer version 12.0.2 build v12.0.2rc0 (win64 - Windows 11+.0 (26200.2))
+
+CPU model: 12th Gen Intel(R) Core(TM) i7-1265U, instruction set [SSE2|AVX|AVX2]
+Thread count: 10 physical cores, 12 logical processors, using up to 12 threads
+
+Non-default parameters:
+FeasibilityTol  0.01
+NumericFocus  1
+Presolve  1
+
+Optimize a model with 11823 rows, 15209 columns and 44038 nonzeros
+Model fingerprint: 0x062baf03
+Variable types: 14279 continuous, 930 integer (855 binary)
+Coefficient statistics:
+  Matrix range     [8e-02, 1e+35]
+  Objective range  [2e-06, 1e+08]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 7e+08]
+Warning: Model contains large matrix coefficient range
+Presolve removed 10296 rows and 13612 columns
+Presolve time: 0.09s
+Presolved: 1527 rows, 1597 columns, 6323 nonzeros
+Variable types: 1095 continuous, 502 integer (293 binary)
+Found heuristic solution: objective 2.586907e+11
+Found heuristic solution: objective 2.578750e+11
+
+Root relaxation: interrupted, 495 iterations, 0.00 seconds (0.00 work units)
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0          -    0      2.5787e+11 2.5787e+11  0.00%     -    0s
+
+Explored 1 nodes (495 simplex iterations) in 0.16 seconds (0.07 work units)
+Thread count was 12 (of 12 available processors)
+
+Solution count 3: 2.57875e+11 2.57875e+11 2.58691e+11 
+
+Optimal solution found (tolerance 1.00e-04)
+Best objective 2.578749914506e+11, best bound 2.578693872953e+11, gap 0.0022%
+
+User-callback calls 949, time in user-callback 0.00 sec

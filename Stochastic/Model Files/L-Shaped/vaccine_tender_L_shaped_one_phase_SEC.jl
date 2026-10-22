@@ -32,7 +32,8 @@ include(joinpath(functions_directory, "save_L_shaped_results.jl"))
 include(joinpath(functions_directory, "select_random_scenarios.jl"))
 include(joinpath(functions_directory, "create_vaccine_data.jl"))
 include(joinpath(functions_directory, "sub_problem.jl"))
-include(joinpath(functions_directory, "dual_sub_problem_2.jl"))
+include(joinpath(functions_directory, "dual_sub_problem_MMW.jl"))
+include(joinpath(functions_directory, "dual_sub_problem_main.jl"))
 include(joinpath(functions_directory, "update_core_points.jl"))
 include(joinpath(functions_directory, "master_problem.jl"))
 # include(joinpath(functions_directory, "create_vaccine_data_MMR_only.jl"))
@@ -140,6 +141,10 @@ function tender_stochastic_sensitivity(
         dual_subproblem = []
         dual_subproblem_MMW = []
         dual_vector_MMW = []
+        Z_S_omega = Dict()  # defined outside the loop so the MMW dual can use the previous iteration's sub problem values
+
+        I_hat = Dict(v => amt for (v, amt) in starting_points_vect_I)
+        S_hat = Dict(a => amt for (a, amt) in starting_points_vect_S)
 
         lb_vector = []
         ub_vector = []
@@ -166,13 +171,9 @@ function tender_stochastic_sensitivity(
                     println("SOLVING DUAL SUBPROBLEM")
                     println("MMW Dual scenario: $ω")
 
-                    ############################################################################################################################                    
-                    I_hat = Dict(v => amt for (v, amt) in starting_points_vect_I)
-                    # println(I_hat)
-                    S_hat = Dict(a => amt for (a, amt) in starting_points_vect_S)
-
-                    dualsubproblem = dual_sub_problem(Q_core, Y_core, L_core, W_core, K_ddot_core, Q_bar, Y_bar, L_bar, W_bar, K_ddot_bar, I_hat, S_hat, theta_total, F_time_set,h,
-                    delta, Δ, s_real_tilde, d_real_tilde, s_real, ω, beta, κ, V, P, P_v, V_p, T, A, A_v, r_avg, m_segments, gurobi_solver_no_presolve, model)
+                    ############################################################################################################################
+                    dualsubproblem = dual_sub_problem_MMW(Q_core, Y_core, L_core, W_core, K_ddot_core, Q_bar, Y_bar, L_bar, W_bar, K_ddot_bar, I_hat, S_hat, Z_S_omega, F_time_set, h,
+                    delta, Δ, starting_points_vect_I, starting_points_vect_S, s_real_tilde, d_real_tilde, s_real, ω, beta, κ, V, P, P_v, V_p, T, A, A_v, r_avg, m_segments, gurobi_solver_no_presolve, model, true, Z_S_expected)
 
                     set_optimizer_attribute(dualsubproblem, "MIPGap", 1e-10)
                     # set_optimizer_attribute(dualsubproblem, "IISMethod", 1)                                                        
@@ -247,8 +248,8 @@ function tender_stochastic_sensitivity(
 
             # #generate benders cuts
             if iter1 > 1
-                Masterproblem = generate_cuts_from_dual(Masterproblem, dual_subproblem, Ω_test_partial_2, V, P_v, T, F_time_set, 
-                X_tilde_upper, P, s_real_tilde, 1, A, d_real_tilde, l, f_profit, V_p, 
+                Masterproblem = generate_cuts_from_dual(Masterproblem, dual_subproblem_MMW, Ω_test_partial_2, V, P_v, T, F_time_set,
+                X_tilde_upper, P, s_real_tilde, 1, A, d_real_tilde, l, f_profit, V_p, I_hat, S_hat,
                 starting_points_vect_I, starting_points_vect_S, m_segments, κ, s_real, model)
             end
 
@@ -591,4 +592,4 @@ function tender_stochastic_sensitivity(
     end #end trials
 end # end function
 
-tender_stochastic_sensitivity(10,5,3,3,1,1,1,2, true, true, true, false, false)
+tender_stochastic_sensitivity(10,5,5,7,1,1,1,2, true, true, true, false, false)
