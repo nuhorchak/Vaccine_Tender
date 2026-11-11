@@ -83,7 +83,7 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
     # UNICEF model - base model used, calculated from the perspective of UNICEF-GAVI
 
     #social benefit - mods to OBJ funs (MP and SP), calcualted to minimize missed doses
-    if UNICEF_MODEL && capacity_extension_decision 
+    if UNICEF_MODEL 
         println("UNICEF-GAVI model with capacity extension/discounts")
         @objective(model, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set_lookup, a in A if (a,t,tau) ∉ starting_points_vect_F) +
         sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * Q[v,p,(t, tau),m] / delta[t] for (t,tau) in F_time_set, v in V, p in P_v[v], m in M) +
@@ -91,11 +91,11 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
         sum(p_ω[ω] * h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω)
     )
 
-    elseif social_benefit && capacity_extension_decision
+    elseif social_benefit 
         println("Social benefit model with capacity extension/discounts")
         @objective(model, Min, sum(p_ω[ω] * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω))
 
-    else max_profit && capacity_extension_decision
+    elseif max_profit 
         println("Max Profit model with capacity extension/discounts")
         @objective(model, Min, sum((-r_avg[v,t] * (1 - zeta_vm[v,m]) * Q[v,p,(t, tau),m]) / delta[t] for (t,tau) in F_time_set, v in V, p in P_v[v], m in M) +
         sum((Γ[p] * L[p, t]) / delta[t] for p in P, t in T) +  
@@ -154,6 +154,9 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
     # if capacity_extension_decision - removed, always considered
     # Before model build - for speed, pre-compute
     span = Dict((t,tau) => (tau - t + 1) for (t,tau) in F_time_set)
+    # Valid finite big-M for constraint (10): constraint (7) caps producer p's total award over all windows at
+    # Q_max[p]. Used instead of the open-ended last discount break (~1e35), which wrecks the solver numerics.
+    Q_max = Dict(p => sum(span[(t,tau)] * s_real[p] + L_hat_upper[p,(t,tau)] + L_check_upper[p,(t,tau)] for (t,tau) in F_time_set) for p in P)
 
     for p in P
         for t in T
@@ -200,7 +203,7 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
         for p in P_v[v]
             for (t, tau) in F_time_set_lookup
                 for m in M
-                    @constraint(model, phi_vm_upper[v,m] * Z[v,p,t,m] >= sum(Q[v,p,(t,tau),m] for (t, tau) in F_time_set_lookup)) #Q[v,p,(t,tau),m]) #
+                    @constraint(model, min(phi_vm_upper[v,m], Q_max[p]) * Z[v,p,t,m] >= sum(Q[v,p,(t,tau),m] for (t, tau) in F_time_set_lookup)) #Q[v,p,(t,tau),m]) #
                 end
             end
         end

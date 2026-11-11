@@ -26,19 +26,15 @@ function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, 
     # max profit - mods to OBJ funs (MP and SP), calcualted from the perspective of producers (et. al)
     
     if UNICEF_MODEL  #base model
-        println("Condition: Base model")
         @objective(Subproblem, Min, sum(beta * S[a, t] / delta[t] for a in A, t in T)
         + sum(h[v] * r_avg[v, t] * I[v, t] / delta[t] for v in V, t in T)
         )
     elseif social_benefit #min unvax model
-        println("Condition: Min Unvax Model")
         @objective(Subproblem, Min, sum(S[a, t] / delta[t] for a in A, t in T)
         )
-    else max_profit #max profit
-        println("Condition: Max Profit model")
-        @objective(Subproblem, Min, sum(r_avg[v,t]* S[a, t]/ delta[t] for a in A, t = last(T), v in V)
-        + sum(h[v] * r_avg[v, t] * I[v, t] / delta[t] for v in V, t in T)
-        )
+    elseif max_profit #max profit
+        # DE max-profit objective has no second-stage cost terms -> recourse is a feasibility problem
+        @objective(Subproblem, Min, 0)
     end
 
     cons_14 = []
@@ -49,20 +45,21 @@ function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, 
     cons_19 = []
 
     # constraint 14 - linear, W removed (matches deterministic equivalent)
+    # written as X <= Q_bar so the master terms are the normalized RHS (used by generate_optimality_cut)
     for v in V
         for p in P_v[v]
             for (t, tau) in F_time_set
-                c = @constraint(Subproblem, sum(Q_bar[v,p,(t, tau),m] for m in keys(m_segments)) >= sum(X[v,p,l] for l in t:tau))
+                c = @constraint(Subproblem, sum(X[v,p,l] for l in t:tau) <= sum(Q_bar[v,p,(t, tau),m] for m in keys(m_segments)))
                 set_name(c, "c_14[$((v,p,(t,tau)))]")
                 push!(cons_14, c)
             end
         end
     end
 
-    # Constraint (15) - non McCormick
+    # Constraint (15) - McCormick form, K_ddot_bar = Y_bar * L_ddot_bar (matches deterministic equivalent and cut generation)
     for p in P
         for t in T
-            c = @constraint(Subproblem, sum(X[v,p,t] for v in V_p[p]) <= Y_bar[p,t] * (s_real_tilde[p, t, ω] + (sum(κ * s_real[p] * L_bar[p, l] for l in 1:t))))
+            c = @constraint(Subproblem, sum(X[v,p,t] for v in V_p[p]) <= Y_bar[p,t] * s_real_tilde[p, t, ω] + K_ddot_bar[p,t])
             set_name(c, "c_15[$((p,t))]")
             push!(cons_15, c)
         end
@@ -71,23 +68,22 @@ function sub_problem(F_bar, W_bar, Y_bar, Q_bar, L_bar, L_ddot_bar, K_ddot_bar, 
     # Constraint (16)
     for v in V
         for t in T
-            # if t >= tmin
+            if t >= tmin
                 c = @constraint(Subproblem, I[v, t-1] + sum(X[v, p, t] for p in P_v[v]) == Vc[v, t] + I[v, t])
                 set_name(c, "c_16[$((v,t))]")
                 push!(cons_16, c)
-                # print(c)
-            # end
+            end
         end
     end
 
     # Constraint (17)
     for a in A
         for t in T
-            # if t >= tmin
+            if t >= tmin
                 c = @constraint(Subproblem, d_real_tilde[a, t, ω] - sum(Vc[v, t] for v in V_a[a]) + S[a, t-1] <= S[a, t])
                 set_name(c, "c_17[$((a,t))]")
                 push!(cons_17, c)
-            # end
+            end
         end
     end
 

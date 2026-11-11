@@ -1,41 +1,24 @@
 """
-Master Problem Initialization Function
+Master Problem (full Benders / single-cut L-shaped)
 
-This function sets up and initializes the Master Problem for a mathematical optimization 
-model using the JuMP package and Gurobi solver. It creates variables, objective functions, 
-and constraints based on the given input parameters and conditions.
+Builds the master problem with only the first-stage decisions and a single variable `theta` for the expected
+second-stage (recourse) cost. No scenario is kept in the master: all second-stage variables (X, I, Vc, S) and
+constraints are in the subproblems (sub_problem.jl), and enter the master only through the optimality cuts on
+`theta` (generate_optimality_cut.jl).
 
-Parameters:
-- `A`: Set of all antigens.
-- `F_time_set`: Set of time intervals for F variables.
-- `V`: Set of all vaccines.
-- `P_v`: Dictionary mapping each vaccine to its associated producer.
-- `P`: Set of all producers.
-- `T`: Set of time periods.
-- `L_lower_number`: Lower bound for the L variable.
-- `L_upper_number`: Upper bound for the L variable.
-- `Ω_test_partial_2`: Set of partial scenarios for θ variables.
-- `Ω_test_partial_1`: Set of partial scenarios for θ variables.
-- `T_initial`: Initial set of time periods.
-- `starting_points_vect_I`: Starting values for I variables, as a vector of tuples.
-- `starting_points_vect_S`: Starting values for S variables, as a vector of tuples.
-- `starting_points_vect_F`: Starting values for F variables, as a vector of tuples.
-- `UNICEF_MODEL`: Boolean indicating whether to use the UNICEF model.
-- `capacity_extension_decision`: Boolean indicating whether capacity extension is considered.
-- `gurobi_solver`: Gurobi optimizer to be used for the problem.
+First-stage variables: F, Q, Y, W, L, Z and the McCormick linearization variables (L_hat, K_hat, L_check,
+K_check, L_ddot, K_ddot). K_ddot = Y * L_ddot links the capacity extensions to the second-stage capacity
+constraint (15) in the subproblem.
+
+Objective = first-stage cost (matches deterministic_equivalent.jl) + theta.
 
 Returns:
-- A JuMP model (`Masterproblem`) that contains all variables, constraints, and the objective 
-  function based on the specified conditions.
+- The JuMP model `Masterproblem` with variables, objective and first-stage constraints.
 """
 
-function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_number, 
-    Ω_test_partial_2, Ω_test_partial_1, T_initial, starting_points_vect_I, 
-    starting_points_vect_S, starting_points_vect_F, UNICEF_MODEL, 
-    capacity_extension_decision, Γ, g, beta, delta, p_ω_test, r, h, r_avg, 
-    partial_scenario, P_a, gurobi_solver, κ, s_real, L_hat_upper, L_check_upper, V_p, 
-    X_tilde_upper, A_p, s_real_tilde, d_real_tilde, tmin, f_profit, V_a, L_ddot_upper, l, 
-    overlap_decision, m_segments, zeta_vm, phi_vm_lower, phi_vm_upper, social_benefit, max_profit)
+function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_number, L_upper_number,
+    starting_points_vect_F, UNICEF_MODEL, Γ, g, delta, r_avg, P_a, κ, s_real, L_hat_upper, L_check_upper, V_p,
+    A_p, f_profit, L_ddot_upper, l, m_segments, zeta_vm, phi_vm_lower, phi_vm_upper, social_benefit, max_profit)
 
     println("Building master problem")
 
@@ -44,6 +27,10 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
     # -------------------------
     M = collect(keys(m_segments))
     span = Dict((t,tau) => (tau - t + 1) for (t,tau) in F_time_set)
+    T_start = unique(t for (t, tau) in F_time_set)  # tender start periods (outer index of constraints 9-10)
+    # Valid finite big-M for constraint (10): constraint (7) caps producer p's total award over all windows at
+    # Q_max[p]. Used instead of the open-ended last discount break (~1e35), which wrecks the solver numerics.
+    Q_max = Dict(p => sum(span[(t,tau)] * s_real[p] + L_hat_upper[p,(t,tau)] + L_check_upper[p,(t,tau)] for (t,tau) in F_time_set) for p in P)
 
     @variable(Masterproblem, 0.0 <= F[a in A, (t, tau) in F_time_set] <= 1.0, Bin)
     @variable(Masterproblem, Q[v in V, p in P_v[v], (t, tau) in F_time_set, m in M] >= 0)
@@ -56,11 +43,7 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
     @variable(Masterproblem, K_check[p in P, (t, tau) in F_time_set] >= 0)
     @variable(Masterproblem, L_ddot[p in P, t in T] >= 0)
     @variable(Masterproblem, K_ddot[p in P, t in T] >= 0)
-    @variable(Masterproblem, theta[ω in Ω_test_partial_2] >= 0)
-    @variable(Masterproblem, X[v in V, p in P_v[v], t in T, ω in Ω_test_partial_1] >= 0)
-    @variable(Masterproblem, I[v in V, t in T_initial, ω in Ω_test_partial_1] >= 0)
-    @variable(Masterproblem, Vc[v in V, t in T, ω in Ω_test_partial_1] >= 0)
-    @variable(Masterproblem, S[a in A, t in T_initial, ω in Ω_test_partial_1] >= 0)
+    @variable(Masterproblem, theta >= 0)  # expected second-stage cost (recourse >= 0 for all model types)
     # @variable(Masterproblem, 0.0 <= Z[v in V, p in P_v[v], t in T, m in M] <= 1, Bin)
     @variable(Masterproblem, 0 <= Z[v in V, p in P_v[v], t in T, m in M] <= 1.0, Bin)
 
@@ -76,38 +59,23 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
 
     # max profit - mods to OBJ funs (MP and SP), calcualted from the perspective of producers (et. al)
 
-    if UNICEF_MODEL && capacity_extension_decision #objective function is incorrect
-        println("UNICEF-GAVI model with capacity extension/discounts")
+    # Objective = first-stage terms of deterministic_equivalent.jl + theta (expected second-stage cost)
+    if UNICEF_MODEL
         @objective(Masterproblem, Min, sum(g[t] * F[a, (t, tau)] / delta[t] for (t, tau) in F_time_set, a in A if (a,t,tau) ∉ starting_points_vect_F) +
         sum(r_avg[v,t] * (1 - zeta_vm[v,m]) * Q[v,p,(t, tau),m] / delta[t] for (t,tau) in F_time_set, v in V, p in P_v[v], m in M)
-        + sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
-        
-            + p_ω_test[partial_scenario] * (
-                sum(beta * S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
-                + sum(h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
-                )
+        + theta
         )
 
-    elseif social_benefit && capacity_extension_decision
-        println("Social benefit model with capacity extension/discounts")
-        @objective(Masterproblem, Min, sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
-        
-            + p_ω_test[partial_scenario] * (
-                sum(S[a,t,ω] / delta[t] for a in A, t in T, ω in Ω_test_partial_1)
-                )
-        )
+    elseif social_benefit
+        # all social-benefit costs (missed doses) are second stage
+        @objective(Masterproblem, Min, theta)
 
-    else max_profit && capacity_extension_decision
-        println("Max profit model with capacity extension/discounts")
+    elseif max_profit
+        # DE max-profit objective has no second-stage cost terms, so the recourse (theta) is 0
         @objective(Masterproblem, Min, sum((-r_avg[v,t]*(1-zeta_vm[v,m])*Q[v,p,(t,tau),m]) / delta[t] for (t,tau) in F_time_set, v in V, p in P_v[v], m in M) +
         sum((Γ[p] * L[p, t]) / delta[t] for p in P, t in T) +
         sum(f_profit[v, p, (t,tau)] * W[p, (t,tau)] / delta[t] for (t, tau) in F_time_set, p in P, v in V_p[p]) +
-        sum(p_ω_test[ω]*theta[ω] for ω in Ω_test_partial_2)
-
-            + p_ω_test[partial_scenario] * (
-                sum((r_avg[v,t]*S[a,t,ω]) / delta[t] for a in A, v in V, t = last(T), ω in Ω_test_partial_1)
-                + sum(h[v] * r_avg[v,t] * I[v,t,ω] / delta[t] for v in V, t in T, ω in Ω_test_partial_1)
-                )
+        theta
         )
 
     end
@@ -151,15 +119,9 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
         end
     end
 
-    # Constraint (6)
-    for p in P
-        for t in T
-            for tau in T
-                if (t, tau) in F_time_set
-                    @constraint(Masterproblem, sum(F[a, (t, tau)] for a in A_p[p]) <= length(A_p) * W[p, (t, tau)])
-                end
-            end
-        end
+    # Constraint (6) - a tender can only be covered if some producer of that antigen commits
+    for a in A, (t,tau) in F_time_set
+        @constraint(Masterproblem, F[a,(t,tau)] <= sum(W[p,(t,tau)] for p in P_a[a]))
     end
 
     # Constraint (7) - McCormick
@@ -190,24 +152,15 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
         set_name(c, "revenue_constraint[$p,$t,$tau]")
     end
 
-    # Constraint (9)
+    # Constraints (9)-(10) - discount segment set on total volume over all tender windows
+    # (matches deterministic equivalent; one constraint per start period, duplicates over tau dropped)
     for v in V
         for p in P_v[v]
-            for (t, tau) in F_time_set
+            for t in T_start
                 for m in M
-                    @constraint(Masterproblem, phi_vm_lower[v,m] * Z[v,p,t,m] <= Q[v,p,(t,tau),m])
-                end
-            end
-        end
-    end
-
-
-    # Constraint (10)
-    for v in V
-        for p in P_v[v]
-            for (t, tau) in F_time_set
-                for m in M
-                    @constraint(Masterproblem, phi_vm_upper[v,m] * Z[v,p,t,m] >= Q[v,p,(t,tau),m])
+                    Q_total = sum(Q[v,p,(t2,tau2),m] for (t2,tau2) in F_time_set)
+                    @constraint(Masterproblem, phi_vm_lower[v,m] * Z[v,p,t,m] <= Q_total)
+                    @constraint(Masterproblem, min(phi_vm_upper[v,m], Q_max[p]) * Z[v,p,t,m] >= Q_total)
                 end
             end
         end
@@ -222,116 +175,23 @@ function master_problem(Masterproblem, A, F_time_set, V, P_v, P, T, L_lower_numb
         end
     end
 
-    cons_14 = []
-    cons_15_1 = []
-    cons_15_2 = []
-    cons_15_3 = []
-    cons_15_4 = []
-    cons_16 = []
-    cons_17 = []
-    cons_18 = []
-    cons_19 = []
-    cons_20 = []
-    cons_21 = []
-    
-    #sub problem constraints
-    # Constraint (14) - linear, W removed (matches deterministic equivalent)
-    for ω in Ω_test_partial_1
-        for v in V
-            for p in P_v[v]
-                for (t, tau) in F_time_set
-                    c = @constraint(Masterproblem, sum(Q[v, p, (t, tau), m] for m in M) >= sum(X[v, p, l, ω] for l in t:tau))
-                    set_name(c, "master_c_14[$((v,p,(t,tau),ω))]")
-                    push!(cons_14, c)
-                end
-            end
-        end
-    end
-
-    # Constraint (15) - McCormick 
+    # Constraint (15) - McCormick for K_ddot = Y * L_ddot (first-stage; used in subproblem capacity constraint)
     for p in P
         for t in T
-            c = @constraint(Masterproblem, L_ddot[p,t] == sum(κ * s_real[p] * L[p, l] for l in 1:t))
-            set_name(c, "master_c_15_1[$((p,t))]")
-            push!(cons_15_1, c)
-
-            c = @constraint(Masterproblem, K_ddot[p,t] >= L_ddot[p,t] + Y[p,t] * L_ddot_upper[p,t] - L_ddot_upper[p,t])
-            set_name(c, "master_c_15_2[$((p,t))]")
-            push!(cons_15_2, c)
-
-            c = @constraint(Masterproblem, K_ddot[p,t] <= Y[p,t] * L_ddot_upper[p,t])
-            set_name(c, "master_c_15_3[$((p,t))]")
-            push!(cons_15_3, c)
-
-            c = @constraint(Masterproblem, K_ddot[p,t] <= L_ddot[p,t])
-            set_name(c, "master_c_15_4[$((p,t))]")
-            push!(cons_15_4, c)
+            @constraint(Masterproblem, L_ddot[p,t] == sum(κ * s_real[p] * L[p, l] for l in 1:t))
+            @constraint(Masterproblem, K_ddot[p,t] >= L_ddot[p,t] + Y[p,t] * L_ddot_upper[p,t] - L_ddot_upper[p,t])
+            @constraint(Masterproblem, K_ddot[p,t] <= Y[p,t] * L_ddot_upper[p,t])
+            @constraint(Masterproblem, K_ddot[p,t] <= L_ddot[p,t])
         end
     end
 
-    # Constraint (16)
-    for ω in Ω_test_partial_1
-        for p in P
-            for t in T
-                c = @constraint(Masterproblem, sum(X[v, p, t, ω] for v in V_p[p]) <= Y[p,t] * s_real_tilde[p,t,ω] + K_ddot[p,t])
-                set_name(c, "master_c_16[$((p,t,ω))]")
-                push!(cons_16, c)
-            end
-        end
-    end
-
-    # Constraint (17)
-    for ω in Ω_test_partial_1
-        for v in V
-            for t in T
-                if t >= tmin
-                    c = @constraint(Masterproblem, I[v,t-1,ω] + sum(X[v, p, t, ω] for p in P_v[v]) == Vc[v,t,ω] + I[v,t,ω])
-                    set_name(c, "master_c_17[$((v,t,ω))]")
-                    push!(cons_17, c)
-                end
-            end
-        end
-    end
-
-    # Constraint (18)
-    for ω in Ω_test_partial_1
-        for a in A
-            for t in T
-                if t >= tmin
-                    c = @constraint(Masterproblem, d_real_tilde[a,t,ω] - sum(Vc[v,t,ω] for v in V_a[a]) + S[a,t-1,ω] <= S[a,t,ω])
-                    set_name(c, "c_18[$((a,t,ω))]")
-                    push!(cons_18, c)
-                end
-            end
-        end
-    end
-
-    # Constraint (19) - Initial Inventory
-    for ω in Ω_test_partial_1
-        for (v, amount) in starting_points_vect_I
-            c = @constraint(Masterproblem, I[v,0,ω] == amount)
-            set_name(c, "master_c_19[$((v,ω))]")
-            push!(cons_19, c)
-        end
-    end
-
-    # Constraint (20) - Initial Shortage
-    for ω in Ω_test_partial_1
-        for (a, amount) in starting_points_vect_S
-            c = @constraint(Masterproblem, S[a,0,ω] == amount)
-            set_name(c, "master_c_20[$((a,ω))]")
-            push!(cons_20, c)
-        end
-    end
+    # Second-stage constraints (14), (16)-(20) are in sub_problem.jl and enter the master through the cuts on theta
 
     # Constraint (21) - Initial F Decision
     for (a, t, tau) in starting_points_vect_F
         c = @constraint(Masterproblem, F[a, (t, tau)] == 1)
         set_name(c, "master_c_21[$((a,t,tau))]")
-        push!(cons_21, c)
     end
 
-
- 
     return Masterproblem
 end

@@ -57,7 +57,7 @@ function initialize_parameters(
     # end
 
     # Define file path
-    capacity_file_path = joinpath(data_dir, "production_capacity_scenarios_NEW_23JUN.xlsx")
+    capacity_file_path = joinpath(data_dir, "production_capacity_scenarios_15YR_applied.xlsx")
 
     # Open the XLSX file and read the "base_capacity" sheet
     capacity_file = XLSX.readxlsx(capacity_file_path)
@@ -201,11 +201,11 @@ function initialize_parameters(
 
     m_segments = [0.00, 0.01]
     lower_breaks_values = [0, 1.041e4]
-    upper_breaks_values = [1.04e4, 99999999999999999999999999999999999]
+    upper_breaks_values = [1.04e4, 999999999999999999999999999]
 
     # m_segments = [0.00, 0.01, 0.02]
     # lower_breaks_values = [0, 1.041e4, 3.69e6]
-    # upper_breaks_values = [1.04e4, 3.68e6, 99999999999999999999999999999999999]
+    # upper_breaks_values = [1.04e4, 3.68e6, 99999999999999999999999999999]
 
     # m_segments = [0.0, 0.01, 0.02, 0.04]
     # lower_breaks_values = [0.0, 1.041e4, 3.69e6, 5.47e8]
