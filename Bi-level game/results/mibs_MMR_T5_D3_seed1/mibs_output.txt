@@ -1,0 +1,357 @@
+
+========================================================
+========================================================
+Welcome to MibS (Mixed Integer Bilevel Solver)
+Copyright (C) 2007-2023 Lehigh University, Scott DeNegre, Ted Ralphs
+and Sahar Tahernejad.
+All Rights Reserved.
+This software is licensed under the Eclipse Public License. Please see
+accompanying file for terms.
+Version: 1.2.2
+Build Date: Jan  1 1970
+==  Alps Version: 1.5.12
+==  Bcps Version: 0.94.9
+==  Blis Version: 0.94.13
+========================================================
+========================================================
+
+Alps0030I Data file: model.mps
+Coin0001I At line 1 NAME
+Coin0001I At line 2 ROWS
+Coin0001I At line 1769 COLUMNS
+Coin0001I At line 7743 RHS
+Coin0001I At line 9509 RANGES
+Coin0001I At line 9510 BOUNDS
+Coin0001I At line 11958 ENDATA
+Coin0002I Problem no_name has 1765 rows, 1436 columns and 5472 elements
+Auxiliary file: model.aux
+Number of LL Variables:   1088
+
+Generic MILP cuts will be generated.
+=======================================
+Problem structure            
+=======================================
+
+Number of UL Variables (total): 348
+Number of UL Variables (integer): 297
+Number of LL Variables (total): 1088
+Number of LL Variables (integer): 148
+Number of UL Rows: 267
+Number of LL Rows: 1884
+This instance is a mixed integer problem.
+Coefficient matrix of upper level variables in lower level problem is non-negative.
+Degree of objective alignment: 8.46333e-05
+
+=======================================
+Parameter Settings                     
+=======================================
+
+Branching strategy is to branch only on variable with fractional values.
+Generic MILP cuts will be generated.
+Benders binary cut generator is on.
+Generalized no-good cut generator is on.
+Hypercube intersection cut generator is on.
+Second level problem will be solved when linking variables are fixed
+  or first and second level variables are integer.
+Upper bounding problem will be solved when linking variables are fixed.
+Linking solution pool will be used.
+
+Alps0250I Starting search ...
+
+Nodes Done   Upper Bound   Lower Bound      Gap   Time Nodes Left
+         0                 8.46737e+07               0          1
+       100                 8.46759e+07               0         49
+       100                 8.46759e+07               0         49
+       200                 8.46857e+07               0        101
+       200                 8.46857e+07               0        101
+       200                 8.46857e+07               0        101
+       200                 8.46857e+07               0        101
+       200                 8.46857e+07               0        101
+       200                 8.46857e+07               0        101
+       200                 8.46857e+07               0        101
+       300                 8.46857e+07               1        159
+       400                 8.46858e+07               1        221
+       500                 8.46861e+07               1        285
+       500                 8.46861e+07               1        285
+       500                 8.46861e+07               1        285
+       500                 8.46861e+07               1        285
+       600                 8.46865e+07               2        343
+       600                 8.46865e+07               2        343
+       600                 8.46865e+07               2        343
+       600                 8.46865e+07               2        343
+       600                 8.46865e+07               2        343
+       600                 8.46865e+07               2        343
+       600                 8.46865e+07               2        343
+       700                 8.46868e+07               2        417
+       700                 8.46868e+07               2        417
+       800                  8.4687e+07               2        475
+       800                  8.4687e+07               2        475
+       800                  8.4687e+07               2        475
+       900                  8.4688e+07               3        541
+       900                  8.4688e+07               3        541
+       900                  8.4688e+07               3        541
+       959   9.62009e+07   8.46974e+07   13.58%      5        588
+       970   9.61932e+07   8.46974e+07   13.57%     10        599
+      1000   9.61932e+07   8.46974e+07   13.57%     21        629
+      1000   9.61932e+07   8.46974e+07   13.57%     21        629
+      1000   9.61932e+07   8.46974e+07   13.57%     22        629
+      1000   9.61932e+07   8.46974e+07   13.57%     22        629
+      1000   9.61932e+07   8.46974e+07   13.57%     24        629
+      1000   9.61932e+07   8.46974e+07   13.57%     24        629
+      1000   9.61932e+07   8.46974e+07   13.57%     24        629
+      1000   9.61932e+07   8.46974e+07   13.57%     25        629
+      1000   9.61932e+07   8.46974e+07   13.57%     25        629
+      1000   9.61932e+07   8.46974e+07   13.57%     25        629
+      1100   9.61932e+07   8.46974e+07   13.57%    109        729
+      1100   9.61932e+07   8.46974e+07   13.57%    109        729
+      1100   9.61932e+07   8.46974e+07   13.57%    109        729
+      1100   9.61932e+07   8.46974e+07   13.57%    110        729
+      1100   9.61932e+07   8.46974e+07   13.57%    110        729
+      1100   9.61932e+07   8.46974e+07   13.57%    112        729
+      1100   9.61932e+07   8.46974e+07   13.57%    114        729
+      1100   9.61932e+07   8.46974e+07   13.57%    114        729
+      1100   9.61932e+07   8.46974e+07   13.57%    117        729
+      1100   9.61932e+07   8.46974e+07   13.57%    117        729
+      1100   9.61932e+07   8.46974e+07   13.57%    119        729
+      1100   9.61932e+07   8.46974e+07   13.57%    119        729
+      1100   9.61932e+07   8.46974e+07   13.57%    119        729
+      1100   9.61932e+07   8.46974e+07   13.57%    119        729
+      1100   9.61932e+07   8.46974e+07   13.57%    120        729
+      1200   9.61932e+07   8.46974e+07   13.57%    246        829
+      1300   9.61932e+07   8.46974e+07   13.57%    353        929
+      1400   9.61932e+07   8.46974e+07   13.57%    431       1029
+####### Unexpected termcode: 8 
+####### Trying to recover by resolving from scratch...
+####### Recovery succeeded! Continuing with node...
+
+####### Unexpected termcode: 8 
+####### Trying to recover by resolving from scratch...
+####### Recovery succeeded! Continuing with node...
+
+
+Alps0230I Reached time limit. 1463 nodes processed, 1092 nodes left
+Alps0260I Best solution found had quality 96193152
+Alps0265I Number of nodes fully processed:          1463
+Alps0266I Number of nodes partially processed:      1065
+Alps0267I Number of nodes branched:                 1277
+Alps0268I Number of nodes pruned before processing: 0
+Alps0270I Number of nodes left:                     1092
+Alps0272I Tree depth: 31
+Alps0274I Search CPU time: 480.66 seconds
+Alps0278I Search wall-clock time: 480.66 seconds
+Blis0040I Checking feasibility took 34.6177 seconds
+Blis0053I Called MIBS cut generator 2342 times, generated 1169 cuts, CPU time 439.8630 seconds, current strategy 3
+Blis0053I Called Clique cut generator 1 times, generated 0 cuts, CPU time 0.0000 seconds, current strategy 1
+Blis0053I Called Flow Cover cut generator 27 times, generated 2 cuts, CPU time 0.0060 seconds, current strategy 0
+Blis0053I Called Knapsack cut generator 1 times, generated 0 cuts, CPU time 0.0000 seconds, current strategy 1
+Blis0053I Called Gomory cut generator 1 times, generated 28 cuts, CPU time 0.0000 seconds, current strategy 1
+Blis0058I Relative optimality gap is 13.57%
+============================================
+Best solution found:
+Cost = 9.61932e+07
+First stage (upper level) variable values:
+v7 = 1
+v8 = 1
+v9 = 1
+v16 = 1
+v25 = 1
+v31 = 1
+v32 = 1
+v33 = 1
+v34 = 1
+v37 = 1
+v38 = 1
+v39 = 1
+v40 = 1
+v42 = 1
+v43 = 1
+v44 = 1
+v45 = 1
+v46 = 1
+v48 = 1
+v49 = 1
+v50 = 1
+v51 = 1
+v94 = 1
+v96 = 1
+v112 = 1
+v114 = 1
+v115 = 1
+v130 = 1
+v132 = 1
+v134 = 1
+v142 = 1
+v145 = 1
+v147 = 1
+v148 = 1
+v150 = 1
+v151 = 1
+v169 = 1
+v205 = 1
+v218 = 1
+v224 = 1
+v239 = 1
+v242 = 1
+v243 = 1
+v257 = 1
+v260 = 1
+v261 = 1
+v275 = 1
+v279 = 1
+v287 = 1
+v293 = 1
+v297 = 1
+v317 = 53270
+v318 = 41601
+v320 = 58940
+v321 = 47600
+v322 = 73398.5
+v323 = 59990
+v324 = 49070
+v325 = 83300
+v326 = 58100
+v327 = 46830
+v328 = 89600
+v329 = 58450
+v330 = 46620
+v334 = 325226
+v335 = 315730
+v336 = 236408
+v337 = 586986
+v338 = 529000
+v339 = 363393
+v340 = 810019
+v341 = 792776
+v342 = 540697
+v343 = 977227
+v344 = 1.03032e+06
+v345 = 694187
+v346 = 1.17032e+06
+v347 = 1.28291e+06
+v348 = 864159
+Second stage (lower level) variable values:
+v673 = 1
+v687 = 1
+v694 = 1
+v692 = 1
+v676 = 1
+v669 = 1
+v790 = 43650.8
+v671 = 1
+v685 = 1
+v358 = 1
+v414 = 1
+v1388 = 58450
+v889 = 15603
+v904 = 60100
+v1338 = 60100
+v1436 = 14160
+v381 = 1
+v1342 = 13298.5
+v686 = 1
+v1374 = 53270
+v677 = 1
+v416 = 1
+v937 = 8260
+v778 = 60100
+v674 = 1
+v680 = 1
+v412 = 1
+v782 = 60100
+v360 = 1
+v678 = 1
+v800 = 14160
+v1418 = 36400
+v908 = 60100
+v402 = 1
+v413 = 1
+v1344 = 46801.5
+v359 = 1
+v406 = 1
+v702 = 1
+v760 = 60100
+v1398 = 8330
+v1397 = 2072
+v357 = 1
+v926 = 60100
+v408 = 1
+v681 = 1
+v1424 = 21600
+v698 = 1
+v682 = 1
+v411 = 1
+v693 = 1
+v670 = 1
+v679 = 1
+v691 = 1
+v404 = 1
+v940 = 22347.7
+v742 = 60100
+v1347 = 20450.8
+v1404 = 8330
+v397 = 1
+v764 = 60100
+v391 = 1
+v400 = 1
+v745 = 15603
+v996 = 159810
+v890 = 60100
+v796 = 22347.7
+v392 = 1
+v415 = 1
+v370 = 1
+v1376 = 16730
+v793 = 8260
+v690 = 1
+v922 = 60100
+v1413 = 8260
+v960 = 128940
+v714 = 1
+v689 = 1
+v1419 = 18860
+v886 = 60100
+v394 = 1
+v763 = 13398
+v405 = 1
+v1332 = 60100
+v816 = 128940
+v410 = 1
+v1432 = 24200
+v852 = 159810
+v382 = 1
+v675 = 1
+v398 = 1
+v409 = 1
+v383 = 1
+v395 = 1
+v372 = 1
+v401 = 1
+v1420 = 4840
+v1348 = 22347.7
+v934 = 43650.8
+v688 = 1
+v1346 = 23200
+v683 = 1
+v695 = 1
+v1387 = 58100
+v1426 = 38500
+v1386 = 43260
+v697 = 1
+v907 = 13398
+v371 = 1
+v696 = 1
+v1430 = 35900
+v746 = 60100
+v944 = 14160
+v407 = 1
+v1375 = 58940
+v1396 = 5201
+v1402 = 5068
+Number of problems (VF) solved = 388
+Number of problems (UB) solved = 391
+Time for solving problem (VF) = 32.0772
+Time for solving problem (UB) = 0
+Number of Hypercube Intersection Cuts Generated: 389
+Number of Generalized No Good Cuts Generated: 390
+Number of Benders Binary Cuts Generated: 390
+============================================

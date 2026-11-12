@@ -1,0 +1,61 @@
+Set parameter Username
+Set parameter LicenseID to value 2854550
+Academic license - for non-commercial use only - expires 2027-08-19
+column_names = ["Manufacturer", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+findall((==)("missing"), column_names) = Int64[]
+Instance: |A|=3 |V|=3 |P|=4 |VP|=6 windows=12
+it   1  LB 8.62979972e7  candidate 9.62810037e7  UB 9.62810037e7  gap 10.369 %  cuts +4  6.1 s
+it   2  LB 8.63966672e7  candidate 9.65306899e7  UB 9.62810037e7  gap 10.266 %  cuts +4  7.3 s
+it   3  LB 8.64867751e7  candidate 9.86911462e7  UB 9.62810037e7  gap 10.173 %  cuts +4  8.9 s
+it   4  LB 8.66880004e7  candidate 9.66952945e7  UB 9.62810037e7  gap 9.964 %  cuts +4  12.6 s
+it   5  LB 8.67650417e7  candidate 9.68508619e7  UB 9.62810037e7  gap 9.884 %  cuts +4  17.8 s
+it   6  LB 8.67810563e7  candidate 9.6770327e7  UB 9.62810037e7  gap 9.867 %  cuts +4  20.8 s
+it   7  LB 8.68580977e7  candidate 9.72215409e7  UB 9.62810037e7  gap 9.787 %  cuts +4  24.4 s
+it   8  LB 8.68651584e7  candidate 9.72346157e7  UB 9.62810037e7  gap 9.78 %  cuts +4  33.0 s
+it   9  LB 8.68712714e7  candidate 9.70755104e7  UB 9.62810037e7  gap 9.773 %  cuts +4  37.6 s
+it  10  LB 8.68713036e7  candidate 9.705024e7  UB 9.62810037e7  gap 9.773 %  cuts +4  42.1 s
+it  11  LB 8.68932873e7  candidate 9.64178484e7  UB 9.62810037e7  gap 9.75 %  cuts +4  45.8 s
+it  12  LB 8.69863437e7  candidate 9.648346e7  UB 9.62810037e7  gap 9.654 %  cuts +4  54.1 s
+it  13  LB 8.69931394e7  candidate 9.83948126e7  UB 9.62810037e7  gap 9.647 %  cuts +4  84.1 s
+it  14  LB 8.69952959e7  candidate 9.56519214e7  UB 9.56519214e7  gap 9.05 %  cuts +4  88.9 s
+it  15  LB 8.70500762e7  candidate 9.72419787e7  UB 9.56519214e7  gap 8.993 %  cuts +4  108.9 s
+it  16  LB 8.70543887e7  candidate 9.70894923e7  UB 9.56519214e7  gap 8.988 %  cuts +4  118.5 s
+it  17  LB 8.71434128e7  candidate 9.73351266e7  UB 9.56519214e7  gap 8.895 %  cuts +4  268.1 s
+it  18  LB 8.71475249e7  candidate 9.76041594e7  UB 9.56519214e7  gap 8.891 %  cuts +4  278.3 s
+it  19  LB 8.71711237e7  candidate 9.61130912e7  UB 9.56519214e7  gap 8.866 %  cuts +4  289.0 s
+it  20  LB 8.71777539e7  candidate 9.6062515e7  UB 9.56519214e7  gap 8.859 %  cuts +4  300.2 s
+it  21  LB 8.72022616e7  candidate 9.88000598e7  UB 9.56519214e7  gap 8.834 %  cuts +4  337.5 s
+it  22  LB 8.72399182e7  candidate 9.75214754e7  UB 9.56519214e7  gap 8.794 %  cuts +4  382.6 s
+it  23  LB 8.72778043e7  candidate 9.61022752e7  UB 9.56519214e7  gap 8.755 %  cuts +4  396.7 s
+it  24  LB 8.72980588e7  candidate 9.72999435e7  UB 9.56519214e7  gap 8.734 %  cuts +4  427.3 s
+it  25  LB 8.73576664e7  candidate 9.84489394e7  UB 9.56519214e7  gap 8.671 %  cuts +4  460.5 s
+it  26  LB 8.73708608e7  candidate 9.63647353e7  UB 9.56519214e7  gap 8.657 %  cuts +4  475.1 s
+it  27  LB 8.73734926e7  candidate 9.60011912e7  UB 9.56519214e7  gap 8.655 %  cuts +4  500.7 s
+it  28  LB 8.73856292e7  candidate 9.74079924e7  UB 9.56519214e7  gap 8.642 %  cuts +4  553.7 s
+it  29  LB 8.74537932e7  candidate 9.69269441e7  UB 9.56519214e7  gap 8.571 %  cuts +4  582.0 s
+it  30  LB 8.74553664e7  candidate 9.86820456e7  UB 9.56519214e7  gap 8.569 %  cuts +4  812.4 s
+it  31  LB 8.74557979e7  candidate 9.8031222e7  UB 9.56519214e7  gap 8.569 %  cuts +4  877.0 s
+it  32  LB 8.74720354e7  candidate 9.62329895e7  UB 9.56519214e7  gap 8.552 %  cuts +4  960.4 s
+it  33  LB 8.7499291e7  candidate 9.69807287e7  UB 9.56519214e7  gap 8.523 %  cuts +4  993.2 s
+it  34  LB 8.75433555e7  candidate 9.69921784e7  UB 9.56519214e7  gap 8.477 %  cuts +4  1103.9 s
+it  35  LB 8.7549246e7  candidate 9.65186263e7  UB 9.56519214e7  gap 8.471 %  cuts +4  1180.9 s
+it  36  LB 8.75518216e7  candidate 9.63140706e7  UB 9.56519214e7  gap 8.468 %  cuts +4  1216.8 s
+it  37  LB 8.75557822e7  candidate 9.65153579e7  UB 9.56519214e7  gap 8.464 %  cuts +4  1287.4 s
+it  38  LB 8.75574007e7  candidate 9.65496206e7  UB 9.56519214e7  gap 8.462 %  cuts +4  1343.2 s
+it  39  LB 8.75650161e7  candidate 9.61498236e7  UB 9.56519214e7  gap 8.455 %  cuts +4  1400.9 s
+it  40  LB 8.75840332e7  candidate 9.58328495e7  UB 9.56519214e7  gap 8.435 %  cuts +4  1467.7 s
+it  41  LB 8.75860429e7  candidate 9.70470701e7  UB 9.56519214e7  gap 8.433 %  cuts +4  1765.6 s
+it  42  LB 8.7586478e7  candidate 9.73924267e7  UB 9.56519214e7  gap 8.432 %  cuts +3  1889.4 s
+it  43  LB 8.75914796e7  candidate 9.72367085e7  UB 9.56519214e7  gap 8.427 %  cuts +4  1998.7 s
+it  44  LB 8.76233784e7  candidate 9.62232239e7  UB 9.56519214e7  gap 8.393 %  cuts +4  2085.4 s
+it  45  LB 8.76399081e7  candidate 9.7125051e7  UB 9.56519214e7  gap 8.376 %  cuts +4  2241.9 s
+it  46  LB 8.76478093e7  candidate 9.68328807e7  UB 9.56519214e7  gap 8.368 %  cuts +4  2306.4 s
+it  47  LB 8.76488863e7  candidate 9.67824644e7  UB 9.56519214e7  gap 8.367 %  cuts +4  2457.3 s
+it  48  LB 8.76537119e7  candidate 9.62504951e7  UB 9.56519214e7  gap 8.362 %  cuts +4  2605.6 s
+it  49  LB 8.76764604e7  candidate 9.59284973e7  UB 9.56519214e7  gap 8.338 %  cuts +4  3229.6 s
+it  50  LB 8.76798351e7  candidate 9.79368969e7  UB 9.56519214e7  gap 8.334 %  cuts +4  3276.8 s
+it  51  LB 8.76848379e7  candidate 9.71735469e7  UB 9.56519214e7  gap 8.329 %  cuts +4  3452.3 s
+it  52  LB 8.76848379e7  candidate 9.75444585e7  UB 9.56519214e7  gap 8.329 %  cuts +4  3600.1 s
+VFD status: time_limit  LB 8.768483786e7  UB 9.565192143e7  gap 8.329 %  iterations 52  cuts 207  time 3600.1 s
+Best decision found at iteration 14, cost 9.565192143e7
+Saved: C:\Users\Nicholas Uhorchak\OneDrive - University of Arkansas\Desktop\Vaccine_Tender\Bi-level game\results\vfd_MMR_T5_D3_seed1.json

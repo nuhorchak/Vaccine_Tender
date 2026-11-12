@@ -28,14 +28,15 @@ function load_bilevel_data(data_dir::String;
     scenario_file::String = "scenario_pairs_new_1_scenario_6OCT.json",
     vaccine_demand_file::String = "Demand_Scenarios_Base.xlsx",
     vaccine_demand_sheet::String = "Medium_Demand_calc",
-    antigen_demand_source::Symbol = :vaccine,      # :vaccine -> d_at = Σ_{v∈V_a} d̂_vt ; :scenario -> antigen demand from scenario_file
+    antigen_demand_source::Symbol = :scenario,     # :scenario -> antigen demand from scenario_file (same as deterministic model) ; :vaccine -> d_at = Σ_{v∈V_a} d̂_vt
     fix_starting_tenders::Bool = true,             # keep the F_start tenders from Starting_point.xlsx (as in the DE model)
     discount_vaccines::Union{Nothing,Vector} = nothing,  # vaccines with bracket discounts; nothing -> all of V
-    λ::Vector{Float64} = [0.9, 1.0, 1.1],
+    λ::Vector{Float64} = [0.98, 1.0, 1.02],        # price ladder: ±2% around the reference price r̄_vt
     u::Vector{Float64} = [0.0, 0.5, 1.0],
     θ_range::Dict{String,Tuple{Float64,Float64}} = Dict(
-        "Large" => (0.40, 0.60), "Medium" => (0.50, 0.70), "Small" => (0.60, 0.80)),
+        "Large" => (0.20, 0.30), "Medium" => (0.25, 0.35), "Small" => (0.30, 0.40)),   # half the PDF placeholders
     seed::Int = 1,
+    per_dose_cost::Bool = true,                    # false -> c_vp = 0: producer cost is only f (W) and Γ (L), as in the UG ROI
 )
     # ---------------- sets (re-used) ----------------
     A, V, A_v, P, P_v, V_a, V_p, P_a, A_p, capacity_category, vaccine_category, antigen_category = vaccine_data_fn()
@@ -100,7 +101,7 @@ function load_bilevel_data(data_dir::String;
         θ[p] = round(lo + (hi - lo) * rand(rng), digits = 4)
     end
     r_bar = Dict(v => sum(r_avg[v, t] for t in T) / length(T) for v in V)
-    c = Dict((v, p) => θ[p] * r_bar[v] for v in V for p in P_v[v])
+    c = Dict((v, p) => (per_dose_cost ? θ[p] * r_bar[v] : 0.0) for v in V for p in P_v[v])
 
     # sanity check: someone must earn a positive margin at the top price after the deepest discount
     for v in V

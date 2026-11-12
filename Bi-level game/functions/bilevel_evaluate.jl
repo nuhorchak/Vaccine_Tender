@@ -28,10 +28,12 @@ end
 
 Bilevel-feasible cost of x under the optimistic convention, with every producer at a best response.
 """
-function evaluate_leader_decision(d, Fx, Πx, Ωx, optimizer; rel_tol = 1e-6)
-    φ = Dict{String,Float64}()
-    for p in d.P
-        φ[p], _, _ = best_response(d, p, Fx, Πx, Ωx, optimizer)
+function evaluate_leader_decision(d, Fx, Πx, Ωx, optimizer; rel_tol = 1e-6, time_limit = 3600.0, φ = nothing)
+    if φ === nothing                 # producers' optimal profits; pass them in if already computed
+        φ = Dict{String,Float64}()
+        for p in d.P
+            φ[p], _, _ = best_response(d, p, Fx, Πx, Ωx, optimizer)
+        end
     end
 
     model = Model(optimizer)
@@ -44,8 +46,11 @@ function evaluate_leader_decision(d, Fx, Πx, Ωx, optimizer; rel_tol = 1e-6)
     end
     terms = leader_cost_terms(model, d, Fx, producers)
     @objective(model, Min, terms.total)
+    set_time_limit_sec(model, time_limit)
     optimize!(model)
-    termination_status(model) == MOI.OPTIMAL || error("Optimistic evaluation not optimal: $(termination_status(model))")
+    # any feasible point has every producer at a best response, so its cost is still a valid upper bound
+    primal_status(model) == MOI.FEASIBLE_POINT || error("Optimistic evaluation found no solution: $(termination_status(model))")
+    termination_status(model) == MOI.OPTIMAL || @warn "Optimistic evaluation stopped at $(termination_status(model)); cost is an upper bound"
 
     return (cost = objective_value(model), φ = φ, model = model, producers = producers, terms = terms)
 end
@@ -90,12 +95,30 @@ function leader_decision_from_ug(d, F_ug, W_ug)
 end
 
 """
+    ug_terms(d, ug) -> Dict
+
+Cost breakdown of a solved UG model (same terms as the leader objective) plus committed vs delivered doses.
+"""
+function ug_terms(d, ug)
+    F, Q, S, I, X = ug[:F], ug[:Q], ug[:S], ug[:I], ug[:X]
+    tender = sum(d.g[t] * value(F[a, (t, τ)]) / d.delta[t] for a in d.A for (t, τ) in d.F_time_set if (a, t, τ) ∉ d.starting_F; init = 0.0)
+    procurement = sum(d.r_avg[v, tt[1]] * (1 - d.zeta_vm[v, m]) * value(Q[v, p, tt, m]) / d.delta[tt[1]]
+                      for v in d.V for p in d.P_v[v] for tt in d.F_time_set for m in d.M)
+    missed = sum(d.beta * value(S[a, t, 1]) / d.delta[t] for a in d.A for t in d.T)
+    holding = sum(d.h[v] * d.r_avg[v, t] * value(I[v, t, 1]) / d.delta[t] for v in d.V for t in d.T)
+    return Dict("tender" => tender, "procurement" => procurement, "missed" => missed, "holding" => holding,
+                "total" => tender + procurement + missed + holding,
+                "doses_committed" => sum(value(Q[v, p, tt, m]) for v in d.V for p in d.P_v[v] for tt in d.F_time_set for m in d.M),
+                "doses_delivered" => sum(value(X[v, p, t, 1]) for v in d.V for p in d.P_v[v] for t in d.T))
+end
+
+"""
     solve_ug_baseline(d, optimizer) -> model
 
 The manuscript's single-level UG model (with ROI constraint (8), and (2), (6)) on the same data, built with
 the unchanged `deterministic_equivalent` copied from the Segment Test code (one scenario, ω = 1).
 """
-function solve_ug_baseline(d, optimizer)
+function solve_ug_baseline(d, optimizer; time_limit = 3600.0, builder = deterministic_equivalent)
     d_real_tilde = Dict((a, t, 1) => d.d_at[(a, t)] for a in d.A, t in d.T)
     s_real_tilde = Dict((p, t, 1) => d.s_pt[(p, t)] for p in d.P, t in d.T)
     start_I = [(v, d.I0[v]) for v in d.V]
@@ -105,13 +128,15 @@ function solve_ug_baseline(d, optimizer)
                   for p in d.P for tt in d.F_time_set)
     phi_upper = Dict((v, m) => min(d.phi_vm_upper[v, m], cap) for v in d.V for m in d.M)
 
-    model = deterministic_equivalent(Dict(1 => 1.0), [1], d.g, d.beta, d.Γ, optimizer,
+    model = builder(Dict(1 => 1.0), [1], d.g, d.beta, d.Γ, optimizer,
         d.A, d.A_p, d.F_time_set, d.V, d.P_v, d.T, d.T_initial, d.P, d.P_a, d.starting_F, start_I, start_S,
         true, true, d.L_lower_number, d.L_upper_number,
         d.κ, d.s_real, d.L_hat_upper, d.L_check_upper, d_real_tilde, d.X_tilde_upper, s_real_tilde, 1,
         d.r, d.r_avg, d.h, d.V_p, d.l, d.f_profit, d.V_a, d.delta, d.L_ddot_upper, true, nothing, nothing,
         d.m_segments, d.zeta_vm, d.phi_vm_lower, phi_upper, false, false, true)
     set_silent(model)
+    set_optimizer_attribute(model, "MIPGap", 1e-3)      # same gap as the deterministic runner
+    set_time_limit_sec(model, time_limit)
     optimize!(model)
     return model
 end

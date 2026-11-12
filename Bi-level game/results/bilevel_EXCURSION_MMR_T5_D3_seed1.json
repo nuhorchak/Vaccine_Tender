@@ -1,0 +1,349 @@
+{
+  "horizon": 5,
+  "max_tender_length": 3,
+  "HPR_status": "OPTIMAL",
+  "theta": {
+    "Serum_Institute": 0.2876,
+    "Biological_E": 0.2099,
+    "GSK": 0.2702,
+    "PT_Bio": 0.3003
+  },
+  "HPR": {
+    "producers": {
+      "Serum_Institute": {
+        "tenders_joined": [],
+        "revenue": 0.0,
+        "profit": 0.0,
+        "doses_committed": 0.0
+      },
+      "Biological_E": {
+        "tenders_joined": [
+          "(1, 3)",
+          "(3, 5)"
+        ],
+        "revenue": 809572.1530353036,
+        "profit": 487192.5377433173,
+        "doses_committed": 1.3569369300000002e6
+      },
+      "GSK": {
+        "tenders_joined": [
+          "(1, 3)",
+          "(3, 5)"
+        ],
+        "revenue": 310964.4869691987,
+        "profit": -165837.55441844944,
+        "doses_committed": 127268.33
+      },
+      "PT_Bio": {
+        "tenders_joined": [
+          "(1, 3)",
+          "(3, 5)"
+        ],
+        "revenue": 31690.983678943416,
+        "profit": -437087.3356514682,
+        "doses_committed": 113925.0
+      }
+    },
+    "objective": 1.4214391992018996e6,
+    "decision": {
+      "shares": [
+        "M/Serum_Institute (1, 3) u=0.5",
+        "M/Serum_Institute (3, 5) u=1.0",
+        "M/PT_Bio (1, 3) u=1.0",
+        "M/PT_Bio (3, 5) u=1.0",
+        "MR/Serum_Institute (1, 3) u=1.0",
+        "MR/Biological_E (1, 3) u=1.0",
+        "MR/Biological_E (3, 5) u=1.0",
+        "MMR/Serum_Institute (1, 3) u=1.0",
+        "MMR/GSK (1, 3) u=1.0",
+        "MMR/GSK (3, 5) u=1.0"
+      ],
+      "tenders": [
+        "Measles (1, 3)",
+        "Measles (3, 5)",
+        "Mumps (1, 3)",
+        "Mumps (4, 5)",
+        "Rubella (1, 3)",
+        "Rubella (4, 5)"
+      ],
+      "prices": [
+        "M t=1 λ=0.98",
+        "M t=3 λ=0.98",
+        "MR t=1 λ=0.98",
+        "MR t=3 λ=0.98",
+        "MMR t=1 λ=0.98",
+        "MMR t=3 λ=0.98"
+      ]
+    },
+    "terms": {
+      "holding": 0.0,
+      "total": 1.4214391992018996e6,
+      "missed": 0.0,
+      "tender": 269211.5755184537,
+      "procurement": 1.1522276236834456e6
+    },
+    "bound": 1.4213840924453659e6
+  },
+  "lambda": [
+    0.98,
+    1.0,
+    1.02
+  ],
+  "HPR_candidate_bilevel": {
+    "cost": 2.3682556267033033e6,
+    "producers": {
+      "Serum_Institute": {
+        "tenders_joined": [
+          "(1, 3)",
+          "(3, 5)"
+        ],
+        "revenue": 52577.40057207518,
+        "profit": 37347.088626864075,
+        "doses_committed": 31206.0
+      },
+      "Biological_E": {
+        "tenders_joined": [
+          "(1, 3)",
+          "(3, 5)"
+        ],
+        "revenue": 822476.7629928861,
+        "profit": 597862.4729668269,
+        "doses_committed": 1.3525941100000003e6
+      },
+      "GSK": {
+        "tenders_joined": [
+          "(1, 3)",
+          "(3, 5)"
+        ],
+        "revenue": 367138.48453523463,
+        "profit": 268183.6610881297,
+        "doses_committed": 120200.0
+      },
+      "PT_Bio": {
+        "tenders_joined": [
+          "(1, 3)",
+          "(3, 5)"
+        ],
+        "revenue": 27820.3645855019,
+        "profit": 19466.945558173844,
+        "doses_committed": 89197.10172000006
+      }
+    },
+    "phi": {
+      "Serum_Institute": 37347.12597399006,
+      "Biological_E": 597863.0708298977,
+      "GSK": 268183.92927205894,
+      "PT_Bio": 19466.96502513887
+    },
+    "terms": {
+      "holding": 22.33365721721755,
+      "total": 2.368255626703304e6,
+      "missed": 829008.7048419351,
+      "tender": 269211.5755184537,
+      "procurement": 1.2700130126856978e6
+    }
+  },
+  "UG": {
+    "status": "OPTIMAL",
+    "terms_under_best_response": {
+      "holding": 0.0,
+      "total": 2.0522066382290798e6,
+      "missed": 0.0,
+      "tender": 638093.6280720895,
+      "procurement": 1.4141130101569903e6
+    },
+    "objective": 3.13165871326092e7,
+    "phi": {
+      "Serum_Institute": 83635.91183972002,
+      "Biological_E": 642004.0752504779,
+      "GSK": 290471.06028691004,
+      "PT_Bio": 25387.46439717912
+    },
+    "decision": {
+      "shares": [
+        "M/Serum_Institute (1, 3) u=1.0",
+        "M/Serum_Institute (2, 4) u=1.0",
+        "M/Serum_Institute (3, 3) u=1.0",
+        "M/Serum_Institute (4, 5) u=1.0",
+        "M/PT_Bio (1, 3) u=1.0",
+        "M/PT_Bio (2, 4) u=1.0",
+        "M/PT_Bio (3, 3) u=1.0",
+        "M/PT_Bio (4, 5) u=1.0",
+        "MR/Serum_Institute (1, 3) u=1.0",
+        "MR/Serum_Institute (2, 3) u=1.0",
+        "MR/Serum_Institute (2, 4) u=1.0",
+        "MR/Serum_Institute (3, 3) u=1.0",
+        "MR/Serum_Institute (3, 5) u=1.0",
+        "MR/Serum_Institute (4, 4) u=1.0",
+        "MR/Serum_Institute (4, 5) u=1.0",
+        "MR/Biological_E (1, 3) u=1.0",
+        "MR/Biological_E (2, 3) u=1.0",
+        "MR/Biological_E (2, 4) u=1.0",
+        "MR/Biological_E (3, 3) u=1.0",
+        "MR/Biological_E (3, 5) u=1.0",
+        "MR/Biological_E (4, 4) u=1.0",
+        "MR/Biological_E (4, 5) u=1.0",
+        "MMR/Serum_Institute (1, 3) u=1.0",
+        "MMR/Serum_Institute (2, 3) u=1.0",
+        "MMR/Serum_Institute (2, 4) u=1.0",
+        "MMR/Serum_Institute (3, 3) u=1.0",
+        "MMR/Serum_Institute (3, 5) u=1.0",
+        "MMR/Serum_Institute (4, 4) u=1.0",
+        "MMR/Serum_Institute (4, 5) u=1.0",
+        "MMR/GSK (1, 3) u=1.0",
+        "MMR/GSK (2, 3) u=1.0",
+        "MMR/GSK (2, 4) u=1.0",
+        "MMR/GSK (3, 3) u=1.0",
+        "MMR/GSK (3, 5) u=1.0",
+        "MMR/GSK (4, 4) u=1.0",
+        "MMR/GSK (4, 5) u=1.0"
+      ],
+      "tenders": [
+        "Measles (1, 3)",
+        "Measles (2, 4)",
+        "Measles (3, 3)",
+        "Measles (4, 5)",
+        "Mumps (1, 3)",
+        "Mumps (4, 5)",
+        "Rubella (1, 3)",
+        "Rubella (2, 3)",
+        "Rubella (3, 5)",
+        "Rubella (4, 4)"
+      ],
+      "prices": [
+        "M t=1 λ=1.0",
+        "M t=2 λ=1.0",
+        "M t=3 λ=1.0",
+        "M t=4 λ=1.0",
+        "MR t=1 λ=1.0",
+        "MR t=2 λ=1.0",
+        "MR t=3 λ=1.0",
+        "MR t=4 λ=1.0",
+        "MMR t=1 λ=1.0",
+        "MMR t=2 λ=1.0",
+        "MMR t=3 λ=1.0",
+        "MMR t=4 λ=1.0"
+      ]
+    },
+    "terms": {
+      "holding": 0.0,
+      "total": 3.1316587132609203e7,
+      "missed": 2.9322994801782187e7,
+      "doses_delivered": 1.4631047310030002e6,
+      "tender": 638093.6280720895,
+      "procurement": 1.3554987027549285e6,
+      "doses_committed": 1.4631047310029995e6
+    },
+    "bound": 3.1316291048194952e7,
+    "bilevel_cost_of_UG_schedule": 2.05220663822908e6
+  },
+  "UG_original12": {
+    "status": "OPTIMAL",
+    "terms_under_best_response": {
+      "holding": 0.0,
+      "total": 2.326737453655995e6,
+      "missed": 5801.776420023406,
+      "tender": 902129.5508842383,
+      "procurement": 1.418806126351733e6
+    },
+    "objective": 8.358746073063006e7,
+    "phi": {
+      "Serum_Institute": 83661.83935678426,
+      "Biological_E": 649396.9102644525,
+      "GSK": 290471.06028691004,
+      "PT_Bio": 23470.400483304562
+    },
+    "decision": {
+      "shares": [
+        "M/Serum_Institute (1, 3) u=1.0",
+        "M/Serum_Institute (3, 5) u=1.0",
+        "M/Serum_Institute (4, 5) u=1.0",
+        "M/Serum_Institute (5, 5) u=1.0",
+        "M/PT_Bio (1, 3) u=1.0",
+        "M/PT_Bio (3, 5) u=1.0",
+        "M/PT_Bio (4, 5) u=1.0",
+        "M/PT_Bio (5, 5) u=1.0",
+        "MR/Serum_Institute (1, 3) u=1.0",
+        "MR/Serum_Institute (2, 4) u=1.0",
+        "MR/Serum_Institute (3, 4) u=1.0",
+        "MR/Serum_Institute (3, 5) u=1.0",
+        "MR/Serum_Institute (4, 4) u=1.0",
+        "MR/Serum_Institute (4, 5) u=1.0",
+        "MR/Serum_Institute (5, 5) u=1.0",
+        "MR/Biological_E (1, 3) u=1.0",
+        "MR/Biological_E (2, 4) u=1.0",
+        "MR/Biological_E (3, 4) u=1.0",
+        "MR/Biological_E (3, 5) u=1.0",
+        "MR/Biological_E (4, 4) u=1.0",
+        "MR/Biological_E (4, 5) u=1.0",
+        "MR/Biological_E (5, 5) u=1.0",
+        "MMR/Serum_Institute (1, 3) u=1.0",
+        "MMR/Serum_Institute (2, 3) u=1.0",
+        "MMR/Serum_Institute (2, 4) u=1.0",
+        "MMR/Serum_Institute (3, 3) u=1.0",
+        "MMR/Serum_Institute (3, 4) u=1.0",
+        "MMR/Serum_Institute (3, 5) u=1.0",
+        "MMR/Serum_Institute (4, 4) u=1.0",
+        "MMR/Serum_Institute (4, 5) u=1.0",
+        "MMR/Serum_Institute (5, 5) u=1.0",
+        "MMR/GSK (1, 3) u=1.0",
+        "MMR/GSK (2, 3) u=1.0",
+        "MMR/GSK (2, 4) u=1.0",
+        "MMR/GSK (3, 3) u=1.0",
+        "MMR/GSK (3, 4) u=1.0",
+        "MMR/GSK (3, 5) u=1.0",
+        "MMR/GSK (4, 4) u=1.0",
+        "MMR/GSK (4, 5) u=1.0",
+        "MMR/GSK (5, 5) u=1.0"
+      ],
+      "tenders": [
+        "Measles (1, 3)",
+        "Measles (3, 5)",
+        "Measles (4, 5)",
+        "Measles (5, 5)",
+        "Mumps (1, 3)",
+        "Mumps (2, 3)",
+        "Mumps (3, 3)",
+        "Mumps (4, 5)",
+        "Rubella (1, 3)",
+        "Rubella (2, 4)",
+        "Rubella (3, 4)",
+        "Rubella (4, 4)",
+        "Rubella (5, 5)"
+      ],
+      "prices": [
+        "M t=1 λ=1.0",
+        "M t=3 λ=1.0",
+        "M t=4 λ=1.0",
+        "M t=5 λ=1.0",
+        "MR t=1 λ=1.0",
+        "MR t=2 λ=1.0",
+        "MR t=3 λ=1.0",
+        "MR t=4 λ=1.0",
+        "MR t=5 λ=1.0",
+        "MMR t=1 λ=1.0",
+        "MMR t=2 λ=1.0",
+        "MMR t=3 λ=1.0",
+        "MMR t=4 λ=1.0",
+        "MMR t=5 λ=1.0"
+      ]
+    },
+    "terms": {
+      "holding": 0.0,
+      "total": 8.358746073063006e7,
+      "missed": 8.10984468360483e7,
+      "doses_delivered": 164343.47543000022,
+      "tender": 902129.5508842383,
+      "procurement": 1.586884343697509e6,
+      "doses_committed": 801775.5046301448
+    },
+    "bound": 8.358746073063006e7,
+    "bilevel_cost_of_UG_schedule": 2.326737453655995e6
+  },
+  "seed": 1,
+  "u": [
+    0.0,
+    0.5,
+    1.0
+  ]
+}

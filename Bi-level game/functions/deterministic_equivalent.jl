@@ -59,6 +59,8 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
     @variable(model, Q[v in V, p in P_v[v], (t, tau) in F_time_set_lookup, m in M] >= 0)
     @variable(model, X[v in V, p in P_v[v], t in T, ω in Ω] >= 0)
     @variable(model, X_tilde[v in V, p in P_v[v], (t, tau) in F_time_set_lookup, ω in Ω] >= 0)
+    # BILEVEL FIX: deliveries indexed by the tender they fill, X_ten[v,p,(t,tau),l] for l in t:tau
+    @variable(model, X_ten[v in V, p in P_v[v], tt in F_time_set, l in tt[1]:tt[2], ω in Ω] >= 0)
     @variable(model, K[v in V, p in P_v[v], (t, tau) in F_time_set_lookup, ω in Ω] >= 0)
     @variable(model, Y[p in P, t in T], Bin)
     @variable(model, I[v in V, t in T_initial, ω in Ω] >= 0)
@@ -299,17 +301,30 @@ function deterministic_equivalent(p_ω, Ω, g, beta, Γ, gurobi_solver_DE,
     #     end
     # end
 
-    for ω in Ω
-        for v in V
-            for p in P_v[v]
-                for t in T
-                    for tau in T
-                        if (t,tau) in F_time_set
-                            @constraint(model, sum(Q[v,p,(t,tau), m] for m in M) >= sum(X[v,p,l,ω] for l in t:tau))
-                        end
-                    end
-                end
-            end
+    # ORIGINAL (12): applied to every window in F_time_set, so an unused window (Q = 0) forced X = 0 in every
+    # period it covers, e.g. (l,l) gave X[v,p,l] <= Q[v,p,(l,l)], and overlapping tenders double-counted X.
+    # for ω in Ω
+    #     for v in V
+    #         for p in P_v[v]
+    #             for t in T
+    #                 for tau in T
+    #                     if (t,tau) in F_time_set
+    #                         @constraint(model, sum(Q[v,p,(t,tau), m] for m in M) >= sum(X[v,p,l,ω] for l in t:tau))
+    #                     end
+    #                 end
+    #             end
+    #         end
+    #     end
+    # end
+
+    # FIXED (12): each tender's commitment covers only the deliveries made against that tender,
+    # and per-period deliveries are the sum over the tenders active in that period.
+    for ω in Ω, v in V, p in P_v[v]
+        for tt in F_time_set
+            @constraint(model, sum(Q[v,p,tt,m] for m in M) >= sum(X_ten[v,p,tt,l,ω] for l in tt[1]:tt[2]))
+        end
+        for l in T
+            @constraint(model, X[v,p,l,ω] == sum(X_ten[v,p,tt,l,ω] for tt in F_time_set if tt[1] <= l <= tt[2]))
         end
     end
 
