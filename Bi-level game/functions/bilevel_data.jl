@@ -31,13 +31,19 @@ function load_bilevel_data(data_dir::String;
     antigen_demand_source::Symbol = :scenario,     # :scenario -> antigen demand from scenario_file (same as deterministic model) ; :vaccine -> d_at = Σ_{v∈V_a} d̂_vt
     fix_starting_tenders::Bool = true,             # keep the F_start tenders from Starting_point.xlsx (as in the DE model)
     discount_vaccines::Union{Nothing,Vector} = nothing,  # vaccines with bracket discounts; nothing -> all of V
+    discount_structure::Symbol = :all_unit,        # :all_unit -> ζ_m on every dose once Q reaches bracket m;
+                                                   # :incremental -> ζ_m only on the doses inside bracket m
     λ::Vector{Float64} = [0.98, 1.0, 1.02],        # price ladder: ±2% around the reference price r̄_vt
     u::Vector{Float64} = [0.0, 0.5, 1.0],
     θ_range::Dict{String,Tuple{Float64,Float64}} = Dict(
         "Large" => (0.20, 0.30), "Medium" => (0.25, 0.35), "Small" => (0.30, 0.40)),   # half the PDF placeholders
     seed::Int = 1,
     per_dose_cost::Bool = true,                    # false -> c_vp = 0: producer cost is only f (W) and Γ (L), as in the UG ROI
+    dose_scale::Real = 1,                          # >1: rescale doses for conditioning (see rescale_doses); objective unchanged
 )
+    discount_structure in (:all_unit, :incremental) ||
+        error("discount_structure must be :all_unit or :incremental, got :$discount_structure")
+
     # ---------------- sets (re-used) ----------------
     A, V, A_v, P, P_v, V_a, V_p, P_a, A_p, capacity_category, vaccine_category, antigen_category = vaccine_data_fn()
 
@@ -117,10 +123,52 @@ function load_bilevel_data(data_dir::String;
     I0 = Dict(v => 0.0 for v in V); for (v, amt) in starting_I; I0[v] = amt; end
     S0 = Dict(a => 0.0 for a in A); for (a, amt) in starting_S; S0[a] = Float64(amt); end
 
-    return (; A, V, A_v, P, P_v, V_a, V_p, P_a, A_p, VP, capacity_category, size_group,
-              T, T_initial, F_time_set, M, Kset, Jset, λ, u,
-              s_real, s_pt, r, r_avg, r_bar, ρ, c, θ, g, h, l, f_profit, Γ, κ, L_lower_number, L_upper_number,
-              delta, beta, zeta_vm, phi_vm_lower, phi_vm_upper, phi_upper_cap, m_segments,
-              L_ddot_upper, L_hat_upper, L_check_upper, X_tilde_upper,
-              d_hat, D_hat, d_at, I0, S0, starting_F, unit, seed)
+    d = (; A, V, A_v, P, P_v, V_a, V_p, P_a, A_p, VP, capacity_category, size_group,
+           T, T_initial, F_time_set, M, Kset, Jset, λ, u,
+           s_real, s_pt, r, r_avg, r_bar, ρ, c, θ, g, h, l, f_profit, Γ, κ, L_lower_number, L_upper_number,
+           delta, beta, zeta_vm, phi_vm_lower, phi_vm_upper, phi_upper_cap, m_segments,
+           L_ddot_upper, L_hat_upper, L_check_upper, X_tilde_upper,
+           d_hat, D_hat, d_at, I0, S0, starting_F, unit, seed, discount_structure, dose_scale = 1.0)
+    return dose_scale == 1 ? d : rescale_doses(d, dose_scale)
+end
+
+"""
+    rescale_doses(d, σ) -> d′
+
+Change of units for numerical conditioning: every dose quantity is divided by σ and every per-dose
+price/cost is multiplied by σ, so every model term (and the objective value) is unchanged in money.
+Fixed costs (g, Γ, f) and dimensionless data (κ, ζ, λ, u, δ, h) are untouched.
+Quantity variables (Q, X, I, Vc, S, ...) come out in units of `d.unit * σ` doses.
+Only the bilevel blocks (HPR, best response, MibS, VFD) are covered; `l` and the UG baseline are not rescaled.
+"""
+function rescale_doses(d, σ::Real)
+    σ = Float64(σ)
+    q(D) = Dict(k => v / σ for (k, v) in D)          # quantity
+    p(D) = Dict(k => v * σ for (k, v) in D)          # money per dose
+    return merge(d, (;
+        s_real = q(d.s_real), s_pt = q(d.s_pt), d_hat = q(d.d_hat), D_hat = q(d.D_hat), d_at = q(d.d_at),
+        phi_vm_lower = q(d.phi_vm_lower), phi_vm_upper = q(d.phi_vm_upper), phi_upper_cap = q(d.phi_upper_cap),
+        L_ddot_upper = q(d.L_ddot_upper), L_hat_upper = q(d.L_hat_upper), L_check_upper = q(d.L_check_upper),
+        X_tilde_upper = q(d.X_tilde_upper), I0 = q(d.I0), S0 = q(d.S0),
+        r = p(d.r), r_avg = p(d.r_avg), r_bar = p(d.r_bar), ρ = p(d.ρ), c = p(d.c), beta = d.beta * σ,
+        unit = d.unit * σ, dose_scale = d.dose_scale * σ))
+end
+
+"""
+    bracket_widths(d, v, t) -> Dict(m => w_m)
+
+Incremental discounts: width of bracket m for vaccine v at period t, i.e. the doses priced at ζ_m.
+Breakpoints are the bracket lower bounds φ_m (phi_vm_lower), so w_m = φ_{m+1} − φ_m, and the last bracket
+runs up to the largest commitment possible at t (phi_upper_cap). Widths are clipped at that cap, so a
+bracket that starts above it has width 0.
+"""
+function bracket_widths(d, v, t)
+    Ms = sort(d.M)
+    cap = d.phi_upper_cap[(v, t, last(Ms))]
+    w = Dict{eltype(Ms),Float64}()
+    for (i, m) in enumerate(Ms)
+        hi = i < length(Ms) ? min(d.phi_vm_lower[v, Ms[i+1]], cap) : cap
+        w[m] = max(0.0, hi - min(d.phi_vm_lower[v, m], cap))
+    end
+    return w
 end

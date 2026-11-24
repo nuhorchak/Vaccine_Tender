@@ -91,7 +91,8 @@ Producer variables and constraints for every p in `Pset`:
 (34) commit only to open tenders, (35) award ceiling, (36) commit only if joined,
 (37)-(38) exact price split of Q (Qk = Γ in the note), (39) deliveries equal commitments,
 (7) commitment capacity and (13)/(40) per-period capacity with the McCormick terms of the
-deterministic model, (9)-(11) discount brackets summed over windows starting at t.
+deterministic model, (9)-(11) discount brackets summed over windows starting at t
+(all-unit or incremental, from `d.discount_structure`).
 """
 function add_followers!(model, d, Pset::Vector, Fx, Πx, Ωx)
     FT = d.F_time_set
@@ -148,13 +149,33 @@ function add_followers!(model, d, Pset::Vector, Fx, Πx, Ωx)
     end
 
     # (9)-(11) discount brackets: producers self-select from the announced menu
-    for (v, p) in VPp, t in d.T
-        for m in d.M
-            Qtm = @expression(model, sum(Q[(v, p), tt, m] for tt in FT if tt[1] == t))
-            @constraint(model, d.phi_vm_lower[v, m] * Z[(v, p), t, m] <= Qtm)               # (9)
-            @constraint(model, d.phi_upper_cap[(v, t, m)] * Z[(v, p), t, m] >= Qtm)         # (10)
+    if d.discount_structure == :all_unit
+        # all-unit: Z picks ONE bracket; every dose committed at t sits in Q[.,m] and earns ζ_m
+        for (v, p) in VPp, t in d.T
+            for m in d.M
+                Qtm = @expression(model, sum(Q[(v, p), tt, m] for tt in FT if tt[1] == t))
+                @constraint(model, d.phi_vm_lower[v, m] * Z[(v, p), t, m] <= Qtm)           # (9)
+                @constraint(model, d.phi_upper_cap[(v, t, m)] * Z[(v, p), t, m] >= Qtm)     # (10)
+            end
+            @constraint(model, sum(Z[(v, p), t, m] for m in d.M) == 1)                      # (11)
         end
-        @constraint(model, sum(Z[(v, p), t, m] for m in d.M) == 1)                          # (11)
+    else
+        # incremental: Q[.,m] is the slice of the commitment between breakpoints φ_m and φ_{m+1}; ζ_m applies
+        # to that slice only. Z_m = 1 means "bracket m is reached"; a bracket can hold doses only if it is
+        # reached, and bracket m+1 is reached only if bracket m is full.
+        Ms = sort(d.M)
+        for (v, p) in VPp, t in d.T
+            w = bracket_widths(d, v, t)
+            for (i, m) in enumerate(Ms)
+                Qtm = @expression(model, sum(Q[(v, p), tt, m] for tt in FT if tt[1] == t))
+                @constraint(model, Qtm <= w[m] * Z[(v, p), t, m])                           # (9′) slice ≤ width if reached
+                if i < length(Ms)
+                    mn = Ms[i+1]
+                    @constraint(model, Qtm >= w[m] * Z[(v, p), t, mn])                      # (10′) next bracket ⇒ this one full
+                    @constraint(model, Z[(v, p), t, mn] <= Z[(v, p), t, m])                 # (11′) brackets reached in order
+                end
+            end
+        end
     end
 
     # (13)/(40) per-period capacity, deliveries summed over active windows

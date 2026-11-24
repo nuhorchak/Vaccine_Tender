@@ -32,6 +32,7 @@ include(joinpath(functions_directory, "load_model_starting_points.jl"))
 include(joinpath(functions_directory, "deterministic_equivalent.jl"))           # (12) fixed: tender-indexed deliveries
 include(joinpath(functions_directory, "deterministic_equivalent_original.jl"))  # unchanged copy, for comparison
 # bilevel
+include(joinpath(functions_directory, "diagnostics.jl"))                         # warning/error capture, quiet!
 include(joinpath(functions_directory, "bilevel_data.jl"))
 include(joinpath(functions_directory, "bilevel_model.jl"))
 include(joinpath(functions_directory, "bilevel_evaluate.jl"))
@@ -66,7 +67,8 @@ function run_bilevel(; horizon = 5, max_tender_length = 3, seed = 1, run_ug_base
     println("Instance: |A|=$(length(d.A)) |V|=$(length(d.V)) |P|=$(length(d.P)) |VP|=$(length(d.VP)) windows=$(length(d.F_time_set))")
     println("θ draws: ", d.θ)
     results = Dict{String,Any}("horizon" => horizon, "max_tender_length" => max_tender_length, "seed" => seed,
-                               "theta" => d.θ, "lambda" => d.λ, "u" => d.u)
+                               "theta" => d.θ, "lambda" => d.λ, "u" => d.u,
+                               "discount_structure" => string(d.discount_structure))
 
     # ---------- step 1: high-point relaxation ----------
     hpr, hpr_prod, hpr_terms = build_hpr(d, gurobi_optimizer)

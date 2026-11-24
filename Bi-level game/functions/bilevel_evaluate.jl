@@ -14,7 +14,7 @@ Producer p's optimal profit φ_p(x) for a fixed leader decision.
 """
 function best_response(d, p, Fx, Πx, Ωx, optimizer)
     model = Model(optimizer)
-    set_silent(model)
+    quiet!(model)
     set_optimizer_attribute(model, "MIPGap", 0.0)      # φ_p must be exact: it becomes a constraint below
     prod = add_followers!(model, d, [p], Fx, Πx, Ωx)
     @objective(model, Max, prod[p].profit)
@@ -37,7 +37,7 @@ function evaluate_leader_decision(d, Fx, Πx, Ωx, optimizer; rel_tol = 1e-6, ti
     end
 
     model = Model(optimizer)
-    set_silent(model)
+    quiet!(model)
     add_leader_state!(model, d)
     producers = add_followers!(model, d, collect(d.P), Fx, Πx, Ωx)
     add_inventory_balance!(model, d)
@@ -134,7 +134,7 @@ function solve_ug_baseline(d, optimizer; time_limit = 3600.0, builder = determin
         d.κ, d.s_real, d.L_hat_upper, d.L_check_upper, d_real_tilde, d.X_tilde_upper, s_real_tilde, 1,
         d.r, d.r_avg, d.h, d.V_p, d.l, d.f_profit, d.V_a, d.delta, d.L_ddot_upper, true, nothing, nothing,
         d.m_segments, d.zeta_vm, d.phi_vm_lower, phi_upper, false, false, true)
-    set_silent(model)
+    quiet!(model)
     set_optimizer_attribute(model, "MIPGap", 1e-3)      # same gap as the deterministic runner
     set_time_limit_sec(model, time_limit)
     optimize!(model)

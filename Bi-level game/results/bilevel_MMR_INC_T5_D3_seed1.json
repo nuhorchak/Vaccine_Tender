@@ -1,0 +1,208 @@
+{
+  "theta": {
+    "Biological_E": 0.2099,
+    "Serum_Institute": 0.2876,
+    "GSK": 0.2702,
+    "PT_Bio": 0.3003
+  },
+  "lambda": [
+    0.98,
+    1.0,
+    1.02
+  ],
+  "HPR": {
+    "decision": {
+      "shares": [
+        "M/Serum_Institute (1, 3) u=0.5",
+        "M/Serum_Institute (2, 4) u=1.0",
+        "M/Serum_Institute (3, 5) u=1.0",
+        "M/Serum_Institute (4, 5) u=1.0",
+        "M/Serum_Institute (5, 5) u=0.5",
+        "M/PT_Bio (1, 3) u=1.0",
+        "M/PT_Bio (2, 4) u=1.0",
+        "M/PT_Bio (3, 5) u=1.0",
+        "M/PT_Bio (4, 5) u=1.0",
+        "M/PT_Bio (5, 5) u=1.0",
+        "MR/Serum_Institute (1, 3) u=0.5",
+        "MR/Serum_Institute (2, 4) u=0.5",
+        "MR/Serum_Institute (3, 5) u=0.5",
+        "MR/Serum_Institute (4, 5) u=1.0",
+        "MR/Serum_Institute (5, 5) u=1.0",
+        "MR/Biological_E (1, 3) u=1.0",
+        "MR/Biological_E (2, 4) u=0.5",
+        "MR/Biological_E (3, 5) u=0.5",
+        "MR/Biological_E (4, 5) u=0.5",
+        "MR/Biological_E (5, 5) u=1.0",
+        "MMR/Serum_Institute (1, 3) u=1.0",
+        "MMR/Serum_Institute (2, 4) u=1.0",
+        "MMR/Serum_Institute (3, 5) u=1.0",
+        "MMR/Serum_Institute (4, 5) u=1.0",
+        "MMR/Serum_Institute (5, 5) u=1.0",
+        "MMR/GSK (1, 3) u=1.0",
+        "MMR/GSK (2, 4) u=1.0",
+        "MMR/GSK (3, 5) u=1.0",
+        "MMR/GSK (4, 5) u=1.0",
+        "MMR/GSK (5, 5) u=1.0"
+      ],
+      "tenders": [
+        "Measles (1, 3)",
+        "Measles (2, 4)",
+        "Measles (3, 5)",
+        "Measles (4, 5)",
+        "Measles (5, 5)",
+        "Mumps (1, 3)",
+        "Mumps (4, 5)",
+        "Rubella (1, 3)",
+        "Rubella (4, 5)"
+      ],
+      "prices": [
+        "M t=1 λ=0.98",
+        "M t=2 λ=0.98",
+        "M t=3 λ=0.98",
+        "M t=4 λ=0.98",
+        "M t=5 λ=0.98",
+        "MR t=1 λ=0.98",
+        "MR t=2 λ=0.98",
+        "MR t=3 λ=0.98",
+        "MR t=4 λ=0.98",
+        "MR t=5 λ=0.98",
+        "MMR t=1 λ=0.98",
+        "MMR t=2 λ=0.98",
+        "MMR t=3 λ=0.98",
+        "MMR t=4 λ=0.98",
+        "MMR t=5 λ=0.98"
+      ]
+    },
+    "objective": 8.483984527676849e7,
+    "terms": {
+      "holding": 0.0,
+      "procurement": 1.1851712475021363e6,
+      "missed": 8.311609327960451e7,
+      "total": 8.483984527676846e7,
+      "tender": 538580.7496618144
+    },
+    "bound": 8.483679837829423e7,
+    "producers": {
+      "Biological_E": {
+        "tenders_joined": [
+          "(1, 3)",
+          "(2, 4)",
+          "(3, 5)",
+          "(4, 5)",
+          "(5, 5)"
+        ],
+        "revenue": 240056.38610468816,
+        "doses_committed": 368655.0,
+        "profit": -278674.1417352052
+      },
+      "Serum_Institute": {
+        "tenders_joined": [
+          "(1, 3)",
+          "(2, 4)",
+          "(4, 5)",
+          "(5, 5)"
+        ],
+        "revenue": 134265.18108513235,
+        "doses_committed": 45062.5,
+        "profit": -362927.7483549643
+      },
+      "GSK": {
+        "tenders_joined": [
+          "(1, 3)",
+          "(2, 4)",
+          "(3, 5)",
+          "(4, 5)",
+          "(5, 5)"
+        ],
+        "revenue": 727216.7164855158,
+        "doses_committed": 249060.00000000006,
+        "profit": 64823.29763950472
+      },
+      "PT_Bio": {
+        "tenders_joined": [
+          "(1, 3)",
+          "(2, 4)",
+          "(3, 5)",
+          "(4, 5)",
+          "(5, 5)"
+        ],
+        "revenue": 83632.96382680038,
+        "doses_committed": 274271.45000000007,
+        "profit": -39823.01224116295
+      }
+    }
+  },
+  "discount_structure": "incremental",
+  "horizon": 5,
+  "max_tender_length": 3,
+  "HPR_status": "OPTIMAL",
+  "HPR_candidate_bilevel": {
+    "producers": {
+      "Biological_E": {
+        "tenders_joined": [
+          "(1, 3)",
+          "(2, 4)",
+          "(3, 5)",
+          "(4, 5)",
+          "(5, 5)"
+        ],
+        "revenue": 223096.63851285813,
+        "doses_committed": 288750.0,
+        "profit": 175312.38009253851
+      },
+      "Serum_Institute": {
+        "tenders_joined": [
+          "(1, 3)",
+          "(2, 4)",
+          "(3, 5)"
+        ],
+        "revenue": 113790.9250261012,
+        "doses_committed": 37261.0,
+        "profit": 81280.74991917684
+      },
+      "GSK": {
+        "tenders_joined": [
+          "(1, 3)",
+          "(2, 4)",
+          "(3, 5)",
+          "(4, 5)"
+        ],
+        "revenue": 591860.0541173494,
+        "doses_committed": 194460.0,
+        "profit": 431570.6427642044
+      },
+      "PT_Bio": {
+        "tenders_joined": [
+          "(1, 3)",
+          "(2, 4)",
+          "(3, 5)",
+          "(4, 5)",
+          "(5, 5)"
+        ],
+        "revenue": 83632.96382680036,
+        "doses_committed": 274271.45,
+        "profit": 58314.472205740196
+      }
+    },
+    "cost": 9.534705579841155e7,
+    "terms": {
+      "holding": 0.0,
+      "procurement": 1.0123805814831092e6,
+      "missed": 9.37960944672666e7,
+      "total": 9.534705579841153e7,
+      "tender": 538580.7496618144
+    },
+    "phi": {
+      "Biological_E": 175312.55540509388,
+      "Serum_Institute": 81280.83120000803,
+      "GSK": 431571.0743352787,
+      "PT_Bio": 58314.53052027071
+    }
+  },
+  "seed": 1,
+  "u": [
+    0.0,
+    0.5,
+    1.0
+  ]
+}

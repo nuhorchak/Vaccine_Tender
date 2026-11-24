@@ -2,8 +2,10 @@
 Exact bilevel solve with MibS (step 3), via BilevelJuMP.
 
 Run from the "Bi-level game" folder with the project environment (BilevelJuMP + MibS_jll live there):
-    julia --project=. vaccine_tender_bilevel_mibs.jl          # MMR test instance (T = 5, Δ = 3)
-    julia --project=. vaccine_tender_bilevel_mibs.jl original # original deterministic data (T = 10, Δ = 5)
+    julia --project=. --depwarn=yes vaccine_tender_bilevel_mibs.jl          # MMR test instance (T = 5, Δ = 3)
+    julia --project=. --depwarn=yes vaccine_tender_bilevel_mibs.jl original # original deterministic data (T = 10, Δ = 5)
+
+Every warning/error of the run goes to results/mibs_<tag>T<h>_D<Δ>_seed<s>_diagnostics.txt (Gurobi log: <work dir>/gurobi.log).
 
 Each run also solves the HPR (lower bound) and re-evaluates MibS's leader decision with the Gurobi
 best-response code, as an independent check of the MibS objective.
@@ -13,16 +15,35 @@ using BilevelJuMP
 import MibS_jll
 include(joinpath(functions_directory, "bilevel_mibs.jl"))
 
-function run_mibs(; horizon, max_tender_length, seed = 1, tag = "", time_limit = 3600.0, kwargs...)
-    d = load_bilevel_data(data_dir; horizon, max_tender_length, seed, kwargs...)
+"""
+    run_mibs(; horizon, max_tender_length, seed, tag, time_limit, diagnostics = true, kwargs...)
+
+With `diagnostics = true`, every warning and error of the run (Julia, Gurobi log, MibS) is collected in
+results/mibs_<tag>T<h>_D<Δ>_seed<s>_diagnostics.txt. Start Julia with --depwarn=yes to include deprecations.
+"""
+function run_mibs(; horizon, max_tender_length, seed = 1, tag = "", diagnostics = true, kwargs...)
+    stem = "mibs_$(tag)T$(horizon)_D$(max_tender_length)_seed$(seed)"
+    diagnostics || return _run_mibs(; horizon, max_tender_length, seed, tag, kwargs...)
+    work_dir = joinpath(results_dir, stem)
+    with_diagnostics(joinpath(results_dir, "$(stem)_diagnostics.txt");
+                     gurobi_log = joinpath(work_dir, "gurobi.log"), mibs_dir = work_dir) do
+        _run_mibs(; horizon, max_tender_length, seed, tag, kwargs...)
+    end
+end
+
+function _run_mibs(; horizon, max_tender_length, seed = 1, tag = "", time_limit = 3600.0, dose_scale = 1000, kwargs...)
+    # dose_scale = 1000: quantities in millions of doses (unit 1000 × 1000) so the big-M coefficients drop from
+    # ~1e6 to ~1e3; per-dose prices scale up by the same factor, so every objective value is unchanged
+    d = load_bilevel_data(data_dir; horizon, max_tender_length, seed, dose_scale, kwargs...)
     println("Instance: |A|=$(length(d.A)) |V|=$(length(d.V)) |P|=$(length(d.P)) |VP|=$(length(d.VP)) windows=$(length(d.F_time_set))")
     results = Dict{String,Any}("horizon" => horizon, "max_tender_length" => max_tender_length, "seed" => seed,
                                "theta" => d.θ, "lambda" => d.λ, "u" => d.u, "time_limit" => time_limit)
 
     # lower bound for reference
     hpr, _, _ = build_hpr(d, gurobi_optimizer)
-    set_silent(hpr)
+    quiet!(hpr)
     optimize!(hpr)
+    termination_status(hpr) == MOI.OPTIMAL || @warn "HPR stopped at $(termination_status(hpr))"
     results["HPR"] = Dict("objective" => objective_value(hpr), "bound" => objective_bound(hpr))
 
     # exact bilevel solve
@@ -32,6 +53,7 @@ function run_mibs(; horizon, max_tender_length, seed = 1, tag = "", time_limit =
     sol = solve_with_mibs(bm; time_limit, work_dir)
     wall = time() - t0
     println("MibS status: $(sol.status)  objective: $(sol.objective)  bound: $(sol.bound)  gap: $(round(100 * sol.gap, digits = 2)) %  wall time: $(round(wall, digits = 1)) s")
+    sol.status == :optimal || @warn "MibS did not prove optimality: status $(sol.status), gap $(sol.gap)"
     println("  upper vars: $(sol.n_upper)  lower vars: $(sol.n_lower)  lower rows: $(sol.n_lower_rows)")
     results["MibS"] = Dict("status" => string(sol.status), "objective" => sol.objective, "bound" => sol.bound,
                            "gap" => sol.gap, "wall_time" => wall,

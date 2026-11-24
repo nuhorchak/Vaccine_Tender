@@ -73,11 +73,10 @@ function solve_with_mibs(bm; time_limit::Real = 3600, work_dir::String = mktempd
     # MibS cannot read paths containing spaces, so run inside work_dir with relative file names
     args = ["-Alps_instance", "model.mps", "-MibS_auxiliaryInfoFile", "model.aux",
             "-Alps_timeLimit", string(time_limit), mibs_options...]
-    cd(work_dir) do
-        MibS_jll.mibs() do exe
-            run(pipeline(Cmd([exe; args]); stdout = out_file, stderr = err_file); wait = true)
-        end
-    end
+    exe = MibS_jll.mibs()                                   # Cmd with the library path set
+    cmd = Cmd(Cmd([exe.exec; args]); env = exe.env, dir = work_dir, ignorestatus = true)
+    proc = run(pipeline(cmd; stdout = out_file, stderr = err_file); wait = true)
+    proc.exitcode == 0 || @error "MibS exited with code $(proc.exitcode) (signal $(proc.termsignal))"
     output = read(out_file, String)
     errors = read(err_file, String)
     isempty(strip(errors)) || @warn "MibS wrote to stderr:\n$errors"
